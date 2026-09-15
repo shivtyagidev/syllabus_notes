@@ -1,0 +1,1226 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Nginx Basics</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,500;8..60,600;8..60,700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/javascript.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/nginx.min.js"></script>
+<style>
+:root{
+  --bg:#f4f6f5;
+  --surface:#ffffff;
+  --surface-alt:#eaf0ed;
+  --text:#1c2624;
+  --text-secondary:#54625d;
+  --accent:#2f7d64;
+  --accent-strong:#1f5b47;
+  --accent-tint:#e2efe9;
+  --warn:#a9691a;
+  --warn-tint:#faecd7;
+  --border:#dbe3df;
+  --code-bg:#eef2f0;
+  --code-text:#28352f;
+  --shadow: 0 1px 2px rgba(20,30,26,0.05), 0 6px 20px rgba(20,30,26,0.06);
+  --radius-s:6px;
+  --radius-m:10px;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#121815;
+    --surface:#182120;
+    --surface-alt:#1e2926;
+    --text:#e6ece9;
+    --text-secondary:#96a49e;
+    --accent:#5cc19d;
+    --accent-strong:#8adcbc;
+    --accent-tint:#1d332b;
+    --warn:#e3a548;
+    --warn-tint:#332714;
+    --border:#2b3532;
+    --code-bg:#141c1a;
+    --code-text:#d9e4de;
+    --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px rgba(0,0,0,0.35);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#121815;
+  --surface:#182120;
+  --surface-alt:#1e2926;
+  --text:#e6ece9;
+  --text-secondary:#96a49e;
+  --accent:#5cc19d;
+  --accent-strong:#8adcbc;
+  --accent-tint:#1d332b;
+  --warn:#e3a548;
+  --warn-tint:#332714;
+  --border:#2b3532;
+  --code-bg:#141c1a;
+  --code-text:#d9e4de;
+  --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px rgba(0,0,0,0.35);
+}
+
+*{box-sizing:border-box;}
+html{color-scheme:light dark;}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:'IBM Plex Sans', system-ui, -apple-system, sans-serif;
+  font-size:15.5px;
+  line-height:1.6;
+}
+h1,h2,h3{
+  font-family:'Source Serif 4', Georgia, serif;
+  text-wrap:balance;
+  color:var(--text);
+  margin:0;
+}
+code, pre, .mono, .chapter-num, .qa-id, .kbd{
+  font-family:'IBM Plex Mono', 'Consolas', monospace;
+}
+a{color:var(--accent-strong);}
+
+/* ---------- App shell ---------- */
+.app{
+  display:grid;
+  grid-template-columns: 300px minmax(0,1fr);
+  min-height:100vh;
+  max-width:1320px;
+  margin:0 auto;
+}
+@media (max-width: 880px){
+  .app{grid-template-columns:1fr;}
+  .sidebar{position:relative; height:auto; top:0;}
+}
+
+/* ---------- Sidebar ---------- */
+.sidebar{
+  border-right:1px solid var(--border);
+  padding:28px 20px 28px 24px;
+  position:sticky;
+  top:0;
+  align-self:start;
+  height:100vh;
+  overflow-y:auto;
+  display:flex;
+  flex-direction:column;
+  gap:18px;
+}
+.brand{
+  display:flex;
+  flex-direction:column;
+  gap:4px;
+}
+.brand .eyebrow{
+  font-family:'IBM Plex Mono', monospace;
+  font-size:11px;
+  letter-spacing:0.09em;
+  text-transform:uppercase;
+  color:var(--accent-strong);
+}
+.brand h1{
+  font-size:22px;
+  font-weight:600;
+  line-height:1.2;
+}
+.brand .sub{
+  font-size:12.5px;
+  color:var(--text-secondary);
+}
+
+.search-box{
+  position:relative;
+}
+.search-box input{
+  width:100%;
+  padding:9px 12px 9px 32px;
+  border-radius:var(--radius-s);
+  border:1px solid var(--border);
+  background:var(--surface);
+  color:var(--text);
+  font-size:13.5px;
+  font-family:inherit;
+}
+.search-box input:focus{
+  outline:2px solid var(--accent);
+  outline-offset:1px;
+}
+.search-box svg{
+  position:absolute;
+  left:9px;
+  top:50%;
+  transform:translateY(-50%);
+  width:14px;
+  height:14px;
+  color:var(--text-secondary);
+  pointer-events:none;
+}
+
+.progress-card{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--radius-m);
+  padding:12px 14px;
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+}
+.progress-card .row{
+  display:flex;
+  justify-content:space-between;
+  align-items:baseline;
+  font-size:12.5px;
+  color:var(--text-secondary);
+}
+.progress-card .row strong{
+  color:var(--text);
+  font-family:'IBM Plex Mono', monospace;
+  font-variant-numeric: tabular-nums;
+  font-size:13px;
+}
+.progress-bar{
+  height:6px;
+  border-radius:4px;
+  background:var(--surface-alt);
+  overflow:hidden;
+}
+.progress-bar-fill{
+  height:100%;
+  background:var(--accent);
+  width:0%;
+  transition:width .25s ease;
+}
+
+.toggle-row{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  font-size:12.5px;
+  color:var(--text-secondary);
+  cursor:pointer;
+  user-select:none;
+}
+.toggle-row input{accent-color:var(--accent);}
+
+nav.chapters{
+  display:flex;
+  flex-direction:column;
+  gap:2px;
+  overflow-y:auto;
+  flex:1;
+}
+nav.chapters a{
+  display:flex;
+  justify-content:space-between;
+  gap:8px;
+  align-items:baseline;
+  text-decoration:none;
+  color:var(--text-secondary);
+  padding:7px 8px;
+  border-radius:var(--radius-s);
+  font-size:13px;
+}
+nav.chapters a:hover{background:var(--surface-alt); color:var(--text);}
+nav.chapters a .n{
+  font-family:'IBM Plex Mono', monospace;
+  font-size:11px;
+  color:var(--accent-strong);
+  min-width:18px;
+}
+nav.chapters a .title{flex:1;}
+nav.chapters a .count{
+  font-family:'IBM Plex Mono', monospace;
+  font-size:11px;
+  font-variant-numeric: tabular-nums;
+  color:var(--text-secondary);
+}
+
+/* ---------- Main ---------- */
+main{
+  padding:32px 40px 120px;
+  min-width:0;
+}
+@media (max-width: 620px){
+  main{padding:24px 18px 100px;}
+}
+
+.toolbar{
+  position:sticky;
+  top:0;
+  z-index:5;
+  background:var(--bg);
+  padding:10px 0 14px;
+  margin-bottom:10px;
+  border-bottom:1px solid var(--border);
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  align-items:center;
+}
+.toolbar .btn{
+  font-family:'IBM Plex Mono', monospace;
+  font-size:12px;
+  letter-spacing:0.02em;
+  border:1px solid var(--border);
+  background:var(--surface);
+  color:var(--text);
+  padding:7px 12px;
+  border-radius:var(--radius-s);
+  cursor:pointer;
+}
+.toolbar .btn:hover{border-color:var(--accent);}
+.toolbar .spacer{flex:1;}
+.toolbar .hint{
+  font-size:12px;
+  color:var(--text-secondary);
+}
+.no-results{
+  display:none;
+  padding:40px 0;
+  text-align:center;
+  color:var(--text-secondary);
+  font-size:14px;
+}
+
+.chapter{
+  padding-top:38px;
+  scroll-margin-top:70px;
+}
+.chapter:first-of-type{padding-top:14px;}
+.chapter-head{
+  display:flex;
+  align-items:baseline;
+  gap:14px;
+  margin-bottom:16px;
+  padding-bottom:10px;
+  border-bottom:2px solid var(--accent-tint);
+}
+.chapter-num{
+  font-size:13px;
+  color:var(--accent-strong);
+  font-weight:600;
+}
+.chapter-head h2{
+  font-size:23px;
+  font-weight:600;
+}
+
+.qa-list{display:flex; flex-direction:column; gap:10px;}
+
+.qa{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--radius-m);
+  overflow:hidden;
+}
+.qa.important{border-color:color-mix(in srgb, var(--warn) 45%, var(--border));}
+
+.qa-toggle{
+  width:100%;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:13px 16px;
+  background:none;
+  border:none;
+  text-align:left;
+  cursor:pointer;
+  font-family:inherit;
+  color:var(--text);
+}
+.qa-toggle:focus-visible{outline:2px solid var(--accent); outline-offset:-2px;}
+.qa-q{
+  flex:1;
+  font-size:14.5px;
+  font-weight:500;
+  line-height:1.4;
+}
+.flag{
+  font-family:'IBM Plex Mono', monospace;
+  font-size:10px;
+  letter-spacing:0.06em;
+  text-transform:uppercase;
+  padding:2px 7px;
+  border-radius:20px;
+  white-space:nowrap;
+}
+.flag.important{background:var(--warn-tint); color:var(--warn);}
+.qa-chevron{
+  color:var(--text-secondary);
+  transition:transform .18s ease;
+  font-size:14px;
+  flex-shrink:0;
+}
+.qa[data-open="true"] .qa-chevron{transform:rotate(90deg);}
+
+.qa-body{
+  display:none;
+  padding:0 16px 16px 16px;
+  border-top:1px solid var(--border);
+  font-size:14px;
+}
+.qa[data-open="true"] .qa-body{display:block; padding-top:14px;}
+
+.qa-body p{margin:0 0 10px;}
+.qa-body ul, .qa-body ol{margin:0 0 10px; padding-left:20px;}
+.qa-body li{margin-bottom:5px;}
+.qa-body li:last-child{margin-bottom:0;}
+.qa-body strong{color:var(--text); font-weight:600;}
+
+.diagram{
+  margin:10px 0;
+  padding:10px 12px;
+  border-left:3px solid var(--accent);
+  background:var(--accent-tint);
+  border-radius:0 var(--radius-s) var(--radius-s) 0;
+  font-size:13px;
+  color:var(--text-secondary);
+}
+.diagram .diagram-label{
+  font-family:'IBM Plex Mono', monospace;
+  font-size:10px;
+  text-transform:uppercase;
+  letter-spacing:0.08em;
+  color:var(--accent-strong);
+  display:block;
+  margin-bottom:4px;
+}
+
+pre{
+  background:var(--code-bg);
+  border:1px solid var(--border);
+  border-radius:var(--radius-s);
+  padding:12px 14px;
+  overflow-x:auto;
+  margin:10px 0;
+}
+pre code{
+  font-size:12.5px;
+  line-height:1.55;
+  color:var(--code-text);
+  background:none;
+}
+.qa-body table{
+  border-collapse:collapse;
+  width:100%;
+  font-size:13px;
+  margin:10px 0;
+}
+.table-wrap{overflow-x:auto; margin:10px 0;}
+.table-wrap table{margin:0;}
+.qa-body th, .qa-body td{
+  border:1px solid var(--border);
+  padding:7px 10px;
+  text-align:left;
+  vertical-align:top;
+}
+.qa-body th{
+  background:var(--surface-alt);
+  font-weight:600;
+  font-size:12px;
+  text-transform:uppercase;
+  letter-spacing:0.03em;
+  color:var(--text-secondary);
+}
+.qa-body td code, .qa-body p code, .qa-body li code{
+  background:var(--code-bg);
+  padding:1px 5px;
+  border-radius:4px;
+  font-size:12.5px;
+  color:var(--accent-strong);
+}
+
+.mark-known{
+  display:flex;
+  align-items:center;
+  gap:7px;
+  margin-top:12px;
+  padding-top:12px;
+  border-top:1px dashed var(--border);
+  font-size:12.5px;
+  color:var(--text-secondary);
+  cursor:pointer;
+  user-select:none;
+  width:fit-content;
+}
+.mark-known input{accent-color:var(--accent); width:14px; height:14px;}
+
+.qa.learned{opacity:0.68;}
+.qa.learned .qa-q{text-decoration:line-through; text-decoration-color:var(--accent); text-decoration-thickness:1.5px;}
+
+.chapter-recap{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--radius-m);
+  padding:16px 18px 18px;
+}
+.chapter-recap .recap-label{
+  font-family:'IBM Plex Mono', monospace;
+  font-size:11px;
+  text-transform:uppercase;
+  letter-spacing:0.08em;
+  color:var(--accent-strong);
+  display:block;
+  margin-bottom:10px;
+}
+.chapter-recap ul{
+  margin:0;
+  padding-left:18px;
+  columns:2;
+  column-gap:28px;
+}
+.chapter-recap li{
+  margin-bottom:7px;
+  break-inside:avoid;
+  font-size:13px;
+  color:var(--text-secondary);
+  line-height:1.45;
+}
+@media (max-width:620px){ .chapter-recap ul{columns:1;} }
+
+footer{
+  margin-top:50px;
+  padding-top:20px;
+  border-top:1px solid var(--border);
+  font-size:12px;
+  color:var(--text-secondary);
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+<aside class="sidebar">
+  <div class="brand">
+    <span class="eyebrow">Reference &middot; Infra</span>
+    <h1>Nginx Basics</h1>
+    <span class="sub" id="statsLine">Web Server &middot; Reverse Proxy &middot; Load Balancer</span>
+  </div>
+
+  <div class="search-box">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+    <input type="text" id="searchInput" placeholder="Search questions, code, terms&hellip;" autocomplete="off">
+  </div>
+
+  <div class="progress-card">
+    <div class="row"><span>Reviewed</span><strong id="progressLabel">0 / 0</strong></div>
+    <div class="progress-bar"><div class="progress-bar-fill" id="progressFill"></div></div>
+    <label class="toggle-row">
+      <input type="checkbox" id="importantOnly">
+      Show V.IMP only <span class="mono" style="opacity:.7" id="impCount">(0)</span>
+    </label>
+  </div>
+
+  <nav class="chapters" id="chapterNav"></nav>
+</aside>
+
+<main>
+  <div class="toolbar">
+    <button class="btn" id="expandAllBtn">Expand all</button>
+    <button class="btn" id="collapseAllBtn">Collapse all</button>
+    <span class="spacer"></span>
+    <span class="hint">Click a question to reveal the answer &mdash; try recalling it first.</span>
+  </div>
+
+  <div class="no-results" id="noResults">No questions match your search.</div>
+
+  <div id="content">
+
+<!-- ============================================================ -->
+<section class="chapter" id="ch1" data-title="Basics">
+  <div class="chapter-head"><span class="chapter-num">01</span><h2>Basics</h2></div>
+  <div class="qa-list">
+
+    <article class="qa important" data-id="1-1">
+      <button class="qa-toggle"><span class="qa-q">What is Nginx?</span><span class="flag important">V.IMP</span><span class="qa-chevron">›</span></button>
+      <div class="qa-body">
+        <p><strong>Nginx</strong> (pronounced "engine-x") ek high-performance, open-source software hai jo <strong>4 kaam</strong> kar sakta hai:</p>
+        <ul>
+          <li><strong>Web server</strong> &mdash; static files (HTML, CSS, JS, images) directly serve karta hai.</li>
+          <li><strong>Reverse proxy</strong> &mdash; client ki request ko backend server (Node.js, Java, Python) tak forward karta hai.</li>
+          <li><strong>Load balancer</strong> &mdash; ek se zyada backend servers ke beech traffic baant deta hai.</li>
+          <li><strong>HTTP cache / SSL termination</strong> &mdash; response cache kar sakta hai, aur HTTPS certificate yahi handle karta hai taaki backend ko encryption ki tension na ho.</li>
+        </ul>
+        <p><strong>Real project mein:</strong> Node.js app (jo port 3000 pe chal raha hai) ke <strong>aage</strong> Nginx laga dete hain &mdash; users port 80/443 (Nginx) pe aate hain, Nginx andar se request ko Node app tak proxy kar deta hai.</p>
+        <label class="mark-known"><input type="checkbox" class="know-check"> Mark as learned</label>
+      </div>
+    </article>
+
+    <article class="qa important" data-id="1-2">
+      <button class="qa-toggle"><span class="qa-q">Nginx Architecture kya hai?</span><span class="flag important">V.IMP</span><span class="qa-chevron">›</span></button>
+      <div class="qa-body">
+        <p>Nginx <strong>Master-Worker</strong> process model pe chalta hai:</p>
+        <ul>
+          <li><strong>Master process</strong> &mdash; config file read karta hai, worker processes ko start/stop/reload karta hai, aur privileged kaam (jaise port 80 pe bind karna) khud karta hai. Yeh kabhi client requests directly handle nahi karta.</li>
+          <li><strong>Worker processes</strong> &mdash; asli client requests yahi handle karte hain. Har worker <strong>single-threaded</strong> hota hai, lekin <strong>event-driven aur non-blocking</strong> (OS ka epoll/kqueue use karke) &mdash; isliye ek hi worker <strong>hazaaron concurrent connections</strong> ek saath handle kar leta hai, thread-per-request model ki tarah resource-heavy hue bina.</li>
+        </ul>
+        <div class="diagram"><span class="diagram-label">Master-Worker Model</span>
+<pre>Master Process (config read, workers manage karta hai)
+   │
+   ├── Worker Process 1  (event loop — 1000s connections handle)
+   ├── Worker Process 2  (event loop — 1000s connections handle)
+   └── Worker Process N  (usually CPU cores ke barabar)</pre>
+        </div>
+        <p>Yahi wajah hai ki Nginx bahut kam memory mein bhi <strong>C10k problem</strong> (10,000 concurrent connections) aasani se solve kar leta hai.</p>
+        <label class="mark-known"><input type="checkbox" class="know-check"> Mark as learned</label>
+      </div>
+    </article>
+
+    <article class="qa important" data-id="1-3">
+      <button class="qa-toggle"><span class="qa-q">Nginx vs Apache &mdash; kya farq hai?</span><span class="flag important">V.IMP</span><span class="qa-chevron">›</span></button>
+      <div class="qa-body">
+        <div class="table-wrap"><table>
+          <tr><th>#</th><th>Nginx</th><th>Apache</th></tr>
+          <tr><td><strong>Architecture</strong></td><td>Event-driven, async, single-threaded workers</td><td>Process/thread <strong>per connection</strong> (prefork/worker MPM)</td></tr>
+          <tr><td><strong>High concurrency</strong></td><td>Bahut acha handle karta hai (kam memory mein zyada connections)</td><td>Zyada connections pe har ek ke liye naya thread/process &mdash; memory zyada use hoti hai</td></tr>
+          <tr><td><strong>Static content</strong></td><td>Bahut fast</td><td>Comparatively slow</td></tr>
+          <tr><td><strong>Dynamic content</strong> (PHP etc.)</td><td>Khud process nahi karta &mdash; PHP-FPM/Node jaise external process ko forward karta hai</td><td>Built-in modules (<code>mod_php</code>) se directly process kar sakta hai</td></tr>
+          <tr><td><strong>Per-directory config</strong></td><td><code>.htaccess</code> support nahi karta &mdash; config change pe reload chahiye</td><td><code>.htaccess</code> se runtime pe per-folder override chalta hai</td></tr>
+          <tr><td><strong>Common use</strong></td><td>Reverse proxy / load balancer app servers ke aage</td><td>Standalone web/app server</td></tr>
+        </table></div>
+        <label class="mark-known"><input type="checkbox" class="know-check"> Mark as learned</label>
+      </div>
+    </article>
+
+    <article class="qa" data-id="1-4">
+      <button class="qa-toggle"><span class="qa-q">Nginx install kaise karte hain?</span><span class="qa-chevron">›</span></button>
+      <div class="qa-body">
+        <pre><code class="language-bash"># Ubuntu / Debian
+sudo apt update
+sudo apt install nginx
+
+# CentOS / RHEL
+sudo yum install nginx
+
+# Docker (bina system pe install kiye try karne ke liye)
+docker run -d -p 80:80 nginx
+
+# Install verify karo
+nginx -v</code></pre>
+        <p>Install hone ke baad browser mein <code>http://localhost</code> khol ke dekho &mdash; "Welcome to nginx!" page dikhna chahiye.</p>
+        <label class="mark-known"><input type="checkbox" class="know-check"> Mark as learned</label>
+      </div>
+    </article>
+
+    <article class="qa" data-id="1-5">
+      <button class="qa-toggle"><span class="qa-q">Common Nginx commands kya hain?</span><span class="qa-chevron">›</span></button>
+      <div class="qa-body">
+        <div class="table-wrap"><table>
+          <tr><th>Command</th><th>Kaam</th></tr>
+          <tr><td><code>nginx -v</code></td><td>Installed version dikhata hai</td></tr>
+          <tr><td><code>nginx -t</code></td><td>Config file ki <strong>syntax test</strong> karta hai &mdash; reload/restart se pehle hamesha yeh run karo</td></tr>
+          <tr><td><code>nginx -s reload</code></td><td>Config <strong>bina downtime ke</strong> reload karta hai (naye workers start, purane graceful shutdown)</td></tr>
+          <tr><td><code>nginx -s stop</code></td><td>Turant (fast) shutdown</td></tr>
+          <tr><td><code>nginx -s quit</code></td><td>Graceful shutdown &mdash; pehle chal rahi requests complete hone deta hai</td></tr>
+          <tr><td><code>systemctl start/stop/restart/status nginx</code></td><td>Linux (systemd) service ke roop mein manage karna</td></tr>
+        </table></div>
+        <label class="mark-known"><input type="checkbox" class="know-check"> Mark as learned</label>
+      </div>
+    </article>
+
+    <article class="qa important" data-id="1-6">
+      <button class="qa-toggle"><span class="qa-q">Configuration File Structure &mdash; events, http, server, location, listen, server_name, root, index, include</span><span class="flag important">V.IMP</span><span class="qa-chevron">›</span></button>
+      <div class="qa-body">
+        <p>Nginx ka main config file <strong><code>nginx.conf</code></strong> hota hai (Linux mein usually <code>/etc/nginx/nginx.conf</code>), jo <strong>nested blocks <code>{ }</code></strong> mein likha jaata hai.</p>
+        <pre><code class="language-nginx">events {
+  worker_connections 1024;      # ek worker kitne connections ek saath handle kare
+}
+
+http {
+  include       mime.types;     # file extension ko sahi Content-Type se map karta hai
+  sendfile      on;
+
+  server {
+    listen       80;                 # kis port pe yeh server sunega
+    server_name  example.com;        # kis domain(s) ke liye yeh block match hoga
+
+    root   /var/www/html;            # static files kahan se serve karni hain
+    index  index.html index.htm;     # folder request pe default file
+
+    location / {                     # '/' se shuru hone wale saare paths
+      try_files $uri $uri/ =404;
+    }
+
+    location /api/ {                 # sirf '/api/' wale paths ke liye
+      proxy_pass http://localhost:3000;  # Node.js backend ko reverse proxy
+    }
+  }
+}</code></pre>
+        <div class="table-wrap"><table>
+          <tr><th>Directive</th><th>Matlab</th><th>Real project mein example</th></tr>
+          <tr><td><code>events { }</code></td><td>Connection-processing settings (jaise <code>worker_connections</code>) &mdash; top-level pe sirf <strong>ek hi baar</strong> aata hai.</td><td>E-commerce site pe Diwali sale ke time 10,000 users ek saath aate hain &mdash; <code>worker_connections 1024;</code> set karke ek worker itne connections handle kar sake.</td></tr>
+          <tr><td><code>http { }</code></td><td>Saari <strong>HTTP-related</strong> settings aur ek ya zyada <code>server</code> blocks isi ke andar hote hain.</td><td>Company ka Nginx <code>blog.company.com</code> aur <code>api.company.com</code> dono host karta hai &mdash; gzip compression, mime types jaisi common settings ek hi baar <code>http{}</code> mein likhte hain, har site ke liye repeat nahi karte.</td></tr>
+          <tr><td><code>server { }</code></td><td>Ek <strong>virtual host</strong> define karta hai &mdash; ek domain/port ke liye rules. Ek <code>http{}</code> ke andar multiple <code>server{}</code> ho sakte hain (multiple sites).</td><td>Ek hi Nginx server pe 2 alag projects host karne hain &mdash; <code>myshop.com</code> (React frontend) aur <code>admin.myshop.com</code> (admin panel) &mdash; dono ke liye 2 alag <code>server{}</code> blocks.</td></tr>
+          <tr><td><code>location { }</code></td><td><code>server{}</code> ke andar, ek <strong>specific URL path</strong> ke liye rules (jaise <code>/</code> vs <code>/api/</code> alag treat karna).</td><td>React frontend <code>/</code> pe serve karo (static files), lekin <code>/api/</code> pe aane wali requests ko Node.js backend (port 3000) ko forward karo &mdash; do alag <code>location</code> blocks se.</td></tr>
+          <tr><td><code>listen</code></td><td>Kis <strong>port</strong> (aur optionally IP) pe yeh server sunega &mdash; jaise <code>listen 80;</code> ya <code>listen 443 ssl;</code>.</td><td>Normal HTTP traffic ke liye <code>listen 80;</code>, aur HTTPS (SSL certificate wali) site ke liye <code>listen 443 ssl;</code> &mdash; dono ek hi ya alag <code>server{}</code> mein.</td></tr>
+          <tr><td><code>server_name</code></td><td>Kaunse <strong>domain name(s)</strong> is server block se match karenge (jaise <code>example.com www.example.com</code>).</td><td><code>server_name myshop.com www.myshop.com;</code> &mdash; user chahe <code>www.</code> ke saath aaye ya bina, same server block use hoga.</td></tr>
+          <tr><td><code>root</code></td><td>File system ka wo <strong>path</strong> jahan se static files serve hongi.</td><td>React app <code>npm run build</code> karne ke baad jo <code>build/</code> folder banta hai, usko <code>root /var/www/myshop/build;</code> se point karte hain.</td></tr>
+          <tr><td><code>index</code></td><td>Jab koi folder request ho (jaise <code>/</code>) toh <strong>default file</strong> kaunsi serve karni hai (jaise <code>index.html</code>).</td><td>User sirf <code>myshop.com</code> khole (bina file name ke) toh <code>index index.html;</code> ki wajah se React/Vue SPA ka <code>index.html</code> entry point serve hota hai.</td></tr>
+          <tr><td><code>include</code></td><td>Dusri config file ko yahan <strong>include</strong> karna &mdash; jaise <code>include mime.types;</code> ya <code>include /etc/nginx/conf.d/*.conf;</code>, taaki config chhote, reusable files mein baant sakein.</td><td>Agency 5 different client sites host karti hai &mdash; har site ki apni config <code>conf.d/site1.conf</code>, <code>conf.d/site2.conf</code>... mein rakhte hain, aur main <code>nginx.conf</code> mein sirf <code>include /etc/nginx/conf.d/*.conf;</code> likh dete hain, sab automatically load ho jaate hain.</td></tr>
+        </table></div>
+        <label class="mark-known"><input type="checkbox" class="know-check"> Mark as learned</label>
+      </div>
+    </article>
+
+    <article class="qa important" data-id="1-7">
+      <button class="qa-toggle"><span class="qa-q">Configuration Hierarchy kya hai?</span><span class="flag important">V.IMP</span><span class="qa-chevron">›</span></button>
+      <div class="qa-body">
+        <p>Nginx config <strong>nested contexts</strong> mein chalta hai, aur settings <strong>upar se neeche inherit</strong> hoti hain &mdash; jab tak koi zyada specific context khud apna override na de.</p>
+        <div class="diagram"><span class="diagram-label">Hierarchy (Main → events/http → server → location)</span>
+<pre>Main context (global — worker_processes, user, pid, error_log)
+ ├── events { }
+ └── http { }                    ← http-level defaults (saare servers ke liye)
+       ├── server { }  (Site A)
+       │     ├── location / { }
+       │     └── location /api/ { }
+       └── server { }  (Site B)
+             └── location / { }</pre>
+        </div>
+        <p><strong>Inheritance rule:</strong> agar <code>http {}</code> block mein <code>gzip on;</code> likha hai, toh <strong>saare</strong> <code>server{}</code> blocks yeh setting automatically inherit kar lenge &mdash; jab tak koi specific <code>server{}</code> ya <code>location{}</code> khud <code>gzip off;</code> likh ke usko override na kare.</p>
+        <p><strong>Priority (zyada specific jeetega):</strong> <code>location</code> &gt; <code>server</code> &gt; <code>http</code> &gt; Main context.</p>
+        <label class="mark-known"><input type="checkbox" class="know-check"> Mark as learned</label>
+      </div>
+    </article>
+
+  </div>
+
+  <div class="chapter-recap">
+    <span class="recap-label">Quick Revision &mdash; Nginx Basics Summary</span>
+    <ul>
+      <li><strong>Nginx</strong> &mdash; web server + reverse proxy + load balancer + SSL termination; Node app ke aage laga dete hain.</li>
+      <li><strong>Architecture</strong> &mdash; ek Master process (config + workers manage) + kai Worker processes (event-driven, non-blocking, single-threaded, phir bhi 1000s connections handle).</li>
+      <li><strong>Nginx vs Apache</strong> &mdash; Nginx event-driven/async (high concurrency mein better); Apache process/thread-per-connection, <code>.htaccess</code> support karta hai.</li>
+      <li><strong>Install</strong> &mdash; <code>apt install nginx</code> (Ubuntu) / <code>yum install nginx</code> (CentOS) / Docker; verify <code>nginx -v</code>.</li>
+      <li><strong>Commands</strong> &mdash; <code>nginx -t</code> (test), <code>-s reload</code> (no downtime), <code>-s quit</code> (graceful stop), <code>-s stop</code> (fast stop).</li>
+      <li><strong>Config structure</strong> &mdash; <code>events{}</code> → <code>http{}</code> → <code>server{}</code> → <code>location{}</code>; directives: <code>listen</code>, <code>server_name</code>, <code>root</code>, <code>index</code>, <code>include</code>.</li>
+      <li><strong>Config hierarchy</strong> &mdash; settings upar se neeche inherit hoti hain; <code>location</code> &gt; <code>server</code> &gt; <code>http</code> priority mein jeetta hai.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<section class="chapter" id="ch2" data-title="Reverse Proxy & Backend">
+  <div class="chapter-head"><span class="chapter-num">02</span><h2>Reverse Proxy &amp; Backend</h2></div>
+  <div class="qa-list">
+
+    <article class="qa important" data-id="2-1">
+      <button class="qa-toggle"><span class="qa-q">Reverse Proxy kya hai?</span><span class="flag important">V.IMP</span><span class="qa-chevron">›</span></button>
+      <div class="qa-body">
+        <p>Reverse proxy ek server hai jo <strong>client aur backend ke beech</strong> baith kar client ki request ko backend tak forward karta hai, aur backend ka response wapas client ko de deta hai. Client ko pata hi nahi chalta ki asli kaam kaun sa server kar raha hai &mdash; usse sirf Nginx dikhta hai.</p>
+        <div class="diagram"><span class="diagram-label">Reverse Proxy Flow</span>
+<pre>Client (browser)
+    │  request → myshop.com
+    ▼
+Nginx (Reverse Proxy — port 80/443, public)
+    │  forward → localhost:3000
+    ▼
+Backend (Node.js app — port 3000, sirf internal, kabhi public expose nahi)</pre>
+        </div>
+
+        <h4 style="margin:1.2rem 0 .6rem;color:var(--accent)">Real project mein step-by-step kaam kaise karta hai</h4>
+        <p>Maan lo ek e-commerce project hai: <strong>React frontend</strong> + <strong>Node.js backend (port 3000)</strong> + <strong>MongoDB</strong>, sab ek hi AWS/DigitalOcean server pe deployed hai, domain <code>myshop.com</code> hai. User browser mein <code>myshop.com/api/products</code> khola &mdash; step-by-step yeh hota hai:</p>
+        <ol>
+          <li><strong>DNS lookup</strong> &mdash; browser <code>myshop.com</code> ko server ke <strong>public IP</strong> (jaise <code>65.2.10.5</code>) mein resolve karta hai.</li>
+          <li><strong>Request server tak pahunchti hai</strong> &mdash; us IP pe sirf ek hi process <strong>port 80/443 pe listen</strong> kar raha hota hai &mdash; wo hai <strong>Nginx</strong>. Node.js app kabhi bhi is public IP/port pe directly nahi sunta.</li>
+          <li><strong>Nginx match karta hai</strong> &mdash; apni config mein <code>server_name myshop.com</code> aur <code>location /api/</code> se match karke decide karta hai ki yeh request kahan bhejni hai.</li>
+          <li><strong>Internally forward hoti hai</strong> &mdash; <code>proxy_pass http://localhost:3000/;</code> ki wajah se Nginx <strong>usi machine ke andar hi</strong> (localhost, koi internet trip nahi) request ko Node app tak bhej deta hai, jo port 3000 pe internally sun raha tha.</li>
+          <li><strong>Backend apna kaam karta hai</strong> &mdash; Node app request ko normal Express route ki tarah handle karta hai, MongoDB se products fetch karta hai, JSON response taiyar karta hai.</li>
+          <li><strong>Response wapas Nginx se hoke jaata hai</strong> &mdash; Node app apna response Nginx ko deta hai, Nginx use client (browser) tak forward kar deta hai &mdash; client ko yeh pata hi nahi chalta ki beech mein Node.js tha, usse sirf <code>myshop.com</code> se response aaya dikhta hai.</li>
+        </ol>
+        <p>Isi wajah se production mein <strong>firewall rule</strong> hoti hai: port <strong>3000 sirf localhost se accessible</strong> ho, bahar se koi directly <code>myshop.com:3000</code> hit hi nahi kar sakta &mdash; sirf Nginx (jo usi machine pe hai) usse baat kar sakta hai. Yeh reverse proxy ka sabse bada <strong>security benefit</strong> hai.</p>
+
+        <h4 style="margin:1.2rem 0 .6rem;color:var(--accent)">Isi example ko asli API se connect karke dekho &mdash; Frontend + Backend + Nginx</h4>
+        <p><strong>1) Frontend (React)</strong> &mdash; products list mangwane ke liye:</p>
+        <pre><code class="language-javascript">// src/App.jsx
+function ProductList() {
+  const [products, setProducts] = useState([]);
+
+  useEffect(() => {
+    // Note: sirf '/api/products' — koi domain/port nahi likha!
+    // Kyunki frontend aur API dono "myshop.com" pe hi hain, browser khud current domain use kar lega
+    fetch('/api/products')
+      .then(res => res.json())
+      .then(data => setProducts(data));
+  }, []);
+
+  return products.map(p => <div key={p.id}>{p.name}</div>);
+}</code></pre>
+
+        <p><strong>2) Nginx</strong> &mdash; is request ko pakad ke backend ko forward karta hai:</p>
+        <pre><code class="language-nginx">server {
+  listen 80;
+  server_name myshop.com;
+
+  root /var/www/myshop/build;      # React build yahan se serve hoti hai
+  index index.html;
+
+  location / {
+    try_files $uri $uri/ /index.html;   # React app ke liye
+  }
+
+  location /api/ {
+    proxy_pass http://localhost:3000/;  # '/api/products' → backend ko '/products' milega
+  }
+}</code></pre>
+
+        <p><strong>3) Backend (Node.js + Express)</strong> &mdash; port 3000 pe internally chal raha hai:</p>
+        <pre><code class="language-javascript">// server.js (localhost:3000 pe chal raha hai, kabhi public expose nahi)
+const express = require('express');
+const app = express();
+
+app.get('/products', async (req, res) => {
+  const products = await Product.find(); // MongoDB se data fetch
+  res.json(products);
+});
+
+app.listen(3000, () => console.log('Backend running on port 3000'));</code></pre>
+
+        <p><strong>Poora connection samjho:</strong> Browser <code>fetch('/api/products')</code> call karta hai → yeh actually <code>myshop.com/api/products</code> pe jaata hai → Nginx <code>location /api/</code> se match karke <code>/api/</code> prefix hata ke sirf <code>/products</code> backend ko bhejta hai → Express ka <code>app.get('/products', ...)</code> route match hota hai → MongoDB se data leke JSON return karta hai → Nginx wahi response wapas browser ko de deta hai. <strong>Frontend ko backend ka port (3000) kabhi pata hi nahi chalta</strong> &mdash; usne sirf apne hi domain se ek relative URL call kiya.</p>
+
+        <p><strong>Aur bhi real project mein use:</strong></p>
+        <ul>
+          <li><strong>Security</strong> &mdash; backend (Node/Java app) kabhi directly internet pe expose nahi hota, sirf Nginx public hota hai; backend ka port firewall se block rehta hai.</li>
+          <li><strong>SSL termination</strong> &mdash; HTTPS certificate sirf Nginx pe lagta hai, backend simple HTTP pe hi chalta rehta hai &mdash; certificate manage karna ek hi jagah.</li>
+          <li><strong>Load balancing</strong> &mdash; ek hi Nginx, Node app ke <strong>3-4 instances</strong> (port 3001, 3002, 3003) ke beech traffic baant sakta hai.</li>
+          <li><strong>Multiple apps, ek hi domain</strong> &mdash; jaise <code>myshop.com/</code> pe React app, <code>myshop.com/api/</code> pe Node backend, <code>myshop.com/admin/</code> pe alag admin app &mdash; sab alag services hone ke bawajood user ko ek hi domain dikhta hai.</li>
+        </ul>
+        <label class="mark-known"><input type="checkbox" class="know-check"> Mark as learned</label>
+      </div>
+    </article>
+
+    <article class="qa important" data-id="2-2">
+      <button class="qa-toggle"><span class="qa-q">proxy_pass kaise use karte hain?</span><span class="flag important">V.IMP</span><span class="qa-chevron">›</span></button>
+      <div class="qa-body">
+        <p><strong><code>proxy_pass</code></strong> directive batata hai ki request ko <strong>kahan forward</strong> karna hai &mdash; kis backend server/port pe.</p>
+        <pre><code class="language-nginx">location /api/ {
+  proxy_pass http://localhost:3000/;   # yahan aane wali request Node app ko forward
+}</code></pre>
+        <p><strong>Real project mein use:</strong> React frontend build folder <code>root</code> se serve hoti hai, aur <code>/api/</code> se shuru hone wali sabhi requests (jaise <code>/api/users</code>, <code>/api/orders</code>) is directive se Node.js backend (port 3000) ko forward ho jaati hain.</p>
+        <p><strong>Interview gotcha (trailing slash):</strong></p>
+        <div class="table-wrap"><table>
+          <tr><th>Config</th><th>Request</th><th>Backend ko jaata hai</th></tr>
+          <tr><td><code>location /api/ { proxy_pass http://localhost:3000/; }</code></td><td><code>/api/users</code></td><td><code>/users</code> (<code>/api/</code> prefix <strong>hat gaya</strong>)</td></tr>
+          <tr><td><code>location /api/ { proxy_pass http://localhost:3000; }</code></td><td><code>/api/users</code></td><td><code>/api/users</code> (poora path <strong>as-is</strong> gaya)</td></tr>
+        </table></div>
+        <p>Yeh farq bahut common bug ka reason banta hai real projects mein &mdash; <code>proxy_pass</code> ke end mein <code>/</code> hai ya nahi, isse backend route match hoga ya 404 aayega.</p>
+        <label class="mark-known"><input type="checkbox" class="know-check"> Mark as learned</label>
+      </div>
+    </article>
+
+    <article class="qa important" data-id="2-3">
+      <button class="qa-toggle"><span class="qa-q">proxy_set_header, X-Real-IP aur X-Forwarded-For kya hain?</span><span class="flag important">V.IMP</span><span class="qa-chevron">›</span></button>
+      <div class="qa-body">
+        <p><strong>Problem:</strong> Nginx jab request backend ko forward karta hai, backend ko lagta hai request <strong>Nginx se</strong> aa rahi hai (<code>127.0.0.1</code>) &mdash; asli client ka IP/domain/protocol kho jaata hai.</p>
+        <pre><code class="language-nginx">location /api/ {
+  proxy_pass http://localhost:3000/;
+
+  proxy_set_header Host $host;                            # original domain
+  proxy_set_header X-Real-IP $remote_addr;                # client ka asli IP
+  proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for; # proxy chain ki IP list
+  proxy_set_header X-Forwarded-Proto $scheme;              # http ya https
+}</code></pre>
+
+        <div class="table-wrap"><table>
+          <tr><th>Header</th><th>Without (nahi set kiya toh)</th><th>With (set karne pe)</th></tr>
+          <tr><td><code>Host</code></td><td>Backend ko domain <code>localhost</code> dikhega</td><td>Backend ko asli domain (<code>myshop.com</code>) pata chalta hai</td></tr>
+          <tr><td><code>X-Real-IP</code></td><td>Sabka IP Nginx ka <code>127.0.0.1</code> dikhega</td><td>Har client ka apna real IP dikhta hai</td></tr>
+          <tr><td><code>X-Forwarded-For</code></td><td>Poori proxy chain ka pata nahi chalta</td><td>Client → CDN → Nginx, poori IP chain milti hai</td></tr>
+          <tr><td><code>X-Forwarded-Proto</code></td><td>Backend sochta hai request hamesha HTTP thi</td><td>Backend ko pata chalta hai client ne HTTPS use kiya tha</td></tr>
+        </table></div>
+
+        <p><strong>Real example (login rate limiting):</strong> Rule hai &mdash; "1 IP se 5 galat password attempts ke baad block karo".</p>
+        <ul>
+          <li><strong>Without</strong> <code>X-Real-IP</code> &mdash; <code>req.socket.remoteAddress</code> saare users ke liye <code>127.0.0.1</code> deta hai → 1 attacker block hua matlab <strong>sabhi users</strong> block ho gaye.</li>
+          <li><strong>With</strong> <code>X-Real-IP</code> &mdash; <code>req.headers['x-real-ip']</code> har user ka <strong>apna</strong> real IP deta hai → sirf attacker block hota hai, baaki sab normally login karte hain.</li>
+        </ul>
+        <label class="mark-known"><input type="checkbox" class="know-check"> Mark as learned</label>
+      </div>
+    </article>
+
+    <article class="qa" data-id="2-4">
+      <button class="qa-toggle"><span class="qa-q">Proxy Timeout settings kya hain?</span><span class="qa-chevron">›</span></button>
+      <div class="qa-body">
+        <p>Backend se response aane mein kitna time lagne dena hai, uske liye timeouts set karte hain &mdash; zyada lamba wait karna server resources block kar deta hai, bahut chhota timeout genuine slow requests ko todh deta hai.</p>
+        <div class="table-wrap"><table>
+          <tr><th>Directive</th><th>Kis cheez ka max time</th></tr>
+          <tr><td><code>proxy_connect_timeout</code></td><td>Nginx ko backend se <strong>TCP connection banane</strong> mein kitna time lage</td></tr>
+          <tr><td><code>proxy_send_timeout</code></td><td>Nginx ko backend ko <strong>request bhejne</strong> mein kitna time lage</td></tr>
+          <tr><td><code>proxy_read_timeout</code></td><td>Backend se <strong>response wapas aane</strong> mein kitna time lage &mdash; yeh wala sabse zyada matter karta hai</td></tr>
+        </table></div>
+
+        <h4 style="margin:1.2rem 0 .6rem;color:var(--accent)">Real problem, step-by-step</h4>
+        <p>Ek route hai <code>/api/reports/generate</code> jo DB se bahut saara data nikaal ke ek <strong>PDF report</strong> banata hai &mdash; isme <strong>90 seconds</strong> lagte hain. Nginx ka <code>proxy_read_timeout</code> default <strong>60 seconds</strong> hota hai. Kya hota hai:</p>
+        <ol>
+          <li>Client request bhejta hai <code>/api/reports/generate</code> pe.</li>
+          <li>Nginx use backend ko forward karta hai, aur response ka wait karna shuru karta hai.</li>
+          <li>Backend andar hi andar report generate karne mein busy hai (DB query + PDF banana chal raha hai).</li>
+          <li><strong>60th second pe</strong> &mdash; Nginx ka dhairya khatam ho jaata hai, wo maan leta hai backend "mar gaya/atak gaya", aur client ko <strong>504 Gateway Timeout</strong> bhej deta hai.</li>
+          <li>Lekin backend ko yeh pata hi nahi ki Nginx ne client ko error de diya &mdash; wo <strong>abhi bhi kaam kar raha hai</strong> (30 seconds aur), aur report complete hone ke baad response bhejta hai jo <strong>kahin nahi jaata</strong> (client already error dekh chuka, connection band ho chuka) &mdash; server ka kaam <strong>waste</strong> gaya.</li>
+        </ol>
+        <div class="diagram"><span class="diagram-label">Timeline &mdash; kya galat hua</span>
+<pre>0s -------------------- 60s -------- 90s
+|                         |            |
+Client request       Nginx timeout    Backend actually
+bheja                (504 error       finish karta hai
+                       client ko)     (par response waste — connection band ho chuka)</pre>
+        </div>
+
+        <h4 style="margin:1.2rem 0 .6rem;color:var(--accent)">Fix &mdash; sirf usi slow route ke liye timeout badhao</h4>
+        <p>Poore server ka timeout badhana <strong>galat approach</strong> hai &mdash; agar koi normal API (jaise <code>/api/login</code>) kabhi hang ho jaaye (backend bug, DB slow), toh Nginx use bhi 120 seconds tak pakde rahega, jisse ek slow request Nginx ka <strong>worker connection slot</strong> zyada der block karke rakhega. Isliye sirf us specific route ke liye alag <code>location</code> block banate hain:</p>
+        <pre><code class="language-nginx">server {
+  # Normal APIs — default timeout theek hai (fast fail agar backend hang ho)
+  location /api/ {
+    proxy_pass http://localhost:3000/;
+    proxy_read_timeout 30s;
+  }
+
+  # Sirf heavy report route ke liye — zyada time do
+  location /api/reports/ {
+    proxy_pass http://localhost:3000/reports/;
+    proxy_read_timeout 120s;   # 90s se zyada, safe margin ke saath
+  }
+}</code></pre>
+        <p>Nginx <strong>zyada specific <code>location</code></strong> (<code>/api/reports/</code>) ko priority deta hai <code>/api/</code> ke upar &mdash; isliye sirf report wala route hi lamba wait karega, baaki saari APIs pe fast-fail (30s) protection bana rahega.</p>
+        <label class="mark-known"><input type="checkbox" class="know-check"> Mark as learned</label>
+      </div>
+    </article>
+
+    <article class="qa important" data-id="2-5">
+      <button class="qa-toggle"><span class="qa-q">Nginx + Backend &mdash; poora real project setup ek example mein</span><span class="flag important">V.IMP</span><span class="qa-chevron">›</span></button>
+      <div class="qa-body">
+        <p>Ek typical <strong>React frontend + Node.js backend</strong> project ka production Nginx config &mdash; upar wale saare concepts (reverse proxy, proxy_pass, headers, timeout) ek jagah:</p>
+        <pre><code class="language-nginx">server {
+  listen 80;
+  server_name myshop.com www.myshop.com;
+
+  # 1) React frontend — static build seedhe Nginx hi serve karta hai
+  root /var/www/myshop/build;
+  index index.html;
+
+  location / {
+    try_files $uri $uri/ /index.html;   # React Router ke liye — SPA fallback
+  }
+
+  # 2) Node.js backend — /api/ wali requests reverse proxy se forward
+  location /api/ {
+    proxy_pass http://localhost:3000/;
+
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+
+    proxy_connect_timeout 5s;
+    proxy_read_timeout    30s;
+  }
+}</code></pre>
+        <p>Isi ek config se: static frontend fast serve hota hai (Nginx directly), API calls Node backend ko forward hoti hain (client ka IP/domain preserve karte hue), aur slow backend routes ke liye timeout bhi control mein rehta hai.</p>
+        <label class="mark-known"><input type="checkbox" class="know-check"> Mark as learned</label>
+      </div>
+    </article>
+
+  </div>
+
+  <div class="chapter-recap">
+    <span class="recap-label">Quick Revision &mdash; Reverse Proxy Summary</span>
+    <ul>
+      <li><strong>Reverse Proxy</strong> &mdash; client aur backend ke beech baithta hai; backend ko hide/protect karta hai, SSL/load-balancing ek jagah manage hoti hai.</li>
+      <li><strong>proxy_pass</strong> &mdash; request ko backend server tak forward karta hai; trailing <code>/</code> se path prefix strip hota hai ya nahi, dhyan rakho.</li>
+      <li><strong>proxy_set_header</strong> &mdash; backend ko original request info (Host, IP, protocol) bhejta hai, warna sab kho jaata hai.</li>
+      <li><strong>X-Real-IP</strong> &mdash; client ka asli IP; <strong>X-Forwarded-For</strong> &mdash; poori proxy chain ki IP list.</li>
+      <li><strong>Real use</strong> &mdash; in headers ke bina rate limiting/IP logging backend mein tootl jaati hai, kyunki sab requests Nginx ke IP se aati dikhengi.</li>
+      <li><strong>Proxy Timeout</strong> (<code>proxy_connect/send/read_timeout</code>) &mdash; slow backend routes (jaise report generation) ko 504 Gateway Timeout se bachate hain.</li>
+      <li><strong>Nginx + Backend</strong> &mdash; ek hi server block mein React static files + Node API reverse proxy dono ek saath common pattern hai.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<section class="chapter" id="ch3" data-title="Phase 3 — SSL / HTTPS">
+  <div class="chapter-head"><span class="chapter-num">P3</span><h2>Phase 3 &mdash; SSL / HTTPS</h2></div>
+  <div class="qa-list">
+
+    <article class="qa important" data-id="3-1">
+      <button class="qa-toggle"><span class="qa-q">HTTP vs HTTPS &mdash; kya farq hai?</span><span class="flag important">V.IMP</span><span class="qa-chevron">›</span></button>
+      <div class="qa-body">
+        <div class="table-wrap"><table>
+          <tr><th>#</th><th>HTTP</th><th>HTTPS</th></tr>
+          <tr><td><strong>Data</strong></td><td>Plain text mein jaata hai</td><td><strong>Encrypted</strong> (TLS) hota hai</td></tr>
+          <tr><td><strong>Port</strong></td><td>80</td><td>443</td></tr>
+          <tr><td><strong>Security</strong></td><td>Wifi/network pe koi bhi data intercept (MITM attack) kar sakta hai</td><td>Encryption ki wajah se data beech mein padha nahi ja sakta</td></tr>
+          <tr><td><strong>Browser</strong></td><td>"Not Secure" warning dikhata hai</td><td>Padlock icon dikhata hai</td></tr>
+          <tr><td><strong>SEO / Trust</strong></td><td>Google ranking mein niche, users trust nahi karte</td><td>Google HTTPS sites ko rank mein priority deta hai</td></tr>
+        </table></div>
+        <h4 style="margin:1.2rem 0 .6rem;color:var(--accent)">Real scenario, step-by-step</h4>
+        <p>Maan lo user ek <strong>public cafe wifi</strong> pe baith ke <code>myshop.com</code> pe login kar raha hai, username/password submit karta hai. Ek attacker <strong>usi wifi network</strong> pe hai aur traffic sniff kar raha hai (packet capture tool se):</p>
+        <ol>
+          <li><strong>Without HTTPS (plain HTTP):</strong> Login request network pe <strong>plain text</strong> mein jaati hai &mdash; <code>username=shiva&password=12345</code> jaisa data <strong>as-is readable</strong> hota hai. Attacker packet capture karke seedha password padh leta hai.</li>
+          <li><strong>With HTTPS:</strong> Wahi request <strong>encrypted bytes</strong> mein jaati hai (jaise <code>a3f9e7...</code>) &mdash; attacker packet capture toh kar sakta hai, lekin usme se actual password <strong>nikaal nahi sakta</strong>, kyunki sirf server ke paas hi decrypt karne ki key hoti hai.</li>
+        </ol>
+        <p><strong>Real project mein use:</strong> Login form, payment page, ya koi bhi sensitive data (password, card number) bhejne wala page <strong>hamesha HTTPS</strong> pe hona chahiye &mdash; isi wajah se.</p>
+        <label class="mark-known"><input type="checkbox" class="know-check"> Mark as learned</label>
+      </div>
+    </article>
+
+    <article class="qa important" data-id="3-2">
+      <button class="qa-toggle"><span class="qa-q">SSL/TLS kya hai?</span><span class="flag important">V.IMP</span><span class="qa-chevron">›</span></button>
+      <div class="qa-body">
+        <p><strong>SSL</strong> (Secure Sockets Layer) purana naam hai, <strong>TLS</strong> (Transport Layer Security) uska current/modern version hai &mdash; industry mein dono ko commonly "SSL" hi bola jaata hai.</p>
+        <p>Yeh protocol client aur server ke beech ek <strong>encrypted connection</strong> banata hai, taaki data transit mein safe rahe.</p>
+        <div class="diagram"><span class="diagram-label">TLS Handshake (simplified)</span>
+<pre>1. Client → Server: "Hello, HTTPS se connect karna hai"
+2. Server → Client: apna SSL certificate bhejta hai (public key ke saath)
+3. Client: certificate ko trusted CA list se verify karta hai
+4. Client aur Server: ek shared "session key" secretly agree kar lete hain
+5. Ab dono taraf ka data isi session key se encrypt/decrypt hota hai</pre>
+        </div>
+        <p><strong>Real project mein use:</strong> Jab bhi <code>https://myshop.com</code> khulta hai, browser aur server ke beech yeh poora handshake milliseconds mein ho jaata hai, uske baad hi actual page data (encrypted) transfer hota hai.</p>
+        <label class="mark-known"><input type="checkbox" class="know-check"> Mark as learned</label>
+      </div>
+    </article>
+
+    <article class="qa" data-id="3-3">
+      <button class="qa-toggle"><span class="qa-q">SSL Certificates kya hote hain?</span><span class="qa-chevron">›</span></button>
+      <div class="qa-body">
+        <p>SSL certificate ek <strong>digital file</strong> hai jo prove karti hai ki ek domain ka asli owner kaun hai, aur usme server ki <strong>public key</strong> hoti hai. Isse ek trusted <strong>Certificate Authority (CA)</strong> issue karti hai (jaise Let's Encrypt, DigiCert).</p>
+        <p>Nginx ko HTTPS chalane ke liye <strong>2 files</strong> chahiye:</p>
+        <ul>
+          <li><strong>Certificate</strong> (<code>.crt</code> / <code>.pem</code>) &mdash; public, domain aur CA ki details.</li>
+          <li><strong>Private Key</strong> (<code>.key</code>) &mdash; secret, <strong>kabhi kisi ke saath share nahi</strong> karte, server pe hi rehti hai.</li>
+        </ul>
+        <div class="table-wrap"><table>
+          <tr><th>Type</th><th>Verification level</th><th>Real use</th></tr>
+          <tr><td><strong>DV</strong> (Domain Validated)</td><td>Bas domain ownership check hoti hai</td><td>Most common, free (Let's Encrypt) &mdash; blogs, startups, small business sites</td></tr>
+          <tr><td><strong>OV</strong> (Organization Validated)</td><td>Company ki details bhi verify hoti hain</td><td>Business websites jinhe thoda zyada trust dikhana ho</td></tr>
+          <tr><td><strong>EV</strong> (Extended Validation)</td><td>Deep legal/business verification</td><td>Banks, payment gateways &mdash; sabse zyada trust</td></tr>
+        </table></div>
+        <h4 style="margin:1.2rem 0 .6rem;color:var(--accent)">Real scenario &mdash; certificate na ho ya galat ho toh?</h4>
+        <ul>
+          <li><strong>Without valid certificate:</strong> Browser ek bada <strong>"Your connection is not private"</strong> warning page dikhata hai, user ko "Proceed anyway" jaisa daravana option milta hai &mdash; 90%+ users yahin se site chhod dete hain. E-commerce ke liye yeh <strong>seedha sales loss</strong> hai.</li>
+          <li><strong>With valid certificate:</strong> Browser chup-chaap padlock icon dikhata hai, user ko kuch pata hi nahi chalta ki peeche kitna kaam hua &mdash; site bilkul normally khulti hai.</li>
+        </ul>
+        <label class="mark-known"><input type="checkbox" class="know-check"> Mark as learned</label>
+      </div>
+    </article>
+
+    <article class="qa important" data-id="3-4">
+      <button class="qa-toggle"><span class="qa-q">Nginx mein HTTPS Configuration kaise karte hain?</span><span class="flag important">V.IMP</span><span class="qa-chevron">›</span></button>
+      <div class="qa-body">
+        <pre><code class="language-nginx">server {
+  listen 443 ssl;
+  server_name myshop.com www.myshop.com;
+
+  ssl_certificate     /etc/letsencrypt/live/myshop.com/fullchain.pem;  # certificate
+  ssl_certificate_key /etc/letsencrypt/live/myshop.com/privkey.pem;    # private key
+
+  root /var/www/myshop/build;
+  index index.html;
+
+  location / {
+    try_files $uri $uri/ /index.html;
+  }
+}</code></pre>
+        <p><strong>Without</strong> yeh 2 lines (<code>ssl_certificate</code> / <code>ssl_certificate_key</code>) sahi set kiye &mdash; Nginx <code>listen 443 ssl;</code> pe <strong>start hi nahi hoga</strong>, config test (<code>nginx -t</code>) fail ho jaayega ("cannot load certificate" error).</p>
+        <p><strong>With</strong> sahi paths &mdash; Nginx start hota hai, browser <code>https://myshop.com</code> pe request bhejta hai, Nginx apna certificate present karta hai, browser verify karke padlock dikhata hai.</p>
+        <p><strong>Real project mein use:</strong> <code>ssl_certificate</code> aur <code>ssl_certificate_key</code> ka path Let's Encrypt (ya jis bhi CA se cert liya hai) ke diye gaye files ki taraf point karta hai.</p>
+        <label class="mark-known"><input type="checkbox" class="know-check"> Mark as learned</label>
+      </div>
+    </article>
+
+    <article class="qa important" data-id="3-5">
+      <button class="qa-toggle"><span class="qa-q">HTTP → HTTPS Redirect kaise karte hain?</span><span class="flag important">V.IMP</span><span class="qa-chevron">›</span></button>
+      <div class="qa-body">
+        <p>Agar koi user galti se <code>http://myshop.com</code> type kare (bina <code>s</code> ke), toh use automatically <strong>HTTPS pe redirect</strong> kar dena chahiye, taaki wo kabhi bhi unencrypted connection pe na rahe.</p>
+        <pre><code class="language-nginx">server {
+  listen 80;
+  server_name myshop.com www.myshop.com;
+
+  return 301 https://$host$request_uri;   # permanent redirect HTTP → HTTPS
+}</code></pre>
+        <p><strong>Without</strong> is redirect ke &mdash; agar site HTTPS pe bhi ready hai, tab bhi jo user <code>http://myshop.com</code> type karega wo <strong>plain HTTP pe hi rahega</strong> (jab tak khud manually <code>https://</code> na likhe) &mdash; matlab HTTPS lagane ka fayda uss user ko milega hi nahi.</p>
+        <p><strong>With</strong> redirect &mdash; koi bhi <code>http://</code> request aaye, Nginx turant <code>301</code> bhej deta hai, browser khud <code>https://myshop.com</code> pe dobara request karta hai &mdash; user ko pata bhi nahi chalta, wo seedha secure version pe pahunch jaata hai.</p>
+        <p><strong>Real project mein use:</strong> Port 80 (HTTP) pe ek chhota sa server block sirf redirect ke liye rakhte hain; asli website 443 (HTTPS) wale server block mein serve hoti hai. <code>301</code> (permanent redirect) use karte hain taaki browsers/search engines ise yaad rakhein aur baar-baar redirect na maangein.</p>
+        <label class="mark-known"><input type="checkbox" class="know-check"> Mark as learned</label>
+      </div>
+    </article>
+
+    <article class="qa important" data-id="3-6">
+      <button class="qa-toggle"><span class="qa-q">Let's Encrypt aur Certbot kya hain?</span><span class="flag important">V.IMP</span><span class="qa-chevron">›</span></button>
+      <div class="qa-body">
+        <p><strong>Let's Encrypt</strong> ek <strong>free, automated, open</strong> Certificate Authority hai &mdash; koi bhi domain ke liye free DV certificate issue karti hai (90 din valid).</p>
+        <p><strong>Certbot</strong> Let's Encrypt ka official tool hai jo certificate obtain karna <strong>aur</strong> Nginx config khud update karna &mdash; dono automate kar deta hai.</p>
+        <pre><code class="language-bash"># Certbot install karo (Nginx plugin ke saath)
+sudo apt install certbot python3-certbot-nginx
+
+# Certificate issue karo aur Nginx config khud-b-khud set karo
+sudo certbot --nginx -d myshop.com -d www.myshop.com</code></pre>
+        <p><strong>Without Certbot</strong> (purana/manual tarika): paid CA se certificate <strong>khareedna</strong>, CSR (Certificate Signing Request) manually generate karna, files download karke server pe upload karna, Nginx config khud edit karna, aur redirect bhi khud likhna &mdash; sab manual, error-prone, aur paisa lagta hai.</p>
+        <p><strong>With Certbot</strong> &mdash; sirf ek command: <code>certbot --nginx -d myshop.com</code>. Yeh khud hi certificate generate karta hai, <code>ssl_certificate</code>/<code>ssl_certificate_key</code> lines Nginx config mein add kar deta hai, <strong>aur</strong> HTTP→HTTPS redirect bhi khud set kar deta hai &mdash; upar ke 2 steps (config + redirect) manually likhne ki zaroorat hi nahi padti, aur bilkul <strong>free</strong> hai.</p>
+        <p><strong>Real project mein use:</strong> Isi wajah se real projects mein certbot hi standard tarika hai &mdash; manual SSL setup ab bahut kam hota hai.</p>
+        <label class="mark-known"><input type="checkbox" class="know-check"> Mark as learned</label>
+      </div>
+    </article>
+
+    <article class="qa" data-id="3-7">
+      <button class="qa-toggle"><span class="qa-q">SSL Renewal kaise hoti hai?</span><span class="qa-chevron">›</span></button>
+      <div class="qa-body">
+        <p>Let's Encrypt certificates sirf <strong>90 din</strong> ke liye valid hote hain (security ke liye jaan-boojh kar short rakhe gaye hain) &mdash; agar renew na karo toh site achanak "Not Secure" ho jaati hai ya HTTPS completely break ho jaata hai.</p>
+        <pre><code class="language-bash"># Renewal check karo (jinki expiry 30 din se kam bachi hai, wahi renew honge)
+sudo certbot renew
+
+# Bina asli renew kiye test karo ki renewal kaam karega ya nahi
+sudo certbot renew --dry-run</code></pre>
+        <div class="diagram"><span class="diagram-label">Without auto-renewal vs With auto-renewal</span>
+<pre>WITHOUT auto-renewal
+  Day 1: Certificate issue hua (90 din valid)
+  Day 90: Koi renew nahi kiya (bhool gaye)
+  Day 91: Certificate EXPIRE — site achanak "Not Secure" / HTTPS error
+          → production down, emergency fix karni padti hai, users trust khote hain
+
+WITH auto-renewal (cron/systemd timer)
+  Day 1: Certificate issue hua
+  Har din 2 baar: 'certbot renew' khud check karta hai
+  Day 60: "abhi 30 din se zyada bache hain" → kuch nahi karta
+  Day 61: "ab 30 din se kam bache hain" → khud renew kar deta hai
+  Day 91: Naya certificate pehle se active — koi downtime nahi</pre>
+        </div>
+        <p><strong>Real project mein use:</strong> Certbot install karte hi ek <strong>cron job / systemd timer</strong> khud-b-khud set ho jaata hai jo din mein 2 baar renewal check karta hai &mdash; isliye production mein <strong>manually kabhi renew yaad nahi rakhna padta</strong>, sab automatic hota hai. Interview mein zyada tar yehi pucha jaata hai: <em>"agar site achanak HTTPS error dene lage toh sabse pehle kya check karoge?"</em> &mdash; jawab: <code>certbot certificates</code> se expiry date check karo.</p>
+        <label class="mark-known"><input type="checkbox" class="know-check"> Mark as learned</label>
+      </div>
+    </article>
+
+  </div>
+
+  <div class="chapter-recap">
+    <span class="recap-label">Quick Revision &mdash; SSL/HTTPS Summary</span>
+    <ul>
+      <li><strong>HTTP vs HTTPS</strong> &mdash; HTTPS encrypted (TLS) hai, port 443; HTTP plain text, port 80, MITM attack ka risk.</li>
+      <li><strong>SSL/TLS</strong> &mdash; handshake ke through client-server ek encrypted connection banate hain; "SSL" aur "TLS" commonly same cheez ke liye bole jaate hain.</li>
+      <li><strong>SSL Certificate</strong> &mdash; CA se milta hai, domain ownership + public key prove karta hai; Nginx ko certificate + private key dono chahiye.</li>
+      <li><strong>HTTPS Config</strong> &mdash; <code>listen 443 ssl;</code> + <code>ssl_certificate</code> + <code>ssl_certificate_key</code>.</li>
+      <li><strong>HTTP → HTTPS Redirect</strong> &mdash; port 80 wale server block mein <code>return 301 https://$host$request_uri;</code>.</li>
+      <li><strong>Let's Encrypt</strong> &mdash; free automated CA; <strong>Certbot</strong> &mdash; certificate issue + Nginx config + redirect, sab ek command se automate karta hai.</li>
+      <li><strong>SSL Renewal</strong> &mdash; Let's Encrypt certs 90 din valid; <code>certbot renew</code> aur auto-renewal cron/systemd timer se production mein manual kaam nahi karna padta.</li>
+    </ul>
+  </div>
+</section>
+
+  </div>
+
+  <footer>
+    Nginx basics &mdash; web server, reverse proxy aur load balancer ke fundamentals, interview-prep format mein. Progress aur learned-status is browser mein locally save hota hai.
+  </footer>
+</main>
+</div>
+
+<script>
+hljs.highlightAll();
+
+const chapters = Array.from(document.querySelectorAll('.chapter'));
+const qas = Array.from(document.querySelectorAll('.qa'));
+const STORAGE_KEY = 'nginx-notes-progress-v1';
+
+function loadProgress(){
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; }
+  catch(e){ return {}; }
+}
+function saveProgress(data){
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); } catch(e){}
+}
+let progress = loadProgress();
+
+function updateProgressUI(){
+  const total = qas.length;
+  const done = Object.values(progress).filter(Boolean).length;
+  document.getElementById('progressLabel').textContent = done + ' / ' + total;
+  document.getElementById('progressFill').style.width = (total ? (done/total*100) : 0) + '%';
+}
+
+function updateStats(){
+  const total = qas.length;
+  const impCount = qas.filter(qa => qa.classList.contains('important')).length;
+  document.getElementById('statsLine').textContent = chapters.length + ' chapter · ' + total + ' questions';
+  document.getElementById('impCount').textContent = '(' + impCount + ')';
+}
+updateStats();
+
+qas.forEach(qa => {
+  const id = qa.dataset.id;
+  const check = qa.querySelector('.know-check');
+  if (progress[id]) { check.checked = true; qa.classList.add('learned'); }
+  check.addEventListener('change', (e) => {
+    e.stopPropagation();
+    progress[id] = check.checked;
+    qa.classList.toggle('learned', check.checked);
+    saveProgress(progress);
+    updateProgressUI();
+    buildNav();
+  });
+  const toggleBtn = qa.querySelector('.qa-toggle');
+  toggleBtn.addEventListener('click', () => {
+    const open = qa.dataset.open === 'true';
+    qa.dataset.open = open ? 'false' : 'true';
+    toggleBtn.setAttribute('aria-expanded', String(!open));
+  });
+});
+updateProgressUI();
+
+document.getElementById('expandAllBtn').addEventListener('click', () => {
+  qas.forEach(qa => { if(qa.style.display !== 'none'){ qa.dataset.open = 'true'; } });
+});
+document.getElementById('collapseAllBtn').addEventListener('click', () => {
+  qas.forEach(qa => { qa.dataset.open = 'false'; });
+});
+
+function buildNav(){
+  const nav = document.getElementById('chapterNav');
+  nav.innerHTML = '';
+  chapters.forEach((ch, i) => {
+    const list = ch.querySelectorAll('.qa');
+    const done = Array.from(list).filter(qa => progress[qa.dataset.id]).length;
+    const a = document.createElement('a');
+    a.href = '#' + ch.id;
+    a.innerHTML = '<span class="n">' + String(i+1).padStart(2,'0') + '</span>'
+      + '<span class="title">' + ch.dataset.title + '</span>'
+      + '<span class="count">' + done + '/' + list.length + '</span>';
+    nav.appendChild(a);
+  });
+}
+buildNav();
+
+const searchInput = document.getElementById('searchInput');
+const importantOnly = document.getElementById('importantOnly');
+const noResults = document.getElementById('noResults');
+
+function applyFilters(){
+  const q = searchInput.value.trim().toLowerCase();
+  const impOnly = importantOnly.checked;
+  let anyVisible = false;
+
+  chapters.forEach(ch => {
+    let chapterHasVisible = false;
+    ch.querySelectorAll('.qa').forEach(qa => {
+      const text = qa.textContent.toLowerCase();
+      const matchesSearch = !q || text.includes(q);
+      const matchesImportant = !impOnly || qa.classList.contains('important');
+      const visible = matchesSearch && matchesImportant;
+      qa.style.display = visible ? '' : 'none';
+      if (visible) chapterHasVisible = true;
+    });
+    ch.style.display = chapterHasVisible ? '' : 'none';
+    if (chapterHasVisible) anyVisible = true;
+  });
+
+  noResults.style.display = anyVisible ? 'none' : 'block';
+}
+searchInput.addEventListener('input', applyFilters);
+importantOnly.addEventListener('change', applyFilters);
+</script>
+</body>
+</html>
