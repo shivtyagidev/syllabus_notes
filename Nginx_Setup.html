@@ -944,11 +944,63 @@ bheja                (504 error       finish karta hai
 <!-- ============================================================ -->
 <section class="chapter" id="ch3" data-title="Phase 3 — SSL / HTTPS">
   <div class="chapter-head"><span class="chapter-num">P3</span><h2>Phase 3 &mdash; SSL / HTTPS</h2></div>
+
+  <div class="chapter-recap" style="margin-bottom:22px;">
+    <span class="recap-label">Poora Concept Ek Saath &mdash; Simple Flow (Segregated)</span>
+
+    <p><strong>1. Problem:</strong> Normal <code>HTTP</code> (port <strong>80</strong>) mein data <strong>plain text</strong> mein jaata hai &mdash; koi bhi beech mein baithke (jaise cafe wifi pe) password/card number seedha padh sakta hai. Browser aise site ko <strong>"Not Secure"</strong> bhi dikhata hai.</p>
+
+    <p><strong>2. Solution &mdash; HTTPS:</strong> <code>HTTPS</code> (port <strong>443</strong>) wahi data <strong>SSL/TLS</strong> se <strong>encrypt (lock)</strong> karke bhejta hai. <strong>SSL</strong> purana naam hai, <strong>TLS</strong> current version &mdash; dono ko commonly "SSL" hi bolte hain. Browser padlock 🔒 dikhata hai aur Google bhi HTTPS sites ko rank mein priority deta hai.</p>
+
+    <div class="table-wrap"><table>
+      <tr><th>#</th><th>HTTP</th><th>HTTPS</th></tr>
+      <tr><td>Data</td><td>Plain text</td><td>Encrypted (TLS)</td></tr>
+      <tr><td>Port</td><td>80</td><td>443</td></tr>
+      <tr><td>Browser</td><td>"Not Secure" warning</td><td>Padlock icon</td></tr>
+    </table></div>
+
+    <p><strong>3. Lock kaise lagta hai &mdash; TLS Handshake:</strong> Browser aur server milke ek secret "session key" set karte hain, uske baad saara data usi key se encrypt/decrypt hota hai:</p>
+    <div class="diagram">
+<pre>1. Client → Server: "HTTPS se connect karna hai"
+2. Server → Client: apna SSL certificate bhejta hai (public key ke saath)
+3. Client: certificate ko trusted CA list se verify karta hai
+4. Client + Server: ek shared "session key" secretly agree karte hain
+5. Ab dono taraf ka data isi key se encrypt/decrypt hota hai</pre>
+    </div>
+
+    <p><strong>4. Certificate kya hai:</strong> Ek digital "ID card" jo prove karta hai domain ka asli owner kaun hai &mdash; ek trusted <strong>Certificate Authority (CA)</strong> (jaise Let's Encrypt) issue karti hai. Nginx ko <strong>2 files</strong> chahiye: <strong>Certificate</strong> (<code>.crt</code>/<code>.pem</code> &mdash; public) aur <strong>Private Key</strong> (<code>.key</code> &mdash; secret, kabhi share nahi karte).</p>
+
+    <p><strong>5. Nginx mein config kaise:</strong> Server block ko <code>443</code> pe SSL ke saath sunna hota hai, aur certificate + key ka path dena hota hai:</p>
+    <pre><code class="language-nginx">server {
+  listen 443 ssl;
+  server_name myshop.com;
+  ssl_certificate     /etc/letsencrypt/live/myshop.com/fullchain.pem;
+  ssl_certificate_key /etc/letsencrypt/live/myshop.com/privkey.pem;
+}</code></pre>
+
+    <p><strong>6. Purane HTTP users ko redirect karna:</strong> Agar koi <code>http://myshop.com</code> type kare, use automatically <code>https://</code> pe bhej dete hain &mdash; port 80 wale server block mein bas ek line:</p>
+    <pre><code class="language-nginx">server {
+  listen 80;
+  server_name myshop.com;
+  return 301 https://$host$request_uri;
+}</code></pre>
+
+    <p><strong>7. Certificate practically kaise milta hai:</strong> <strong>Let's Encrypt</strong> ek free CA hai, aur <strong>Certbot</strong> uska official tool hai jo sab kuch ek hi command mein automate kar deta hai &mdash; certificate issue, Nginx config (point 5), <strong>aur</strong> redirect (point 6) teeno khud kar deta hai:</p>
+    <pre><code class="language-bash">sudo apt install certbot python3-certbot-nginx
+sudo certbot --nginx -d myshop.com -d www.myshop.com</code></pre>
+
+    <p><strong>8. Maintenance &mdash; Renewal:</strong> Let's Encrypt certificates sirf <strong>90 din</strong> valid hote hain. Certbot install hote hi ek <strong>auto cron/systemd timer</strong> khud set ho jaata hai jo din mein 2 baar check karta hai aur expiry se 30 din pehle khud renew kar deta hai &mdash; isliye production mein manually kabhi renew yaad nahi rakhna padta.</p>
+
+    <p style="margin-top:14px;"><strong>Ek line mein poora flow:</strong> HTTP insecure hai (plain text) &rarr; HTTPS use karo (SSL/TLS se encrypt) &rarr; iske liye certificate chahiye (CA issue karti hai) &rarr; Nginx mein <code>listen 443 ssl</code> + cert paths daalo &rarr; port 80 se 443 pe redirect bhi karo &rarr; ye sab Certbot ek command mein free mein kar deta hai &rarr; aur khud hi renew bhi karta rehta hai.</p>
+  </div>
+
   <div class="qa-list">
 
     <article class="qa important" data-id="3-1">
       <button class="qa-toggle"><span class="qa-q">HTTP vs HTTPS &mdash; kya farq hai?</span><span class="flag important">V.IMP</span><span class="qa-chevron">›</span></button>
       <div class="qa-body">
+        <p><strong>Simple bhasha mein:</strong> HTTP mein tumhara data (jaise login ka username/password) <strong>plain text</strong> mein jaata hai &mdash; jaise postcard pe likha message, jise raaste mein koi bhi khol ke padh sakta hai. HTTPS mein wahi data <strong>encrypt (lock)</strong> karke jaata hai &mdash; jaise sealed envelope, jise sirf server hi khol (decrypt kar) sakta hai. Beech mein koi attacker packet pakad bhi le, use sirf ulta-seedha code dikhega, asli password nahi.</p>
+        <p><code>http://</code> = port <strong>80</strong>, koi lock nahi, browser "Not Secure" dikhata hai. <code>https://</code> = port <strong>443</strong>, <strong>S</strong> matlab Secure, browser padlock 🔒 dikhata hai.</p>
         <div class="table-wrap"><table>
           <tr><th>#</th><th>HTTP</th><th>HTTPS</th></tr>
           <tr><td><strong>Data</strong></td><td>Plain text mein jaata hai</td><td><strong>Encrypted</strong> (TLS) hota hai</td></tr>
@@ -1108,6 +1160,390 @@ WITH auto-renewal (cron/systemd timer)
       <li><strong>Let's Encrypt</strong> &mdash; free automated CA; <strong>Certbot</strong> &mdash; certificate issue + Nginx config + redirect, sab ek command se automate karta hai.</li>
       <li><strong>SSL Renewal</strong> &mdash; Let's Encrypt certs 90 din valid; <code>certbot renew</code> aur auto-renewal cron/systemd timer se production mein manual kaam nahi karna padta.</li>
     </ul>
+  </div>
+</section>
+
+<section class="chapter" id="ch4" data-title="Phase 4 — Load Balancing">
+  <div class="chapter-head"><span class="chapter-num">P4</span><h2>Phase 4 &mdash; Load Balancing</h2></div>
+
+  <div class="chapter-recap" style="margin-bottom:22px;">
+    <span class="recap-label">Poora Concept Ek Saath &mdash; Simple Flow</span>
+
+    <p><strong>1. Problem:</strong> Agar tumhara pura traffic ek hi backend server (jaise <code>localhost:3000</code>) pe jaa raha hai, toh high traffic mein wo <strong>overload</strong> ho jaata hai &mdash; slow ho jaata hai ya crash kar jaata hai. Yeh ek <strong>single point of failure</strong> hai.</p>
+
+    <p><strong>2. Solution &mdash; Load Balancing:</strong> Ek hi app ke <strong>multiple copies (instances)</strong> alag-alag ports pe chalao (jaise <code>3001</code>, <code>3002</code>, <code>3003</code>), aur Nginx ko <strong>load balancer</strong> bana do &mdash; wo incoming traffic ko in sab servers ke beech <strong>baant</strong> deta hai.</p>
+
+    <p><strong>3. <code>upstream</code> block:</strong> Sabse pehle sab backend servers ko ek naam ke group mein list karte hain, fir <code>proxy_pass</code> ko seedha backend ke bajaye <strong>isi group</strong> ke naam pe point karte hain &mdash; yeh <strong>bina</strong> hota toh sara traffic ek hi <code>proxy_pass http://localhost:3000;</code> pe jaata, spike aane pe wahi ek server crash karta aur poori site down ho jaati:</p>
+    <pre><code class="language-nginx">upstream backend_servers {
+  server localhost:3001;
+  server localhost:3002;
+  server localhost:3003;
+}
+
+server {
+  listen 80;
+  location / {
+    proxy_pass http://backend_servers;   # seedha port nahi, upstream group ka naam
+  }
+}</code></pre>
+    <p><strong>Real project mein use:</strong> Node app ke <strong>PM2 cluster mode</strong> ya <strong>multiple Docker containers</strong> ke instances ko ek <code>upstream</code> group mein daal ke Nginx ke peeche laga dete hain.</p>
+
+    <p><strong>4. Round Robin (default algorithm):</strong> Koi algorithm specify na karo toh Nginx <strong>turn-wise, sequential order</strong> mein requests bhejta hai:</p>
+    <div class="diagram"><span class="diagram-label">Round Robin Flow</span>
+<pre>Request 1 → server1 (3001)
+Request 2 → server2 (3002)
+Request 3 → server3 (3003)
+Request 4 → server1 (3001)   ← wapas shuru se
+Request 5 → server2 (3002) ...</pre>
+    </div>
+    <p>Yeh maan ke chalta hai ki sab servers ki <strong>capacity barabar</strong> hai. <strong>Real project mein use:</strong> Jab sab instances same specs pe same tarah ki requests handle karte hon (simple REST API) &mdash; best/simplest choice, bina kuch configure kiye equal distribution.</p>
+
+    <p><strong>5. Weighted Load Balancing:</strong> Agar ek server dusre se <strong>zyada powerful</strong> hai (zyada RAM/CPU), toh use <code>weight</code> de do &mdash; usko proportionally <strong>zyada requests</strong> milengi:</p>
+    <pre><code class="language-nginx">upstream backend_servers {
+  server localhost:3001 weight=3;   # har 4 requests mein se 3 isko
+  server localhost:3002 weight=1;   # ...aur 1 isko
+}</code></pre>
+    <p><strong>Bina weight ke</strong> (plain Round Robin): agar server1 ek 8-core powerful machine hai aur server2 sirf 2-core chhoti machine, phir bhi dono ko barabar requests milti hain &mdash; server2 jaldi overload ho jaata hai jabki server1 idle padha rehta hai. Weight de ke resources ka sahi use hota hai. <strong>Real project mein use:</strong> mixed hardware, ya <strong>canary deployment</strong> (naye version wale server ko pehle kam weight de ke slowly traffic badhaana).</p>
+
+    <p><strong>6. Least Connections:</strong> Har request same time nahi leti &mdash; agar Round Robin turn ke hisaab se server1 ko ek <strong>heavy request</strong> (bada file upload, 10 sec) mil gayi, toh turn ke hisaab se usko <strong>agli requests bhi</strong> milti rahengi aur wo jaam ho jaata hai, jabki server2 free baitha rehta hai. <code>least_conn</code> lagate hi Nginx <strong>real-time</strong> mein check karta hai kis server pe abhi <strong>sabse kam active connections</strong> hain, aur nayi request wahi bhejta hai:</p>
+    <pre><code class="language-nginx">upstream backend_servers {
+  least_conn;
+  server localhost:3001;
+  server localhost:3002;
+}</code></pre>
+    <p><strong>Real project mein use:</strong> jab requests ka processing time vary karta hai (kuch fast APIs, kuch slow reports/uploads) &mdash; Round Robin se better.</p>
+
+    <p><strong>7. IP Hash:</strong> Round robin/least_conn mein ek hi client ki alag-alag requests <strong>alag-alag servers</strong> pe ja sakti hain. Agar login session server ki <strong>memory</strong> mein store ho raha hai (Redis/DB mein shared nahi), toh problem hai &mdash; login request server1 pe gayi aur session wahin save hua, lekin agli request ("profile dekho") server2 pe chali gayi jise pata hi nahi user login hai &mdash; user ko <strong>dobara login</strong> maanga jaata hai. <code>ip_hash</code> client ke IP ka hash nikaal ke use <strong>hamesha usi server</strong> pe bhejta hai, isliye session wala issue nahi hota:</p>
+    <pre><code class="language-nginx">upstream backend_servers {
+  ip_hash;
+  server localhost:3001;
+  server localhost:3002;
+}</code></pre>
+    <p><strong>Real project mein use:</strong> jab session <strong>local memory</strong> mein store hota hai. Better/modern fix: shared session store (Redis) use karo, phir <code>ip_hash</code> ki zaroorat hi nahi padti aur load balancing fully flexible rehti hai.</p>
+
+    <p><strong>8. Backend Failure Handling:</strong> Agar koi backend server <strong>down/crash</strong> ho jaaye aur Nginx ko pata na ho, toh wo turn ke hisaab se usi crashed server ko request bhejta rahega aur users ko <strong>500/502 errors</strong> milte rahenge. Isse bachne ke liye Nginx server ki health track karta hai aur failing server ko thodi der ke liye <strong>skip</strong> kar deta hai:</p>
+    <pre><code class="language-nginx">upstream backend_servers {
+  server localhost:3001 max_fails=3 fail_timeout=30s;
+  server localhost:3002 max_fails=3 fail_timeout=30s;
+  server localhost:3003 backup;   # baaki sab down ho tabhi yeh use hoga
+}</code></pre>
+    <div class="table-wrap"><table>
+      <tr><th>Directive</th><th>Matlab</th></tr>
+      <tr><td><code>max_fails=3</code></td><td>Lagatar <strong>3 baar</strong> fail hone par server ko "down" maan lo</td></tr>
+      <tr><td><code>fail_timeout=30s</code></td><td>Agle <strong>30 sec</strong> us server ko traffic mat bhejo, phir dobara try karo</td></tr>
+      <tr><td><code>backup</code></td><td><strong>Sirf tab</strong> use hota hai jab baaki saare servers down ho jaayein</td></tr>
+    </table></div>
+    <p><strong>Real project mein use:</strong> Production mein yeh <strong>hamesha</strong> set karte hain &mdash; bina iske ek crashed server poore system ko intermittently broken dikha sakta hai; iske saath user ko pata hi nahi chalta peeche ek server down tha (<strong>zero downtime</strong> unke perspective se).</p>
+
+    <p style="margin-top:14px;"><strong>Ek line mein poora flow (yaad rakhne ke liye):</strong> Ek server overload/single-point-of-failure hai &rarr; multiple instances chalao aur <code>upstream</code> group banao &rarr; default <strong>Round Robin</strong> se traffic baant jaata hai &rarr; alag capacity ho toh <strong>weight</strong> do &rarr; alag processing time ho toh <strong>least_conn</strong> use karo &rarr; session sticky chahiye toh <strong>ip_hash</strong> &rarr; aur koi server crash ho jaaye toh <code>max_fails</code>/<code>fail_timeout</code>/<code>backup</code> se Nginx use khud skip kar deta hai.</p>
+  </div>
+</section>
+
+<section class="chapter" id="ch5" data-title="Phase 5 — Static Files">
+  <div class="chapter-head"><span class="chapter-num">P5</span><h2>Phase 5 &mdash; Static Files</h2></div>
+
+  <div class="chapter-recap" style="margin-bottom:22px;">
+    <span class="recap-label">Poora Concept Ek Saath &mdash; Simple Flow</span>
+
+    <p><strong>0. Bada picture:</strong> <code>npm run build</code> se React/Angular ka <code>dist/</code> folder banta hai (plain HTML/CSS/JS). Nginx <code>/</code> pages seedha <strong>dist/ se</strong>, aur <code>/api/...</code> <strong>Node backend ko forward</strong> karta hai. <em>Real use:</em> ek hi Nginx, do kaam &mdash; static fast serve + dynamic API proxy.</p>
+    <pre><code class="language-nginx">location /       { root /var/www/myshop/dist; try_files $uri $uri/ /index.html; }  # static
+location /api/   { proxy_pass http://localhost:3000/; }                            # dynamic</code></pre>
+
+    <p><strong>1. Static File Serving:</strong> HTML/CSS/JS/images change nahi hoti &rarr; Nginx <strong>seedha disk se</strong> deta hai, Node tak jaane ki zaroorat nahi (fast, no JS processing). <em>Real use:</em> React/Angular <code>dist/</code>, images, PDFs Nginx serve karta hai; Node sirf <code>/api/*</code> sambhalta hai.</p>
+    <pre><code class="language-nginx">root  /var/www/myshop/dist;
+index index.html;
+location / { try_files $uri $uri/ =404; }</code></pre>
+
+    <p><strong>2. root vs alias:</strong> <code>root</code> location path <strong>aage jodta</strong> hai; <code>alias</code> use <strong>replace</strong> kar deta hai. <code>alias</code> mein trailing <code>/</code> bhoolna &rarr; 404.</p>
+    <div class="table-wrap"><table>
+      <tr><th>#</th><th><code>root</code></th><th><code>alias</code></th></tr>
+      <tr><td>Rule</td><td>root + poora location path</td><td>location path ko replace</td></tr>
+      <tr><td>Example</td><td><code>root /var/www;</code> → <code>/images/cat.png</code> &rarr; <code>/var/www/images/cat.png</code></td><td><code>alias /var/www/pics/;</code> → <code>/images/cat.png</code> &rarr; <code>/var/www/pics/cat.png</code></td></tr>
+    </table></div>
+    <p><em>Real use:</em> URL folder naam disk folder se <strong>match na kare</strong> tab <code>alias</code>; warna <code>root</code> hi kaafi.</p>
+
+    <p><strong>3. try_files:</strong> Order mein check karta hai, pehla match serve karta hai:</p>
+    <pre><code class="language-nginx">try_files $uri $uri/ /index.html;
+# $uri → exact file, $uri/ → folder, /index.html → fallback</code></pre>
+    <p><em>Real use:</em> static sites + <strong>SPA routing</strong> (agla point) &mdash; bina iske seedha 404.</p>
+
+    <p><strong>4. Angular/React SPA Deployment:</strong> SPA routing (<code>/about</code>) <strong>client-side JS</strong> mein hoti hai, server pe file exist nahi &mdash; bina fallback ke <strong>refresh pe 404</strong>. Fallback lagate hi <code>index.html</code> serve hota hai, phir JS apna router chalake page dikha deta hai:</p>
+    <pre><code class="language-nginx">location / { try_files $uri $uri/ /index.html; }   # SPA fix
+location /api/ { proxy_pass http://localhost:3000/; }</code></pre>
+    <p><em>Real use:</em> Har React/Angular/Vue production deployment mein <strong>zaroori</strong> &mdash; warna direct URL/refresh 404 dega.</p>
+
+    <p><strong>5. Static Caching:</strong> Rarely-changing files ko browser mein <strong>lambe time tak cache</strong> karwate hain &mdash; fast repeat loads:</p>
+    <pre><code class="language-nginx">location ~* \.(js|css|png|jpg|svg|woff2)$ {
+  expires 30d;
+  add_header Cache-Control "public, immutable";
+}</code></pre>
+    <p><strong>Problem:</strong> file update hone par bhi browser 30 din tak <strong>purana cached</strong> JS use karta rehta hai. <strong>Fix:</strong> build tool filename mein <strong>content hash</strong> jodta hai (<code>app.a3f9e7.js</code>) &mdash; naya build = naya naam = purani cache kabhi use nahi hoti. <em>Real use:</em> Vite/CRA/Angular build khud hashed filenames generate karte hain, manually kuch nahi karna padta.</p>
+
+    <p style="margin-top:14px;"><strong>Ek line mein poora flow:</strong> <code>dist/</code> se static, <code>/api/</code> se backend &rarr; static <strong>root</strong>/<strong>index</strong> se serve &rarr; path ke liye <strong>root</strong> (append) ya <strong>alias</strong> (replace) &rarr; <strong>try_files</strong> order-fallback &rarr; SPA mein yehi fallback <code>index.html</code> pe jaata hai (routing todne se bachata) &rarr; static assets <strong>cache</strong> karte hain + <strong>hashed filenames</strong> se stale-cache fix.</p>
+  </div>
+</section>
+
+<section class="chapter" id="ch6" data-title="Phase 6 — Performance">
+  <div class="chapter-head"><span class="chapter-num">P6</span><h2>Phase 6 &mdash; Performance</h2></div>
+
+  <div class="chapter-recap" style="margin-bottom:22px;">
+    <span class="recap-label">Real Scenario &mdash; Diwali Sale Traffic (Sab Terms Ek Kahani Mein)</span>
+    <p><strong>myshop.com pe Diwali sale ka din, achanak 5000 users ek saath aa gaye:</strong></p>
+    <ul style="margin:0 0 4px 18px; padding:0;">
+      <li><strong>Server start:</strong> Machine mein 4 CPU cores &rarr; <code>worker_processes auto;</code> se Nginx <strong>4 worker processes</strong> banata hai, ek-ek core ke liye.</li>
+      <li><strong>Traffic peak:</strong> Har worker <code>worker_connections 1024;</code> ke hisaab se 1024 connections sambhalta hai &rarr; 4 &times; 1024 = <strong>~4096 users ek saath</strong> serve ho sakte hain.</li>
+      <li><strong>Homepage khulta hai:</strong> Ek page ki 15-20 requests (HTML/CSS/JS/images) ke liye <code>keepalive_timeout 65;</code> se <strong>ek hi TCP connection reuse</strong> hota hai &mdash; page fast khulta hai; Nginx&harr;backend ke beech bhi <code>keepalive 32;</code> se connections reuse hote hain.</li>
+      <li><strong>Response bhejne se pehle:</strong> Product list ka JSON <code>gzip on;</code> se <strong>compress</strong> hoke jaata hai (200KB &rarr; ~50KB) &mdash; slow mobile data pe bhi jaldi load.</li>
+      <li><strong>Same product baar-baar maanga:</strong> "Top Deals" page ke liye har request DB tak jaati toh DB overload ho jaata &mdash; <code>proxy_cache</code> pehli request ka response <strong>10 min save</strong> kar leta hai, agli 4999 requests seedha Nginx se, DB ko touch nahi karti.</li>
+      <li><strong>Ek server slow ho gaya:</strong> <code>proxy_buffering on;</code> se Nginx poora response <strong>buffer</strong> kar leta hai, Node turant <strong>free</strong> ho jaata hai, user ke slow connection ka wait khud Nginx karta hai.</li>
+      <li><strong>Ek backend crash:</strong> <code>proxy_read_timeout 10s;</code> se Nginx sirf <strong>10 sec wait</strong> karke fail maan leta hai &mdash; bina timeout ke Nginx hamesha ke liye atakta, dheere-dheere saare workers busy ho jaate, poori site down lagti.</li>
+      <li><strong>Profile photo upload (6MB):</strong> <code>client_max_body_size</code> default sirf <strong>1MB</strong> &mdash; set na ho toh Nginx seedha <strong>413 error</strong> deta, Node tak pahunchti hi nahi; isliye <code>client_max_body_size 20M;</code> set karte hain.</li>
+    </ul>
+    <p><strong>Poori picture:</strong> worker processes/connections ne bataya kitna traffic handle hoga &rarr; keepalive ne connections fast reuse kiye &rarr; gzip ne response chhota kiya &rarr; proxy caching ne DB bachaya &rarr; buffering ne backend jaldi free kiya &rarr; timeout ne crashed backend se pura system down hone se bachaya &rarr; client_max_body_size ne bada upload allow kiya.</p>
+
+    <p style="margin-top:16px; padding-top:14px; border-top:1px dashed var(--border);"><strong>Ab har term individually, point-by-point:</strong></p>
+
+    <p><strong>1. Worker Processes:</strong> Nginx start hote hi OS-level kuch <strong>worker processes</strong> spawn karta hai &mdash; asli traffic yehi handle karte hain (master process sirf inko manage karta hai). Har request ek worker sambhalta hai.</p>
+    <pre><code class="language-nginx">worker_processes auto;   # CPU cores jitne workers khud bana lo</code></pre>
+    <p><em>Real use:</em> <code>auto</code> almost hamesha best hai &mdash; har CPU core ko ek worker mil jaata hai, parallel traffic handle hoti hai; manually kam number dena <strong>underutilize</strong> karega.</p>
+
+    <p><strong>2. Worker Connections:</strong> Har worker ek time pe <strong>kitne simultaneous connections</strong> khol sakta hai, uski limit:</p>
+    <pre><code class="language-nginx">events {
+  worker_connections 1024;
+}
+# max clients ≈ worker_processes × worker_connections</code></pre>
+    <p><em>Real use:</em> High-traffic site (jaise 10k+ concurrent users) mein yeh value badhani padti hai, warna limit cross hote hi naye connections <strong>queue/reject</strong> hone lagte hain.</p>
+
+    <p><strong>3. Keepalive:</strong> Normally har request ke liye <strong>naya TCP connection</strong> banta hai (handshake mein time lagta hai). Keepalive se ek connection <strong>reuse</strong> hota hai multiple requests ke liye &mdash; client&harr;Nginx <strong>aur</strong> Nginx&harr;backend, dono taraf set hota hai:</p>
+    <pre><code class="language-nginx">keepalive_timeout 65;         # client ke saath connection kitni der khula rahe
+
+upstream backend_servers {
+  server localhost:3001;
+  keepalive 32;                # Nginx→backend, reusable connections ka pool
+}</code></pre>
+    <p><em>Real use:</em> Bina keepalive ke, ek page ki 20 CSS/JS/image requests ke liye <strong>20 alag TCP handshakes</strong> hote &mdash; keepalive se sab ek hi connection reuse karte hain, page fast load hota hai.</p>
+
+    <p><strong>4. Buffering:</strong> Backend response ko Nginx <strong>pehle apne paas buffer</strong> karta hai, phir client ko bhejta hai (seedha stream nahi karta):</p>
+    <pre><code class="language-nginx">proxy_buffering on;
+proxy_buffer_size 8k;
+proxy_buffers 8 8k;</code></pre>
+    <p><em>Real use:</em> Slow client (weak internet) ho toh buffering se Node backend jaldi <strong>free</strong> ho jaata hai (Nginx baaki data client ko dheere-dheere bhejta rehta hai) &mdash; backend ka resource jyada der tak block nahi hota. Live streaming jaisi cheezon mein isko <code>off</code> karte hain.</p>
+
+    <p><strong>5. Gzip:</strong> Response (HTML/CSS/JS/JSON) ko <strong>compress</strong> karke bhejta hai, browser use decompress kar leta hai &mdash; file size kaafi kam ho jaata hai:</p>
+    <pre><code class="language-nginx">gzip on;
+gzip_types text/css application/javascript application/json;
+gzip_min_length 1000;</code></pre>
+    <p><em>Real use:</em> 200KB ka JS bundle gzip se aksar <strong>50-60KB</strong> tak aa jaata hai &mdash; slow network pe load time bahut kam ho jaata hai; sab production sites mein <strong>on</strong> hota hai.</p>
+
+    <p><strong>6. Proxy Caching:</strong> Backend ka response <strong>Nginx khud apne paas save</strong> kar leta hai &mdash; same request dobara aaye toh backend tak jaaye hi na, seedha cache se reply:</p>
+    <pre><code class="language-nginx">proxy_cache_path /var/cache/nginx keys_zone=my_cache:10m;
+
+location /api/products {
+  proxy_cache my_cache;
+  proxy_cache_valid 200 10m;   # 10 min tak cached response valid
+  proxy_pass http://localhost:3000;
+}</code></pre>
+    <p><em>Real use:</em> Product list jaisi <strong>kam-frequently-changing</strong> API &mdash; hazaron users same data maangte hain, bina caching Node/DB har baar query chalati, caching se <strong>DB load drastically kam</strong> ho jaata hai.</p>
+
+    <p><strong>7. Timeouts:</strong> Backend response mein <strong>kitni der wait</strong> karna hai, uski limits &mdash; warna ek slow/hung backend Nginx ke resources bhi <strong>block</strong> kar dega:</p>
+    <pre><code class="language-nginx">proxy_connect_timeout 5s;   # backend se connect hone ka max wait
+proxy_send_timeout 10s;     # backend ko request bhejne ka max wait
+proxy_read_timeout 10s;     # backend se response aane ka max wait</code></pre>
+    <p><em>Real use:</em> Backend crash/hang ho jaaye toh bina timeout ke Nginx <strong>indefinitely wait</strong> karta rehta &mdash; saare connections busy ho jaate, poori site down lagne lagti; timeout hote hi Nginx turant client ko error de deta hai (<strong>graceful failure</strong>).</p>
+
+    <p><strong>8. <code>client_max_body_size</code>:</strong> Client se aane wali request body (jaise file upload) ki <strong>max allowed size</strong> &mdash; default sirf <strong>1MB</strong> hota hai:</p>
+    <pre><code class="language-nginx">http {
+  client_max_body_size 20M;   # 20MB tak upload allow
+}</code></pre>
+    <p><em>Real use:</em> User profile picture/PDF upload karta hai (5MB) aur yeh directive set nahi &mdash; Nginx <strong>413 "Request Entity Too Large"</strong> error de deta hai, bhale Node/Express khud badi files accept karta ho. Isliye file-upload wale project mein yeh <strong>hamesha</strong> increase karna padta hai.</p>
+
+    <p style="margin-top:14px;"><strong>Ek line mein poora flow:</strong> <strong>worker_processes</strong> (kitne workers) &times; <strong>worker_connections</strong> (har worker ki capacity) = total handle-able traffic &rarr; <strong>keepalive</strong> se connections reuse hote hain &rarr; <strong>buffering</strong> se backend jaldi free hota hai &rarr; <strong>gzip</strong> se response chhota jaata hai &rarr; <strong>proxy caching</strong> se backend/DB par baar-baar hit nahi hota &rarr; <strong>timeouts</strong> se hung backend Nginx ko block nahi kar paata &rarr; aur <strong>client_max_body_size</strong> bina badhaye badi file uploads 413 error dete hain.</p>
+  </div>
+</section>
+
+<section class="chapter" id="ch7" data-title="Phase 7 — Security">
+  <div class="chapter-head"><span class="chapter-num">P7</span><h2>Phase 7 &mdash; Security</h2></div>
+
+  <div class="chapter-recap" style="margin-bottom:22px;">
+    <span class="recap-label">Poora Concept Ek Saath &mdash; Simple Flow</span>
+
+    <p><strong>1. Rate Limiting:</strong> Ek IP se <strong>kitni requests/second</strong> allowed hain, uski limit &mdash; abuse/brute-force rokta hai:</p>
+    <pre><code class="language-nginx">limit_req_zone $binary_remote_addr zone=mylimit:10m rate=5r/s;
+
+location /api/login {
+  limit_req zone=mylimit burst=10 nodelay;
+}</code></pre>
+    <p><em>Real use:</em> Bina iske koi bot <strong>login API</strong> pe second mein hazaron password try kar sakta hai (brute force). Rate limit lagte hi 6th request se hi <strong>429 Too Many Requests</strong> milta hai.</p>
+
+    <p><strong>2. IP Blocking:</strong> Specific IP/range ko <strong>allow ya deny</strong> karna:</p>
+    <pre><code class="language-nginx">location /admin/ {
+  allow 203.0.113.10;   # sirf office IP
+  deny all;             # baaki sab block
+}</code></pre>
+    <p><em>Real use:</em> Admin panel sirf <strong>office/VPN IP</strong> se accessible rakhna, ya kisi known-malicious IP (repeated attack karne wale) ko permanently block karna.</p>
+
+    <p><strong>3. Access Control:</strong> Sensitive paths/files ko <strong>public access se chhupana</strong>:</p>
+    <pre><code class="language-nginx">location ~ /\.(env|git) {
+  deny all;
+}
+location /internal-docs/ {
+  auth_basic "Restricted";
+  auth_basic_user_file /etc/nginx/.htpasswd;   # username/password maangega
+}</code></pre>
+    <p><em>Real use:</em> <code>.env</code> file (DB password, API keys) galti se public folder mein chhod di ho, toh <strong>deny</strong> na hone par koi bhi <code>myshop.com/.env</code> khol ke secrets padh sakta hai &mdash; isliye hidden/config files hamesha explicitly block karte hain.</p>
+
+    <p><strong>4. Security Headers:</strong> Browser ko extra <strong>protection rules</strong> batane wale response headers:</p>
+    <pre><code class="language-nginx">add_header X-Frame-Options "SAMEORIGIN";           # iframe mein site load na ho (clickjacking)
+add_header X-Content-Type-Options "nosniff";        # browser file type guess na kare
+add_header Strict-Transport-Security "max-age=31536000"; # hamesha HTTPS use ho (HSTS)
+add_header Content-Security-Policy "default-src 'self'"; # sirf apni site se script/style load ho</code></pre>
+    <p><em>Real use:</em> Bina <code>X-Frame-Options</code> ke, attacker myshop.com ko apni fake site pe <strong>invisible iframe</strong> mein load karke user se click karwa sakta hai (clickjacking) bina unhe pata chale.</p>
+
+    <p><strong>5. CORS:</strong> Ek domain se chal rahi JS ko <strong>doosre domain</strong> (backend API) se data lene ki permission dena &mdash; browser by default isse block karta hai:</p>
+    <pre><code class="language-nginx">location /api/ {
+  add_header Access-Control-Allow-Origin "https://myshop.com";
+  add_header Access-Control-Allow-Methods "GET, POST, PUT, DELETE";
+  add_header Access-Control-Allow-Headers "Content-Type, Authorization";
+  proxy_pass http://localhost:3000/;
+}</code></pre>
+    <p><em>Real use:</em> Frontend <code>myshop.com</code> aur backend API <code>api.myshop.com</code> alag domains hain &mdash; bina CORS headers ke browser console mein <strong>"blocked by CORS policy"</strong> error aata hai, request jaati hi nahi.</p>
+
+    <p><strong>6. SSL Security (hardening):</strong> Sirf HTTPS lagana kaafi nahi &mdash; <strong>purane/weak</strong> encryption versions bhi band karne padte hain:</p>
+    <pre><code class="language-nginx">ssl_protocols TLSv1.2 TLSv1.3;      # purane TLS 1.0/1.1 band (weak/kamzor hain)
+ssl_ciphers HIGH:!aNULL:!MD5;       # sirf strong encryption algorithms</code></pre>
+    <p><em>Real use:</em> Agar purane TLS versions allow rakhe, toh attacker <strong>downgrade attack</strong> karke connection ko jaan-boojh kar weak encryption pe force kar sakta hai aur data crack kar sakta hai &mdash; isliye sirf latest TLS versions allow karte hain.</p>
+
+    <p><strong>7. DDoS Protection Basics:</strong> Ek saath <strong>hazaron fake requests</strong> bhejke server ko down karne ki koshish &mdash; poori tarah rokna mushkil hai, lekin Nginx level pe basic defense laga sakte hain, jo upar ke concepts ko hi combine karta hai:</p>
+    <pre><code class="language-nginx">limit_req_zone $binary_remote_addr zone=req_limit:10m rate=10r/s;
+limit_conn_zone $binary_remote_addr zone=conn_limit:10m;
+
+server {
+  limit_req zone=req_limit burst=20;
+  limit_conn conn_limit 20;   # ek IP se max 20 open connections
+}</code></pre>
+    <p><em>Real use:</em> <strong>rate limiting</strong> (requests/sec cap) + <strong>limit_conn</strong> (ek IP ke max connections cap) + <strong>timeouts</strong> (Phase 6) mil ke ek basic layer bana dete hain &mdash; bade DDoS ke liye alag se Cloudflare/AWS Shield jaisi service chahiye hoti hai, Nginx akela full protection nahi de sakta.</p>
+
+    <p style="margin-top:14px;"><strong>Ek line mein poora flow:</strong> <strong>Rate limiting</strong> se ek IP zyada requests nahi bhej sakta &rarr; <strong>IP blocking/access control</strong> se sensitive paths aur unwanted IPs door rehte hain &rarr; <strong>security headers</strong> se browser-level attacks (clickjacking, MIME-sniffing) rukte hain &rarr; <strong>CORS</strong> se sirf trusted frontend hi API use kar paata hai &rarr; <strong>SSL hardening</strong> se weak encryption band hoti hai &rarr; aur ye sab mil ke <strong>DDoS ke against ek basic defense layer</strong> banate hain.</p>
+  </div>
+</section>
+
+<section class="chapter" id="ch8" data-title="Phase 8 — Logs & Troubleshooting">
+  <div class="chapter-head"><span class="chapter-num">P8</span><h2>Phase 8 &mdash; Logs &amp; Troubleshooting</h2></div>
+
+  <div class="chapter-recap" style="margin-bottom:22px;">
+    <span class="recap-label">Poora Concept Ek Saath &mdash; Simple Flow</span>
+
+    <p><strong>1. Access Logs:</strong> <strong>Har successful request</strong> ka record &mdash; kaun (IP), kab, kaunsa URL, kaunsa status code, kitna time laga:</p>
+    <pre><code class="language-nginx">access_log /var/log/nginx/access.log;</code></pre>
+    <pre>203.0.113.5 - - [15/Sep/2026:10:22:31] "GET /api/products HTTP/1.1" 200 512 "-" "Mozilla/5.0..."</pre>
+    <p><em>Real use:</em> Kaunse pages sabse zyada hit ho rahe hain, kaunsa IP suspicious tarike se bahut zyada requests bhej raha hai &mdash; traffic analysis aur security dono ke liye.</p>
+
+    <p><strong>2. Error Logs:</strong> Jab kuch <strong>galat</strong> ho &mdash; config issue, backend na milna, permission problem &mdash; uska record, alag file mein:</p>
+    <pre><code class="language-nginx">error_log /var/log/nginx/error.log warn;   # warn/error/crit level</code></pre>
+    <pre>2026/09/15 10:23:01 [error] connect() failed (111: Connection refused) while connecting to upstream, upstream: "http://127.0.0.1:3000/"</pre>
+    <p><em>Real use:</em> Site down hone par <strong>sabse pehle</strong> yahi file dekhte hain &mdash; access log mein sirf "kya hua" dikhta hai, error log mein "<strong>kyun</strong> fail hua" dikhta hai.</p>
+
+    <p><strong>3. Log Format:</strong> Access log mein <strong>kaunsi fields</strong> chahiye, custom define kar sakte ho:</p>
+    <pre><code class="language-nginx">log_format custom '$remote_addr - $status "$request" $request_time s upstream:$upstream_response_time s';
+
+access_log /var/log/nginx/access.log custom;</code></pre>
+    <p><em>Real use:</em> Default format mein <strong>response time</strong> nahi hota &mdash; performance debug karne ke liye <code>$request_time</code>/<code>$upstream_response_time</code> jaise fields custom format mein add karte hain, taaki pata chale slow request Nginx ki wajah se thi ya backend ki wajah se.</p>
+
+    <p><strong>4. Common Error Status Codes:</strong> Interview mein sabse zyada poocha jaata hai &mdash; kaunsa code, kis wajah se aata hai:</p>
+    <div class="table-wrap"><table>
+      <tr><th>Code</th><th>Matlab</th><th>Real wajah</th></tr>
+      <tr><td><strong>403</strong> Forbidden</td><td>Access denied</td><td><code>deny all;</code> lagi hai, ya folder/file <strong>permissions</strong> galat hain, ya <code>index.html</code> hi missing hai aur directory listing off hai</td></tr>
+      <tr><td><strong>404</strong> Not Found</td><td>File/route exist nahi karta</td><td>Galat URL, ya <code>root</code> path galat set hai, ya SPA mein <code>try_files</code> fallback missing hai</td></tr>
+      <tr><td><strong>413</strong> Payload Too Large</td><td>Request body limit se bada</td><td><code>client_max_body_size</code> (default 1MB) se badi file upload ki gayi</td></tr>
+      <tr><td><strong>502</strong> Bad Gateway</td><td>Backend se <strong>invalid/no response</strong></td><td>Backend server <strong>crash/down</strong> hai, ya galat port pe <code>proxy_pass</code> point kiya hai</td></tr>
+      <tr><td><strong>504</strong> Gateway Timeout</td><td>Backend ne time pe respond nahi kiya</td><td>Backend <strong>slow/hung</strong> hai, <code>proxy_read_timeout</code> se zyada der laga diya (jaise heavy DB query)</td></tr>
+    </table></div>
+    <p><em>Real use:</em> <strong>502 vs 504 mein farak samajhna V.IMP hai</strong> &mdash; 502 matlab backend <strong>bilkul respond hi nahi kar raha</strong> (down/crashed), 504 matlab backend <strong>respond kar raha hai par bahut slow</strong> hai (timeout cross ho gaya). Dono alag fix maangte hain: 502 mein backend restart karo, 504 mein query/code optimize karo ya timeout badhao.</p>
+
+    <p><strong>5. Nginx Troubleshooting (step-by-step):</strong> Site down/error aane par yeh order follow karo:</p>
+    <pre><code class="language-bash">sudo nginx -t                              # 1. config syntax sahi hai?
+sudo tail -f /var/log/nginx/error.log      # 2. live error dekho
+sudo systemctl status nginx                # 3. Nginx khud chal raha hai?
+curl http://localhost:3000                 # 4. backend seedha reachable hai?
+sudo systemctl reload nginx                # 5. config change ke baad reload (restart nahi, zero-downtime)</code></pre>
+    <p><em>Real use:</em> <code>nginx -t</code> <strong>hamesha</strong> config edit karne ke baad chalao &mdash; galat syntax se seedha <code>reload</code> karoge toh Nginx <strong>crash</strong> ho sakta hai aur poori site down ho jaayegi; <code>-t</code> pehle hi error pakad leta hai bina kuch break kiye.</p>
+
+    <p style="margin-top:14px;"><strong>Ek line mein poora flow:</strong> <strong>Access log</strong> se pata chalta hai "kya" hua (kaun, kab, kaunsa URL) &rarr; <strong>error log</strong> se pata chalta hai "kyun" fail hua &rarr; <strong>custom log format</strong> se performance debug karne wali fields add karte hain &rarr; <strong>403/404/413</strong> client-side galtiyan hain (permission/missing/too-large), <strong>502/504</strong> backend-side problems (down vs slow) &rarr; aur troubleshoot karte waqt hamesha <code>nginx -t</code> &rarr; <code>error.log</code> &rarr; backend check &rarr; <code>reload</code> isi order mein jaate hain.</p>
+  </div>
+</section>
+
+<section class="chapter" id="ch9" data-title="Phase 9 — Production">
+  <div class="chapter-head"><span class="chapter-num">P9</span><h2>Phase 9 &mdash; Production</h2></div>
+
+  <div class="chapter-recap" style="margin-bottom:22px;">
+    <span class="recap-label">Poora Concept Ek Saath &mdash; Simple Flow</span>
+
+    <p><strong>1. Nginx + PM2:</strong> Node app ko seedha <code>node server.js</code> se chalana risky hai &mdash; crash ho gaya toh <strong>hamesha ke liye down</strong> reh jaata hai. <strong>PM2</strong> ek process manager hai jo app ko <strong>alive rakhta hai</strong>, crash pe auto-restart karta hai, aur multiple instances (cluster mode) chala sakta hai; Nginx uske aage reverse proxy/load balancer ban ke baithta hai:</p>
+    <pre><code class="language-bash">pm2 start server.js -i max --name myshop-api   # CPU cores jitne instances (cluster mode)
+pm2 startup                                     # server reboot pe khud start ho jaaye
+pm2 save</code></pre>
+    <p><em>Real use:</em> PM2 4 instances (3001-3004) chalata hai, Nginx <code>upstream</code> se unke beech load balance karta hai &mdash; ek instance crash ho, PM2 use turant restart kar deta hai, Nginx baaki 3 pe traffic bhejta rehta hai.</p>
+
+    <p><strong>2. Nginx + AWS EC2:</strong> EC2 ek <strong>virtual server</strong> hai jahan Nginx + Node deploy karte hain:</p>
+    <pre><code class="language-bash">sudo apt update && sudo apt install nginx -y
+# Security Group mein inbound rules kholni padti hain:
+# Port 80 (HTTP), Port 443 (HTTPS), Port 22 (SSH) — baaki sab band</code></pre>
+    <p><em>Real use:</em> Sabse common galti &mdash; Nginx install/config sab sahi hoti hai, lekin EC2 ke <strong>Security Group</strong> mein port 80/443 <strong>inbound allow nahi</strong> kiya hota &mdash; site bahar se open hi nahi hoti, jabki server pe sab thik chal raha hota hai.</p>
+
+    <p><strong>3. Nginx + Jenkins (CI/CD):</strong> Jenkins <strong>automatically</strong> naya code pull &rarr; build &rarr; deploy karta hai, manually server pe jaake copy-paste nahi karna padta:</p>
+    <pre><code class="language-bash"># Jenkins pipeline ka ek stage (deploy):
+git pull origin main
+npm install && npm run build         # React/Angular build
+cp -r dist/* /var/www/myshop/dist/   # naye static files copy
+pm2 reload myshop-api                # backend zero-downtime restart</code></pre>
+    <p><em>Real use:</em> Developer <code>git push</code> karta hai &rarr; Jenkins khud build+deploy kar deta hai <strong>2-3 minute</strong> mein &mdash; bina iske, har deploy ke liye manually server pe SSH karke commands chalani padtin, slow aur error-prone.</p>
+
+    <p><strong>4. Zero-Downtime Deployment:</strong> Naya code deploy karte waqt <strong>bhi</strong> users ko error/downtime nahi dikhna chahiye:</p>
+    <pre><code class="language-bash">pm2 reload myshop-api   # ek-ek karke instances restart (rolling restart)
+# restart NAHI — restart sab instances ek saath band-start karta hai (downtime hota)
+# reload — ek instance restart hone tak baaki chalte rehte hain, phir agla</code></pre>
+    <p><em>Real use:</em> 4 PM2 instances hain &mdash; <code>reload</code> se ek-ek karke restart hote hain, kabhi bhi <strong>saare instances ek saath down</strong> nahi hote, isliye users ko koi error dikhta hi nahi.</p>
+
+    <p><strong>5. Graceful Reload:</strong> Nginx <strong>config change</strong> karne ke baad bhi zero-downtime restart:</p>
+    <pre><code class="language-bash">sudo nginx -t              # pehle syntax check (hamesha)
+sudo nginx -s reload        # graceful — chal rahi requests complete hone dega
+# 'systemctl restart nginx' NAHI — ye connections turant kaat deta hai</code></pre>
+    <p><em>Real use:</em> <code>reload</code> mein Nginx naya config load karta hai, <strong>naye worker processes</strong> spawn karta hai naye config ke saath, aur <strong>purane workers ko tab tak jeene deta hai</strong> jab tak unki existing requests complete na ho jaayein &mdash; koi request bich mein cut nahi hoti.</p>
+
+    <p><strong>6. Production Configuration (checklist):</strong> Real project mein pichle saare phases ek saath combine hote hain:</p>
+    <pre><code class="language-nginx">server {
+  listen 443 ssl;
+  server_name myshop.com;
+  ssl_certificate     /etc/letsencrypt/live/myshop.com/fullchain.pem;
+  ssl_certificate_key /etc/letsencrypt/live/myshop.com/privkey.pem;
+
+  root /var/www/myshop/dist;
+  index index.html;
+  client_max_body_size 20M;
+  gzip on;
+
+  location / { try_files $uri $uri/ /index.html; }
+  location /api/ {
+    proxy_pass http://backend_servers/;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_read_timeout 10s;
+  }
+}</code></pre>
+    <p><em>Real use:</em> Yeh ek hi file mein SSL (P3) + static/SPA (P5) + body-size/gzip (P6) + reverse proxy headers/timeout (P2/P6) &mdash; sab jud jaate hain. Interview mein aksar poocha jaata hai: <em>"production config likho"</em> &mdash; isi tarah ka combined answer expect hota hai.</p>
+
+    <p><strong>7. Nginx Performance Tuning (final checklist):</strong> Production jaane se pehle yeh sab verify karo:</p>
+    <div class="table-wrap"><table>
+      <tr><th>Setting</th><th>Kyun</th></tr>
+      <tr><td><code>worker_processes auto;</code></td><td>Sab CPU cores use ho</td></tr>
+      <tr><td><code>gzip on;</code></td><td>Response size chhota</td></tr>
+      <tr><td><code>keepalive</code> (client + upstream)</td><td>Connection reuse, less handshakes</td></tr>
+      <tr><td><code>proxy_cache</code></td><td>Repeated requests backend/DB tak na jaayein</td></tr>
+      <tr><td><code>expires</code>/<code>Cache-Control</code></td><td>Static assets browser-cached rahein</td></tr>
+      <tr><td>Timeouts set</td><td>Hung backend Nginx ko block na kare</td></tr>
+    </table></div>
+    <p><em>Real use:</em> Yeh checklist <strong>Phase 6</strong> (Performance) ka hi production-ready summary hai &mdash; deploy se pehle ek-ek karke confirm karte hain ki sab lagaya gaya hai.</p>
+
+    <p style="margin-top:14px;"><strong>Ek line mein poora flow:</strong> <strong>PM2</strong> Node app ko alive rakhta hai (cluster mode) &rarr; <strong>EC2</strong> pe deploy karte waqt security group ports khulwana mat bhoolo &rarr; <strong>Jenkins</strong> build+deploy automate karta hai &rarr; deploy karte waqt <strong>PM2 reload</strong> (backend) + <strong>Nginx graceful reload</strong> (config) se <strong>zero-downtime</strong> milta hai &rarr; aur production config mein pichle saare phases (SSL, static, proxy, performance) ek saath combine hote hain.</p>
   </div>
 </section>
 
