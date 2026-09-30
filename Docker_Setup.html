@@ -1,0 +1,1984 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Docker Project Setup</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,500;8..60,600;8..60,700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/javascript.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/dockerfile.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/yaml.min.js"></script>
+<style>
+:root{
+  --bg:#f4f6f5;
+  --surface:#ffffff;
+  --surface-alt:#eaf0ed;
+  --text:#1c2624;
+  --text-secondary:#54625d;
+  --accent:#2f7d64;
+  --accent-strong:#1f5b47;
+  --accent-tint:#e2efe9;
+  --warn:#a9691a;
+  --warn-tint:#faecd7;
+  --border:#dbe3df;
+  --code-bg:#eef2f0;
+  --code-text:#28352f;
+  --shadow: 0 1px 2px rgba(20,30,26,0.05), 0 6px 20px rgba(20,30,26,0.06);
+  --radius-s:6px;
+  --radius-m:10px;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#121815;
+    --surface:#182120;
+    --surface-alt:#1e2926;
+    --text:#e6ece9;
+    --text-secondary:#96a49e;
+    --accent:#5cc19d;
+    --accent-strong:#8adcbc;
+    --accent-tint:#1d332b;
+    --warn:#e3a548;
+    --warn-tint:#332714;
+    --border:#2b3532;
+    --code-bg:#141c1a;
+    --code-text:#d9e4de;
+    --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px rgba(0,0,0,0.35);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#121815;
+  --surface:#182120;
+  --surface-alt:#1e2926;
+  --text:#e6ece9;
+  --text-secondary:#96a49e;
+  --accent:#5cc19d;
+  --accent-strong:#8adcbc;
+  --accent-tint:#1d332b;
+  --warn:#e3a548;
+  --warn-tint:#332714;
+  --border:#2b3532;
+  --code-bg:#141c1a;
+  --code-text:#d9e4de;
+  --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px rgba(0,0,0,0.35);
+}
+
+*{box-sizing:border-box;}
+html{color-scheme:light dark;}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:'IBM Plex Sans', system-ui, -apple-system, sans-serif;
+  font-size:15.5px;
+  line-height:1.6;
+}
+h1,h2,h3{
+  font-family:'Source Serif 4', Georgia, serif;
+  text-wrap:balance;
+  color:var(--text);
+  margin:0;
+}
+code, pre, .mono, .chapter-num, .qa-id, .kbd{
+  font-family:'IBM Plex Mono', 'Consolas', monospace;
+}
+a{color:var(--accent-strong);}
+
+/* ---------- App shell ---------- */
+.app{
+  display:grid;
+  grid-template-columns: 300px minmax(0,1fr);
+  min-height:100vh;
+  max-width:1320px;
+  margin:0 auto;
+}
+@media (max-width: 880px){
+  .app{grid-template-columns:1fr;}
+  .sidebar{position:relative; height:auto; top:0;}
+}
+
+/* ---------- Sidebar ---------- */
+.sidebar{
+  border-right:1px solid var(--border);
+  padding:28px 20px 28px 24px;
+  position:sticky;
+  top:0;
+  align-self:start;
+  height:100vh;
+  overflow-y:auto;
+  display:flex;
+  flex-direction:column;
+  gap:18px;
+}
+.brand{
+  display:flex;
+  flex-direction:column;
+  gap:4px;
+}
+.brand .eyebrow{
+  font-family:'IBM Plex Mono', monospace;
+  font-size:11px;
+  letter-spacing:0.09em;
+  text-transform:uppercase;
+  color:var(--accent-strong);
+}
+.brand h1{
+  font-size:22px;
+  font-weight:600;
+  line-height:1.2;
+}
+.brand .sub{
+  font-size:12.5px;
+  color:var(--text-secondary);
+}
+
+.search-box{
+  position:relative;
+}
+.search-box input{
+  width:100%;
+  padding:9px 12px 9px 32px;
+  border-radius:var(--radius-s);
+  border:1px solid var(--border);
+  background:var(--surface);
+  color:var(--text);
+  font-size:13.5px;
+  font-family:inherit;
+}
+.search-box input:focus{
+  outline:2px solid var(--accent);
+  outline-offset:1px;
+}
+.search-box svg{
+  position:absolute;
+  left:9px;
+  top:50%;
+  transform:translateY(-50%);
+  width:14px;
+  height:14px;
+  color:var(--text-secondary);
+  pointer-events:none;
+}
+
+.progress-card{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--radius-m);
+  padding:12px 14px;
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+}
+.progress-card .row{
+  display:flex;
+  justify-content:space-between;
+  align-items:baseline;
+  font-size:12.5px;
+  color:var(--text-secondary);
+}
+.progress-card .row strong{
+  color:var(--text);
+  font-family:'IBM Plex Mono', monospace;
+  font-variant-numeric: tabular-nums;
+  font-size:13px;
+}
+.progress-bar{
+  height:6px;
+  border-radius:4px;
+  background:var(--surface-alt);
+  overflow:hidden;
+}
+.progress-bar-fill{
+  height:100%;
+  background:var(--accent);
+  width:0%;
+  transition:width .25s ease;
+}
+
+.toggle-row{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  font-size:12.5px;
+  color:var(--text-secondary);
+  cursor:pointer;
+  user-select:none;
+}
+.toggle-row input{accent-color:var(--accent);}
+
+nav.chapters{
+  display:flex;
+  flex-direction:column;
+  gap:2px;
+  overflow-y:auto;
+  flex:1;
+}
+nav.chapters a{
+  display:flex;
+  justify-content:space-between;
+  gap:8px;
+  align-items:baseline;
+  text-decoration:none;
+  color:var(--text-secondary);
+  padding:7px 8px;
+  border-radius:var(--radius-s);
+  font-size:13px;
+}
+nav.chapters a:hover{background:var(--surface-alt); color:var(--text);}
+nav.chapters a .n{
+  font-family:'IBM Plex Mono', monospace;
+  font-size:11px;
+  color:var(--accent-strong);
+  min-width:18px;
+}
+nav.chapters a .title{flex:1;}
+nav.chapters a .count{
+  font-family:'IBM Plex Mono', monospace;
+  font-size:11px;
+  font-variant-numeric: tabular-nums;
+  color:var(--text-secondary);
+}
+
+/* ---------- Main ---------- */
+main{
+  padding:32px 40px 120px;
+  min-width:0;
+}
+@media (max-width: 620px){
+  main{padding:24px 18px 100px;}
+}
+
+.toolbar{
+  position:sticky;
+  top:0;
+  z-index:5;
+  background:var(--bg);
+  padding:10px 0 14px;
+  margin-bottom:10px;
+  border-bottom:1px solid var(--border);
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  align-items:center;
+}
+.toolbar .btn{
+  font-family:'IBM Plex Mono', monospace;
+  font-size:12px;
+  letter-spacing:0.02em;
+  border:1px solid var(--border);
+  background:var(--surface);
+  color:var(--text);
+  padding:7px 12px;
+  border-radius:var(--radius-s);
+  cursor:pointer;
+}
+.toolbar .btn:hover{border-color:var(--accent);}
+.toolbar .spacer{flex:1;}
+.toolbar .hint{
+  font-size:12px;
+  color:var(--text-secondary);
+}
+.no-results{
+  display:none;
+  padding:40px 0;
+  text-align:center;
+  color:var(--text-secondary);
+  font-size:14px;
+}
+
+.chapter{
+  padding-top:38px;
+  scroll-margin-top:70px;
+}
+.chapter:first-of-type{padding-top:14px;}
+.chapter-head{
+  display:flex;
+  align-items:baseline;
+  gap:14px;
+  margin-bottom:16px;
+  padding-bottom:10px;
+  border-bottom:2px solid var(--accent-tint);
+}
+.chapter-num{
+  font-size:13px;
+  color:var(--accent-strong);
+  font-weight:600;
+}
+.chapter-head h2{
+  font-size:23px;
+  font-weight:600;
+}
+
+.qa-list{display:flex; flex-direction:column; gap:10px;}
+
+.qa{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--radius-m);
+  overflow:hidden;
+}
+.qa.important{border-color:color-mix(in srgb, var(--warn) 45%, var(--border));}
+
+.qa-toggle{
+  width:100%;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:13px 16px;
+  background:none;
+  border:none;
+  text-align:left;
+  cursor:pointer;
+  font-family:inherit;
+  color:var(--text);
+}
+.qa-toggle:focus-visible{outline:2px solid var(--accent); outline-offset:-2px;}
+.qa-q{
+  flex:1;
+  font-size:14.5px;
+  font-weight:500;
+  line-height:1.4;
+}
+.flag{
+  font-family:'IBM Plex Mono', monospace;
+  font-size:10px;
+  letter-spacing:0.06em;
+  text-transform:uppercase;
+  padding:2px 7px;
+  border-radius:20px;
+  white-space:nowrap;
+}
+.flag.important{background:var(--warn-tint); color:var(--warn);}
+.qa-chevron{
+  color:var(--text-secondary);
+  transition:transform .18s ease;
+  font-size:14px;
+  flex-shrink:0;
+}
+.qa[data-open="true"] .qa-chevron{transform:rotate(90deg);}
+
+.qa-body{
+  display:none;
+  padding:0 16px 16px 16px;
+  border-top:1px solid var(--border);
+  font-size:14px;
+}
+.qa[data-open="true"] .qa-body{display:block; padding-top:14px;}
+
+.qa-body p{margin:0 0 10px;}
+.qa-body ul, .qa-body ol{margin:0 0 10px; padding-left:20px;}
+.qa-body li{margin-bottom:5px;}
+.qa-body li:last-child{margin-bottom:0;}
+.qa-body strong{color:var(--text); font-weight:600;}
+
+.diagram{
+  margin:10px 0;
+  padding:10px 12px;
+  border-left:3px solid var(--accent);
+  background:var(--accent-tint);
+  border-radius:0 var(--radius-s) var(--radius-s) 0;
+  font-size:13px;
+  color:var(--text-secondary);
+}
+.diagram .diagram-label{
+  font-family:'IBM Plex Mono', monospace;
+  font-size:10px;
+  text-transform:uppercase;
+  letter-spacing:0.08em;
+  color:var(--accent-strong);
+  display:block;
+  margin-bottom:4px;
+}
+.example{
+  margin:10px 0;
+  padding:10px 12px;
+  border-left:3px solid var(--accent);
+  background:var(--accent-tint);
+  border-radius:0 var(--radius-s) var(--radius-s) 0;
+  font-size:13px;
+  color:var(--text-secondary);
+}
+.example .lbl{
+  font-family:'IBM Plex Mono', monospace;
+  font-size:10px;
+  text-transform:uppercase;
+  letter-spacing:0.07em;
+  color:var(--accent-strong);
+  display:block;
+  margin-bottom:4px;
+}
+.gotcha{
+  margin:10px 0;
+  padding:10px 12px;
+  border-left:3px solid var(--warn);
+  background:var(--warn-tint);
+  border-radius:0 var(--radius-s) var(--radius-s) 0;
+  font-size:13px;
+  color:var(--text-secondary);
+}
+.gotcha .lbl{
+  font-family:'IBM Plex Mono', monospace;
+  font-size:10px;
+  text-transform:uppercase;
+  letter-spacing:0.07em;
+  color:var(--warn);
+  display:block;
+  margin-bottom:4px;
+}
+.oneline{
+  background:var(--surface);
+  border:1px dashed var(--accent);
+  border-radius:var(--radius-m);
+  padding:11px 14px;
+  font-size:13px;
+  color:var(--text-secondary);
+  margin:12px 0;
+}
+.oneline strong{color:var(--accent-strong);}
+
+pre{
+  background:var(--code-bg);
+  border:1px solid var(--border);
+  border-radius:var(--radius-s);
+  padding:12px 14px;
+  overflow-x:auto;
+  margin:10px 0;
+}
+pre code{
+  font-size:12.5px;
+  line-height:1.55;
+  color:var(--code-text);
+  background:none;
+}
+.qa-body table{
+  border-collapse:collapse;
+  width:100%;
+  font-size:13px;
+  margin:10px 0;
+}
+.table-wrap{overflow-x:auto; margin:10px 0;}
+.table-wrap table{margin:0;}
+.qa-body th, .qa-body td{
+  border:1px solid var(--border);
+  padding:7px 10px;
+  text-align:left;
+  vertical-align:top;
+}
+.qa-body th{
+  background:var(--surface-alt);
+  font-weight:600;
+  font-size:12px;
+  text-transform:uppercase;
+  letter-spacing:0.03em;
+  color:var(--text-secondary);
+}
+.qa-body td code, .qa-body p code, .qa-body li code{
+  background:var(--code-bg);
+  padding:1px 5px;
+  border-radius:4px;
+  font-size:12.5px;
+  color:var(--accent-strong);
+}
+
+.mark-known{
+  display:flex;
+  align-items:center;
+  gap:7px;
+  margin-top:12px;
+  padding-top:12px;
+  border-top:1px dashed var(--border);
+  font-size:12.5px;
+  color:var(--text-secondary);
+  cursor:pointer;
+  user-select:none;
+  width:fit-content;
+}
+.mark-known input{accent-color:var(--accent); width:14px; height:14px;}
+
+.qa.learned{opacity:0.68;}
+.qa.learned .qa-q{text-decoration:line-through; text-decoration-color:var(--accent); text-decoration-thickness:1.5px;}
+
+.chapter-recap{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--radius-m);
+  padding:16px 18px 18px;
+}
+.chapter-recap .recap-label{
+  font-family:'IBM Plex Mono', monospace;
+  font-size:11px;
+  text-transform:uppercase;
+  letter-spacing:0.08em;
+  color:var(--accent-strong);
+  display:block;
+  margin-bottom:10px;
+}
+.chapter-recap ul{
+  margin:0;
+  padding-left:18px;
+  columns:2;
+  column-gap:28px;
+}
+.chapter-recap li{
+  margin-bottom:7px;
+  break-inside:avoid;
+  font-size:13px;
+  color:var(--text-secondary);
+  line-height:1.45;
+}
+@media (max-width:620px){ .chapter-recap ul{columns:1;} }
+
+footer{
+  margin-top:50px;
+  padding-top:20px;
+  border-top:1px solid var(--border);
+  font-size:12px;
+  color:var(--text-secondary);
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+<aside class="sidebar">
+  <div class="brand">
+    <span class="eyebrow">Reference &middot; Infra &middot; 5 YOE Level</span>
+    <h1>Docker Interview Prep</h1>
+    <span class="sub" id="statsLine">Containers &middot; Images &middot; Compose &middot; Orchestration</span>
+  </div>
+
+  <div class="search-box">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+    <input type="text" id="searchInput" placeholder="Search questions, code, terms&hellip;" autocomplete="off">
+  </div>
+
+  <div class="progress-card">
+    <div class="row"><span>Reviewed</span><strong id="progressLabel">0 / 0</strong></div>
+    <div class="progress-bar"><div class="progress-bar-fill" id="progressFill"></div></div>
+    <label class="toggle-row">
+      <input type="checkbox" id="importantOnly">
+      Show V.IMP only <span class="mono" style="opacity:.7" id="impCount">(0)</span>
+    </label>
+  </div>
+
+  <nav class="chapters" id="chapterNav"></nav>
+</aside>
+
+<main>
+  <div class="toolbar">
+    <button class="btn" id="expandAllBtn">Expand all</button>
+    <button class="btn" id="collapseAllBtn">Collapse all</button>
+    <span class="spacer"></span>
+    <span class="hint">Click a question to reveal the answer &mdash; try recalling it first.</span>
+  </div>
+
+  <div class="no-results" id="noResults">No questions match your search.</div>
+
+  <div class="chapter-recap" style="margin-bottom:30px;">
+    <span class="recap-label">Shuru Karne Se Pehle &mdash; Docker Kyun Aaya?</span>
+
+    <h4 style="margin:0 0 .6rem;color:var(--accent)">Problem Docker se pehle (2013 se pehle)</h4>
+    <p>Ek company apna app 3 jagah deploy karti thi &mdash; dev laptop, testing server, production server. Har jagah:</p>
+    <ol>
+      <li><strong>Manually setup karna padta tha</strong> &mdash; Node install karo, sahi version, sahi OS packages, sahi environment variables. Har naye server pe <strong>ghanton lagte the</strong>.</li>
+      <li><strong>"Works on my machine" problem</strong> &mdash; dev ke laptop pe chalta tha, production pe crash ho jaata tha, kyunki dono jagah ki OS/library versions thodi alag hoti thi.</li>
+      <li><strong>Virtual Machines</strong> tab available thi (isolation ke liye), lekin VM bahut heavy thi &mdash; poora OS boot karna padta (GBs ki size, minutes ka boot time). Ek server pe 20-30 se zyada VMs nahi chala sakte the &mdash; resources khatam ho jaate.</li>
+    </ol>
+
+    <h4 style="margin:1.2rem 0 .6rem;color:var(--accent)">Turning point &mdash; Microservices ka trend</h4>
+    <p>Companies badi monolithic apps ko chhote-chhote services mein todne lagi (microservices). Ab problem aur badh gayi: 15 alag services hain, aur har ek ko apni VM chahiye &rarr; <strong>15 heavy VMs</strong> = bahut zyada cost + resources. Har service ki apni dependency versions ho sakti hain, inko isolate karna zaroori tha, <strong>lekin VM jaisa heavyweight isolation nahi chahiye tha</strong>.</p>
+
+    <h4 style="margin:1.2rem 0 .6rem;color:var(--accent)">Docker ne kya solve kiya</h4>
+    <p>2013 mein Docker aaya, jisne bola: <em>"Poora OS boot karne ki zaroorat nahi &mdash; Linux kernel mein pehle se namespaces/cgroups features hain jo lightweight isolation de sakte hain."</em></p>
+    <div class="table-wrap"><table>
+      <tr><th>Problem (before)</th><th>Docker ka solution</th></tr>
+      <tr><td>"Works on my machine"</td><td>App + dependencies ek image mein pack &mdash; jahan chalao, same environment</td></tr>
+      <tr><td>VM heavy hai (GBs, minutes)</td><td>Container light hai (MBs, seconds) &mdash; kernel share karta hai</td></tr>
+      <tr><td>Manual server setup ghanton leta hai</td><td><code>docker run</code> se seconds mein environment ready</td></tr>
+      <tr><td>Microservices ko 100s VMs chahiye</td><td>Same host pe 100s containers chal sakte hain (lightweight)</td></tr>
+    </table></div>
+
+    <p style="margin-top:14px;"><strong>Ek line mein:</strong> Docker isliye banaya gaya taaki VM jaisa isolation mile, lekin VM jaisa heavy overhead na ho &mdash; aur saath mein "environment consistency" (dev=prod) ka permanent solution mil jaaye. Yeh <strong>microservices era</strong> ki zaroorat thi &mdash; bina Docker jaisi cheez ke, microservices architecture practically scale hi nahi kar sakta tha.</p>
+
+    <p style="margin-top:10px; padding-top:12px; border-top:1px dashed var(--border);"><strong>Poora course isi ek core problem (consistency + lightweight isolation) ko step-by-step deeper solve karne ki journey hai</strong> &mdash; pehle single container isolate karna sikhte hain (01&ndash;03), phir data persist karna (04&mdash;Volumes), phir multiple containers ko baat karwana (05&mdash;Networking), phir sab ko ek saath manage karna (06&mdash;Compose), phir secure/production-ready banana (07&ndash;08), aur aakhir mein bade scale pe orchestrate karna (09).</p>
+  </div>
+
+  <div id="content">
+
+<!-- ============================================================ -->
+<section class="chapter" id="ch1" data-title="Fundamentals (Internals)">
+  <div class="chapter-head"><span class="chapter-num">01</span><h2>Docker Fundamentals (Internals)</h2></div>
+
+  <div class="chapter-recap" style="margin-bottom:22px;">
+    <span class="recap-label">Poora Concept Ek Saath &mdash; Real Project Story (TeamShop App)</span>
+
+    <p>Ek startup <strong>"TeamShop"</strong> apna e-commerce app bana rahi hai (Node.js + MongoDB). Dekho ek real project mein yeh saare Phase 1 concepts <strong>ek dusre se juda hokar</strong> kaise kaam karte hain:</p>
+
+    <p><strong>1. What is Docker:</strong> Team ke 4 developers ke laptop pe alag-alag Node versions hain &mdash; "works on my machine" bug baar-baar aata hai. Team decide karti hai <strong>Docker</strong> use karenge, taaki app + dependencies ek portable package mein pack ho jaayein, aur jahan bhi chalao, same environment mile.</p>
+
+    <p><strong>2. Containers:</strong> App ko 3 hisso mein todte hain &mdash; <strong>Auth service</strong>, <strong>Product service</strong>, <strong>Payment service</strong> &mdash; har ek apne <strong>alag container</strong> mein chalta hai. Product service crash ho jaaye (bug ki wajah se), toh Payment aur Auth <strong>bilkul unaffected</strong> rehte hain, alag-alag isolated hone ki wajah se.</p>
+
+    <p><strong>3. Containers vs VMs:</strong> Pehle team VM use karne ka soch rahi thi (3 services ke liye 3 VMs) &mdash; lekin VM heavy hai (GBs, minutes ka boot). Container light hai (MBs, seconds), aur host ka kernel share karta hai &mdash; isliye same server pe teeno containers <strong>bina extra cost ke</strong> chal jaate hain.</p>
+
+    <p><strong>4. Docker Architecture:</strong> Jab developer <code>docker run</code> chalata hai, uske peeche <strong>Client → Daemon → containerd → runc → Kernel</strong> chain kaam karti hai &mdash; command lekar, container banake, kernel-level isolation deke.</p>
+
+    <p><strong>5. Docker Engine:</strong> Har developer ke laptop aur production server, dono pe <strong>Docker Engine</strong> installed hai &mdash; yehi (Daemon + API + CLI) poora system hai jo upar wali architecture chain ko chalata hai.</p>
+
+    <p><strong>6. Docker CLI:</strong> Developer terminal mein <code>docker build</code>, <code>docker run</code> type karta hai &mdash; yeh commands CLI leke Engine tak bhejta hai. Baad mein yehi commands CI/CD pipeline (Jenkins) mein <strong>automatically</strong> bhi chalte hain, bina kisi insaan ke type kiye.</p>
+
+    <p><strong>7. Images:</strong> Har service ka apna <code>Dockerfile</code> hai, jisse ek <strong>Image</strong> banti hai (jaise Product service ke liye <code>teamshop-product:1.0</code>) &mdash; yeh ek read-only template hai, jisse jitne chaho utne containers spin up kar sakte ho.</p>
+
+    <p><strong>8. Docker Registry:</strong> Team apni images ko seedha laptop pe nahi rakhti &mdash; ek <strong>Registry</strong> (shared warehouse) pe push karti hai, taaki CI/CD server aur production server dono wahan se pull kar saken. Company apna proprietary code safe rakhne ke liye <strong>private registry</strong> (AWS ECR) use karti hai.</p>
+
+    <p><strong>9. Docker Hub:</strong> Lekin apna khud ka code likhne ke alawa, team ko ready-made cheezein bhi chahiye &mdash; jaise MongoDB, Nginx. Yeh sab <strong>Docker Hub</strong> (sabse bada public Registry) se <code>docker pull mongo</code> karke seedha mil jaati hain &mdash; khud se MongoDB install/build nahi karna padta.</p>
+
+    <div class="diagram"><span class="diagram-label">Poora flow ek diagram mein</span>
+<pre>Developer laptop (Docker Engine installed)
+   │  docker build (CLI se) → Image banti hai (teamshop-product:1.0)
+   ▼
+Docker Hub  ──pull──►  base images (node, mongo)  — ready-made cheezein
+   │
+   ▼
+Private Registry (AWS ECR)  ◄──push── apni banayi image yahan store
+   │
+   ▼
+Production server: docker pull + docker run
+   → Client → Daemon → containerd → runc → Kernel
+   → 3 alag Containers chalte hain (Auth, Product, Payment) — isolated, VM se halka</pre>
+    </div>
+
+    <p style="margin-top:14px;"><strong>Ek line mein:</strong> Docker (problem solver) → Containers (isolated running units) → jo VMs se halke hain → inhe Architecture (Client→Daemon→containerd→runc) banati hai → jo Docker Engine ke andar hi installed hoti hai → jisse baat CLI se karte hain → jo Images (blueprint) se containers banata hai → jo Registry mein store/share hoti hain → aur Docker Hub sabse bada public Registry hai jahan se ready-made images milti hain.</p>
+  </div>
+
+  <div class="qa-list">
+
+    <article class="qa important" data-id="1-1">
+      <button class="qa-toggle"><span class="qa-q">Docker kya hai aur kyun use karte hain?</span><span class="flag important">V.IMP</span><span class="qa-chevron">›</span></button>
+      <div class="qa-body">
+        <p><strong>Docker</strong> ek <strong>containerization platform</strong> hai jo application ko uski saari dependencies (code, runtime, libraries, OS-level config) ke saath ek <strong>portable package (image)</strong> mein pack kar deta hai, jise phir <strong>container</strong> ki tarah kahin bhi run kar sakte ho &mdash; "mere machine pe toh chal raha tha" wali problem yahin khatam ho jaati hai.</p>
+
+        <h4 style="margin:1.2rem 0 .6rem;color:var(--accent)">Scenario 1 &mdash; "Works on my machine" (Docker se pehle)</h4>
+        <p>Ek 4-member team ek Node.js + MongoDB project pe kaam kar rahi hai. Ek din QA ko production-jaisa bug reproduce nahi ho raha:</p>
+        <ol>
+          <li><strong>Developer A</strong> ke laptop pe <strong>Node v18</strong> hai, code perfectly chalta hai.</li>
+          <li><strong>Developer B</strong> ke laptop pe <strong>Node v16</strong> hai (kabhi update hi nahi kiya) &mdash; ek naya JS syntax feature use hua hai jo v16 mein <strong>silently different</strong> behave karta hai, ek subtle bug create hota hai.</li>
+          <li><strong>QA server</strong> pe MongoDB ka <strong>alag version</strong> install hai &mdash; ek query jo dev mein chal rahi thi, QA mein <strong>error</strong> deti hai.</li>
+          <li>Result: sabka "mera code toh sahi hai" &mdash; ghanton debug karne ke baad pata chalta hai problem code mein nahi, <strong>environment mismatch</strong> mein thi.</li>
+        </ol>
+
+        <h4 style="margin:1.2rem 0 .6rem;color:var(--accent)">Scenario 2 &mdash; Wahi setup, Docker ke saath</h4>
+        <p>Ab team ek <code>Dockerfile</code> likh deti hai jo exact environment define karta hai:</p>
+        <pre><code class="language-dockerfile">FROM node:18-alpine     # Node version fixed — sabke liye same
+WORKDIR /app
+COPY package*.json ./
+RUN npm install
+COPY . .
+CMD ["node", "server.js"]</code></pre>
+        <p>Ab poori team, QA, aur production &mdash; sab isi <strong>ek hi image</strong> se container chalate hain:</p>
+        <pre><code class="language-bash">docker build -t myapp:1.0 .     # image banao (ek baar)
+docker run -p 3000:3000 myapp:1.0   # jahan bhi chalao, andar Node v18 hi hoga</code></pre>
+        <div class="diagram"><span class="diagram-label">Before vs After</span>
+<pre>WITHOUT Docker                          WITH Docker
+Dev A: Node v18  ─┐                     Dev A ─┐
+Dev B: Node v16  ─┼─ 3 alag behaviors    Dev B ─┼─ sab ek hi image chalate hain
+QA:    Node v20  ─┘   ("bug kahin nahi   QA   ─┼─ (Node v18-alpine, fixed)
+Prod:  Node v18       milta")           Prod ─┘   → same behavior har jagah</pre>
+        </div>
+        <p><strong>Result:</strong> Developer B ka laptop bhale hi Node v16 pe ho, container ke <strong>andar</strong> hamesha Node v18 hi chalega, kyunki container apna khud ka isolated runtime carry karta hai, host ke installed Node version se koi lena-dena nahi. Bug turant reproduce ho gaya, kyunki QA aur dev exact <strong>same image</strong> use kar rahe the.</p>
+
+        <h4 style="margin:1.2rem 0 .6rem;color:var(--accent)">4 core benefits &mdash; ek-ek example ke saath</h4>
+        <ul>
+          <li><strong>Consistency</strong> &mdash; upar wala hi example: dev, QA, staging, prod &mdash; sab jagah <code>myapp:1.0</code> image se container chalta hai, environment kabhi drift nahi karta.</li>
+          <li><strong>Isolation</strong> &mdash; ek e-commerce server pe Node API container aur Redis container dono chal rahe hain; Node app mein memory leak ho jaaye aur wo crash ho, Redis container <strong>bilkul unaffected</strong> rehta hai (alag namespace/process, alag resource limits).</li>
+          <li><strong>Portability</strong> &mdash; wahi <code>myapp:1.0</code> image developer ke Mac laptop, company ke on-prem Linux server, aur AWS EC2 &mdash; teeno jagah <strong>bina kisi change ke</strong> chal jaati hai.</li>
+          <li><strong>Fast startup</strong> &mdash; VM boot karne mein 1-2 minute lagte (poora OS load hota hai); Docker container container host ka hi kernel use karta hai, isliye <code>docker run</code> se app <strong>1-2 second mein</strong> chalu ho jaata hai &mdash; auto-scaling/CI pipelines mein yeh farq bahut matter karta hai.</li>
+        </ul>
+
+        <div class="example"><span class="lbl">Real onboarding example</span>Naya developer join karta hai &mdash; bina Node, MongoDB, ya kisi bhi tool ko manually apne laptop pe install kiye, sirf <code>docker compose up</code> chalata hai aur poora project (API + DB) <strong>10 second mein</strong> chalu ho jaata hai. Docker install hone ke alawa <strong>kuch aur setup hi nahi karna padta.</strong></div>
+
+        <div class="gotcha"><span class="lbl">Common confusion — laptop ka Node upgrade/downgrade hota hai kya?</span>
+          <p style="margin:6px 0 8px;"><strong>Nahi.</strong> Container image mein <code>node:18</code> likhne se developer ke <strong>laptop ka actual Node kabhi touch nahi hota</strong> &mdash; wo apni jagah waisa hi (v16) pada rehta hai. Laptop ka Node aur container ke andar ka Node <strong>do bilkul alag, independent cheezein</strong> hain, bas ek hi machine pe saath-saath reh rahi hain (jaise phone aur PlayStation ek hi ghar mein, par ek dusre se unrelated).</p>
+          <pre><code class="language-bash"># Laptop pe seedha terminal mein (bina Docker ke)
+node -v
+# → v16.x.x    (yeh developer ka apna, jo waisa hi rahega)
+
+# Container ke andar (jo chal raha hai) check karo
+docker exec -it myapp node -v
+# → v18.x.x    (image mein jo pack tha, wahi milega)</code></pre>
+          <p style="margin:8px 0 0;">Jab bhi <code>docker run</code> se app start hoti hai, wo <strong>sirf container ke andar wale Node</strong> ko dekhti hai &mdash; uss waqt ke liye laptop ka Node <strong>exist hi nahi karta</strong> app ke perspective se. Isi wajah se 5 developers ke laptop pe 5 alag Node versions ho sakte hain, phir bhi sab <code>docker run</code> karke <strong>same Node v18 wale container</strong> pe kaam karenge.</p>
+        </div>
+        <label class="mark-known"><input type="checkbox" class="know-check"> Mark as learned</label>
+      </div>
+    </article>
+
+    <article class="qa important" data-id="1-2">
+      <button class="qa-toggle"><span class="qa-q">Container kya hota hai?</span><span class="flag important">V.IMP</span><span class="qa-chevron">›</span></button>
+      <div class="qa-body">
+        <p>Ek <strong>Container</strong> ek image ka <strong>running, isolated instance</strong> hai &mdash; jaise ek recipe book (Image) follow karke abhi <strong>banaya/chal raha khana</strong>. Andar app chal rahi hai, apni memory, apna process, apna network le ke, lekin host machine ke <strong>kernel ko share</strong> karte hue.</p>
+        <div class="example"><span class="lbl">Real production example</span>Ek e-commerce app mein 3 alag microservices hain &mdash; <strong>Auth</strong>, <strong>Payment</strong>, <strong>Product Catalog</strong>. Har ek apne <strong>alag container</strong> mein chalta hai. Agar Product Catalog container mein memory leak ho aur wo crash ho jaaye, <strong>Payment aur Auth containers bilkul unaffected</strong> rehte hain &mdash; alag "kamre" (namespace) hone ki wajah se ek ki problem dusre tak nahi pahunchti.</div>
+        <div class="oneline"><strong>Yaad rakhne ka tareeka:</strong> Image = "recipe book" (fixed), Container = "abhi chal raha khana/kamra" (running, isolated, delete ho sakta hai bina recipe ko touch kiye).</div>
+        <label class="mark-known"><input type="checkbox" class="know-check"> Mark as learned</label>
+      </div>
+    </article>
+
+    <article class="qa important" data-id="1-3">
+      <button class="qa-toggle"><span class="qa-q">Containers vs VMs &mdash; internals level pe kya farq hai?</span><span class="flag important">V.IMP</span><span class="qa-chevron">›</span></button>
+      <div class="qa-body">
+        <h4 style="margin:0 0 .6rem;color:var(--accent)">Kissa — Independent Flat vs PG (Hostel) ka kamra</h4>
+        <p>Socho do tarah ke rehne ke options hain:</p>
+        <ul>
+          <li><strong>Independent Flat</strong> &mdash; apna khud ka paani ka tank, apna generator, apna sab kuch alag se lagana padta hai. Bahut <strong>secure aur independent</strong> hai, lekin banane mein <strong>mahina lagta hai aur bahut mehenga</strong> hai.</li>
+          <li><strong>PG (Hostel) ka ek kamra</strong> &mdash; poori building ka <strong>ek hi paani connection, ek hi bijli meter</strong> (shared) use hota hai, lekin har kamre ka <strong>apna lock</strong> hai (koi dusre ke kamre mein nahi ghus sakta), aur warden ne har kamre ki <strong>bijli/paani ki limit</strong> bhi tay kar rakhi hai. Kamra <strong>turant milta hai</strong>, bahut sasta hai.</li>
+        </ul>
+        <p><strong>VM</strong> = Independent Flat &mdash; apna poora <strong>guest OS</strong> chalata hai (hypervisor ke upar), apna alag kernel &mdash; heavy (GBs), slow boot (minutes). <strong>Container</strong> = PG ka kamra &mdash; host OS ka hi <strong>kernel share</strong> karta hai (ek hi building), sirf apne "kamre" (process) tak limited &mdash; light (MBs), fast boot (seconds).</p>
+        <div class="diagram"><span class="diagram-label">VM vs Container Stack</span>
+<pre>VM Model                          Container Model
+─────────────                     ─────────────────
+App A | App B                     App A | App B
+Guest OS | Guest OS                Docker Engine (containerd)
+Hypervisor                        Host OS Kernel (shared)
+Host OS                           Host Hardware
+Host Hardware</pre>
+        </div>
+        <p><strong>Isolation kaise milta hai (interview-level detail):</strong></p>
+        <ul>
+          <li><strong>Namespaces</strong> (= kamre ka <strong>lock</strong>) &mdash; har container ko apna <strong>isolated view</strong> milta hai: PID namespace (apne hi processes dikhte hain), Network namespace (apna IP/ports), Mount namespace (apna filesystem view), UTS (hostname).</li>
+          <li><strong>cgroups</strong> (= warden ki <strong>bijli/paani limit</strong>) &mdash; container kitna <strong>CPU/memory/disk I/O</strong> use kar sakta hai, uski limit lagate hain &mdash; ek container poore host ke resources hog nahi kar sakta.</li>
+        </ul>
+        <div class="table-wrap"><table>
+          <tr><th>#</th><th>VM</th><th>Container</th></tr>
+          <tr><td>Isolation level</td><td>Full OS (hardware-level via hypervisor)</td><td>Process-level (namespaces + cgroups)</td></tr>
+          <tr><td>Size</td><td>GBs (poora OS)</td><td>MBs (sirf app + deps)</td></tr>
+          <tr><td>Boot time</td><td>Minutes</td><td>Seconds</td></tr>
+          <tr><td>Kernel</td><td>Apna alag kernel</td><td>Host kernel shared</td></tr>
+          <tr><td>Density</td><td>Kam VMs per host</td><td>Sainkdon containers per host</td></tr>
+        </table></div>
+        <p><strong>Interview trap:</strong> "Docker container ek chhota VM hai?" &mdash; <strong>Nahi.</strong> Container VM nahi hai, yeh host OS ka hi ek <strong>isolated process</strong> hai. Isi wajah se container Linux-native hai (Windows/Mac pe Docker Desktop andar ek lightweight Linux VM chalata hai).</p>
+        <div class="oneline"><strong>Kabhi na bhoolne wali theory:</strong> VM = <strong>apna alag ghar</strong> (apna poora kernel/OS) &mdash; heavy, independent. Container = <strong>ek building ke andar apna kamra</strong> (shared kernel, apna lock + apni limit) &mdash; light, fast. Dono mein isolation hai, lekin VM "sab kuch apna" banata hai, Container sirf "apni jagah" banata hai.</div>
+        <label class="mark-known"><input type="checkbox" class="know-check"> Mark as learned</label>
+      </div>
+    </article>
+
+    <article class="qa important" data-id="1-4">
+      <button class="qa-toggle"><span class="qa-q">Docker Architecture kya hai? (Client, Daemon, containerd, runc, Registry)</span><span class="flag important">V.IMP</span><span class="qa-chevron">›</span></button>
+      <div class="qa-body">
+        <p>Architecture ko <strong>neeche se upar</strong> banate hain &mdash; har layer apne se ek neeche wali layer ko "use" karti hai, khud dobara wahi kaam nahi karti.</p>
+
+        <h4 style="margin:1.2rem 0 .6rem;color:var(--accent)">Layer 0 — Linux Kernel (foundation)</h4>
+        <p>Docker khud koi magic nahi karta &mdash; Linux kernel mein pehle se 2 features hote hain, Docker sirf unko <strong>use</strong> karta hai:</p>
+        <ul>
+          <li><strong>Namespaces</strong> &mdash; ek process ko "apni ek chhoti duniya" dikha dete hain (apna PID list, apna network, apna filesystem view). Isi se container ko lagta hai "mai akela hi chal raha hoon", jabki wahi machine pe 10 aur containers bhi chal rahe hain.</li>
+          <li><strong>cgroups</strong> &mdash; kitna CPU/RAM ek process use kar sakta hai, uski limit lagate hain.</li>
+        </ul>
+        <p><em>Kyun zaroori:</em> Bina inke, "container" ka concept hi exist nahi karta &mdash; yehi do cheezein isolation create karti hain.</p>
+
+        <h4 style="margin:1.2rem 0 .6rem;color:var(--accent)">Layer 1 — runc (kernel ke bilkul upar)</h4>
+        <p>Namespaces/cgroups ko manually set karna mushkil/error-prone hai. <strong>runc</strong> ek chhota tool hai jo instruction leta hai ("itna CPU do, yeh isolation do") aur kernel se baat karke <strong>asli container process</strong> bana deta hai (OCI standard).</p>
+        <p><em>Kyun zaroori:</em> Har baar manually namespaces/cgroups set na karna pade &mdash; ek standard, reusable tool.</p>
+
+        <h4 style="margin:1.2rem 0 .6rem;color:var(--accent)">Layer 2 — containerd (runc ke upar)</h4>
+        <p>Container banana kaafi nahi &mdash; manage bhi karna hai: start karo, stop karo, status check karo, multiple containers track karo. <strong>containerd</strong> yeh sab karta hai, aur zaroorat padne par runc ko bolta hai "ek naya container bana do".</p>
+        <p><em>Kyun zaroori:</em> runc sirf "banata" hai; "kaun sa container chal raha hai, kiska status kya hai" &mdash; yeh tracking/management alag layer honi chahiye.</p>
+
+        <h4 style="margin:1.2rem 0 .6rem;color:var(--accent)">Layer 3 — Docker Daemon / dockerd (containerd ke upar)</h4>
+        <p>Sirf container manage karna kaafi nahi &mdash; <strong>image banana</strong> (<code>docker build</code>), <strong>network banana</strong>, <strong>volume banana</strong>, <strong>registry se image download</strong> karna bhi chahiye. <strong>dockerd</strong> yeh sab handle karta hai, aur container-specific kaam ke liye niche containerd ko call karta hai.</p>
+        <p><em>Kyun zaroori:</em> containerd sirf "container chalane" tak limited hai &mdash; image build/networking/volumes Docker ke apne extra features hain, isliye alag layer.</p>
+
+        <h4 style="margin:1.2rem 0 .6rem;color:var(--accent)">Layer 4 — Docker Client / CLI (sabse upar, tumhare paas)</h4>
+        <p>Tum terminal mein jo type karte ho (<code>docker run</code>, <code>docker build</code>) &mdash; yeh <strong>Client</strong> hai. Yeh khud kuch nahi karta, bas command leke <strong>dockerd ko bhej deta hai</strong> (ek request ki tarah, chahe wahi machine ho).</p>
+        <p><em>Kyun zaroori:</em> Isi wajah se Docker Desktop (GUI) aur terminal (CLI) dono ek hi dockerd se baat kar sakte hain &mdash; interface alag, kaam karne wala same.</p>
+
+        <h4 style="margin:1.2rem 0 .6rem;color:var(--accent)">Registry — side mein ek alag cheez</h4>
+        <p>Yeh upar wali chain ka part nahi hai, balki ek <strong>storage jagah</strong> hai jahan images pehle se bani-banayi rakhi hoti hain (Docker Hub/ECR). Jab dockerd ko koi image local mein nahi milti, wahan se download karta hai.</p>
+
+        <div class="diagram"><span class="diagram-label">Poora stack — neeche se upar</span>
+<pre>┌─────────────────────────────┐
+│  Tum: "docker run nginx"     │   ← Layer 4: Client (command leta hai)
+└──────────────┬───────────────┘
+               ▼
+┌─────────────────────────────┐
+│  dockerd (Daemon)             │   ← Layer 3: images/network/volume + control
+└──────────────┬───────────────┘        │
+               ▼                         └── image nahi mili? → Registry se pull
+┌─────────────────────────────┐
+│  containerd                   │   ← Layer 2: container lifecycle manage
+└──────────────┬───────────────┘
+               ▼
+┌─────────────────────────────┐
+│  runc                         │   ← Layer 1: asli container process banata hai
+└──────────────┬───────────────┘
+               ▼
+┌─────────────────────────────┐
+│  Linux Kernel (namespaces,    │   ← Layer 0: foundation — isolation yahi se
+│  cgroups)                     │
+└─────────────────────────────┘</pre>
+        </div>
+
+        <div class="table-wrap"><table>
+          <tr><th>Component</th><th>Kaam (1 line)</th></tr>
+          <tr><td><strong>Client (CLI)</strong></td><td>Tumhara command leta hai, dockerd ko bhejta hai.</td></tr>
+          <tr><td><strong>Daemon (dockerd)</strong></td><td>Images, network, volumes manage karta hai — asli control yahin hai.</td></tr>
+          <tr><td><strong>containerd</strong></td><td>Container ka lifecycle (start/stop/status) manage karta hai.</td></tr>
+          <tr><td><strong>runc</strong></td><td>Kernel se baat karke asli isolated container process banata hai.</td></tr>
+          <tr><td><strong>Registry</strong></td><td>Images ka storage warehouse — Docker Hub (public) ya private (ECR).</td></tr>
+        </table></div>
+
+        <p><strong>Real project mein use — poora flow:</strong> Developer laptop pe <code>docker build</code>/<code>docker run</code> se local test karta hai → <code>docker push</code> se image Registry (shared warehouse) mein jaati hai → CI/CD pipeline (Jenkins/GitHub Actions) apne Daemon se khud image build+push karta hai → Production server <code>docker pull</code> + <code>docker run</code> se Registry se image mangwa ke, wahi Daemon → containerd → runc chain se container chala deta hai. <strong>Same mechanism har jagah</strong> chalta hai, isi wajah se "jo laptop pe chala, wahi production pe chalega" guarantee milti hai.</p>
+        <label class="mark-known"><input type="checkbox" class="know-check"> Mark as learned</label>
+      </div>
+    </article>
+
+    <article class="qa important" data-id="1-5">
+      <button class="qa-toggle"><span class="qa-q">Docker Engine kya hai?</span><span class="flag important">V.IMP</span><span class="qa-chevron">›</span></button>
+      <div class="qa-body">
+        <h4 style="margin:0 0 .6rem;color:var(--accent)">Kissa — Car ka Engine</h4>
+        <p>Socho ek <strong>car</strong> hai. Car chalane ke liye chahiye: <strong>engine</strong> (jo asli kaam karta hai — petrol jalana, wheels ghumana), <strong>steering wheel</strong> (jisse tum control karte ho), aur <strong>wiring/dashboard</strong> (jo steering ko engine se jodta hai).</p>
+        <p><strong>Docker Engine</strong> = poori <strong>car ka mechanical system</strong> &mdash; ismein 3 cheezein hoti hain:</p>
+        <ul>
+          <li><strong>dockerd (Daemon)</strong> = engine khud, jo asli kaam karta hai (images/containers manage).</li>
+          <li><strong>REST API</strong> = wiring, jo commands ko engine tak pahunchata hai.</li>
+          <li><strong>CLI</strong> = steering wheel, jisse tum drive karte ho.</li>
+        </ul>
+        <div class="example"><span class="lbl">Real production example</span>Jab company kehti hai "humne apne server pe Docker Engine install kiya", matlab wahan poora system chal raha hai &mdash; sirf CLI nahi, balki <strong>daemon + API dono</strong>, jo background mein images/containers manage karte hain, chahe koi terminal mein command daale ya na daale.</div>
+        <div class="oneline"><strong>Yaad rakhne ka tareeka:</strong> Docker Engine = "poori gaadi", Daemon = "engine", CLI = "steering wheel". Steering ke bina bhi (API se) gaadi chala sakte ho &mdash; isiliye Jenkins/Docker Desktop CLI use kiye bina bhi seedha API se Engine ko control karte hain.</div>
+        <label class="mark-known"><input type="checkbox" class="know-check"> Mark as learned</label>
+      </div>
+    </article>
+
+    <article class="qa important" data-id="1-6">
+      <button class="qa-toggle"><span class="qa-q">Docker CLI kya hai aur common commands kya hain?</span><span class="flag important">V.IMP</span><span class="qa-chevron">›</span></button>
+      <div class="qa-body">
+        <h4 style="margin:0 0 .6rem;color:var(--accent)">Kissa — Waiter ko order dena</h4>
+        <p>Restaurant mein tum waiter ko <strong>verbally order</strong> dete ho ("ek pizza"). <strong>CLI</strong> aisa hi hai &mdash; tumhare <strong>typed commands</strong> ko leke Daemon tak pahunchata hai. Yeh khud kuch nahi karta, bas message carry karta hai.</p>
+        <pre><code class="language-bash">docker --version      # installed version
+docker images         # local saari images list
+docker ps             # running containers
+docker ps -a          # sab containers (stopped bhi)
+docker info           # daemon/system details
+docker system df      # disk usage (images/containers/volumes)</code></pre>
+        <div class="example"><span class="lbl">Real production example</span>CLI sirf developer ke terminal mein nahi chalta &mdash; <strong>CI/CD scripts</strong> (Jenkins, GitHub Actions) ke andar bhi wahi CLI commands (<code>docker build</code>, <code>docker push</code>) automatically chalte hain, bina kisi insaan ke type kiye.</div>
+        <div class="oneline"><strong>Yaad rakhne ka tareeka:</strong> CLI = "order dene ka tareeka" — chahe insaan boley (terminal) ya machine boley (script), waiter (Daemon) tak baat wahi pahunchti hai. Aur: <code>images</code> = "kitni recipe books hain", <code>ps</code> = "abhi kitna khana ban raha hai", <code>ps -a</code> = "sab khana + jo khatam ho chuka wo bhi".</div>
+        <label class="mark-known"><input type="checkbox" class="know-check"> Mark as learned</label>
+      </div>
+    </article>
+
+    <article class="qa important" data-id="1-7">
+      <button class="qa-toggle"><span class="qa-q">Docker Image kya hai? Union filesystem/layers kaise kaam karta hai?</span><span class="flag important">V.IMP</span><span class="qa-chevron">›</span></button>
+      <div class="qa-body">
+        <h4 style="margin:0 0 .6rem;color:var(--accent)">Kissa — Recipe Book vs Asli Khana</h4>
+        <p>Socho tumhari maa ek <strong>recipe book</strong> likhti hai &mdash; usme likha hai "2 cup chawal, 1 spoon ghee, 20 min pakao." Yeh recipe book <strong>khud khana nahi hai</strong> &mdash; yeh sirf ek <strong>instruction set</strong> hai. Jab maa <strong>usse follow karke khana banati hai</strong>, tabhi <strong>asli khana (Container)</strong> taiyar hota hai, jise kha sakte ho.</p>
+        <p><strong>Image</strong> = <strong>Recipe book</strong> &mdash; ek fixed, likha hua template (code + dependencies + config). Isme badlaav nahi hota (read-only).</p>
+        <p><strong>Sabse important baat:</strong> Ek hi recipe book se maa <strong>kai baar</strong> khana bana sakti hai &mdash; aaj bhi, kal bhi, party mein 10 logo ke liye bhi. <strong>Ek Image se multiple Containers</strong> ban sakte hain, bilkul isi tarah.</p>
+
+        <h4 style="margin:1.2rem 0 .6rem;color:var(--accent)">Layers — "Recipe steps stack hote hain"</h4>
+        <p>Recipe mein steps hote hain (chawal dho lo → pani daalo → namak daalo → pakao). Docker image bhi aise hi <strong>layers mein</strong> bani hoti hai &mdash; Dockerfile ki har line ek layer:</p>
+        <div class="diagram"><span class="diagram-label">Image Layers (Union Filesystem)</span>
+<pre>Container writable layer   ← runtime changes (logs, temp files) — sirf isi mein write
+─────────────────────────
+Layer 4: COPY . .            ┐
+Layer 3: RUN npm install     │  Image ke read-only layers
+Layer 2: WORKDIR /app        │  (Dockerfile ki har line ~ ek layer)
+Layer 1: FROM node:18-alpine ┘</pre>
+        </div>
+        <p>Docker <strong>union filesystem</strong> (OverlayFS) use karta hai &mdash; sab read-only image layers <strong>ek stack</strong> ki tarah upar-neeche merge hoke ek single filesystem view dete hain, aur container start hote hi upar ek <strong>thin writable layer</strong> add hoti hai.</p>
+        <ul>
+          <li><strong>Layers reusable/shared hote hain</strong> &mdash; 5 alag projects agar same <code>node:18-alpine</code> base use karte hain, toh wo base layer disk pe <strong>sirf ek baar</strong> store hoti hai, sab share karte hain. (Jaise 5 alag recipes agar "chawal dho lo" common step hai, toh wahi step hai, alag-alag nahi.)</li>
+          <li><strong>Container delete</strong> hona = <strong>khana khatam hone pe plate khali ho jaana</strong> &mdash; recipe book (image) waisi ki waisi rehti hai, chaho toh phir se naya khana (naya container) bana sakte ho.</li>
+        </ul>
+        <div class="oneline"><strong>Kabhi na bhoolne wali theory:</strong> Image = read-only blueprint (layers ka stack). Container = us blueprint ka running instance (upar ek writable layer ke saath). Ek Image &rarr; Multiple Containers. Container delete = sirf writable layer gayab, Image untouched rehti hai.<br><span style="opacity:.8;">Trick: "Image = Recipe (fixed), Container = Khana jo plate mein bana (temporary, dobara bana sakte ho)."</span></div>
+        <label class="mark-known"><input type="checkbox" class="know-check"> Mark as learned</label>
+      </div>
+    </article>
+
+    <article class="qa important" data-id="1-8">
+      <button class="qa-toggle"><span class="qa-q">Docker Registry kya hai?</span><span class="flag important">V.IMP</span><span class="qa-chevron">›</span></button>
+      <div class="qa-body">
+        <h4 style="margin:0 0 .6rem;color:var(--accent)">Kissa — Godaam (Warehouse)</h4>
+        <p>Socho ek <strong>bada godaam</strong> hai jahan <strong>bani-banayi cheezein</strong> (images) rakhi hoti hain &mdash; koi bhi wahan se apni zaroorat ki cheez <strong>uthake (pull)</strong> le sakta hai, ya apni banayi cheez <strong>wahan rakh (push)</strong> sakta hai.</p>
+        <p><strong>Registry</strong> ek <strong>general term</strong> hai &mdash; koi bhi jagah jo Docker images store karti hai. Do tarah ki ho sakti hai:</p>
+        <ul>
+          <li><strong>Public Registry</strong> &mdash; sabke liye khula godaam (Docker Hub).</li>
+          <li><strong>Private Registry</strong> &mdash; company ka apna locked godaam (AWS ECR, GitLab Container Registry, Harbor) &mdash; sirf company ke log access kar sakte hain.</li>
+        </ul>
+        <div class="example"><span class="lbl">Real production example</span>Company apna <strong>proprietary/secret code</strong> kabhi Docker Hub (public) pe push nahi karti &mdash; wahan <strong>private registry</strong> (jaise AWS ECR) use karte hain, taaki source code leak na ho, sirf company ke servers hi wahan se pull kar sakein.</div>
+        <div class="oneline"><strong>Yaad rakhne ka tareeka:</strong> Registry = "godaam ka general naam" (kaisa bhi ho, public ya private) &mdash; jaise "dukaan" ek general word hai, chahe Kirana store ho ya Big Bazaar.</div>
+        <label class="mark-known"><input type="checkbox" class="know-check"> Mark as learned</label>
+      </div>
+    </article>
+
+    <article class="qa important" data-id="1-9">
+      <button class="qa-toggle"><span class="qa-q">Docker Hub kya hai?</span><span class="flag important">V.IMP</span><span class="qa-chevron">›</span></button>
+      <div class="qa-body">
+        <h4 style="margin:0 0 .6rem;color:var(--accent)">Kissa — Sabse Bada Public Godaam</h4>
+        <p><strong>Docker Hub</strong> = Registry ka <strong>sabse bada, sabse popular public version</strong> (jaise Amazon &mdash; sabse bada public marketplace). Yeh Docker company ka apna <strong>official Registry</strong> hai.</p>
+        <pre><code class="language-bash">docker pull node:18-alpine    # Docker Hub se hi aa raha hai (default)
+docker pull mongo
+docker pull nginx</code></pre>
+        <div class="example"><span class="lbl">Real production example</span>Jab bhi tum <code>docker pull node</code> likhte ho (bina kisi aur registry ka naam diye), Docker <strong>by default Docker Hub</strong> se hi download karta hai. Real projects mein "official images" (Node, MongoDB, Nginx, Redis &mdash; jo khud company banati/verify karti hai) yahin se milti hain; apna khud ka open-source project image bhi yahan free mein publish kar sakte ho.</div>
+        <div class="oneline"><strong>Yaad rakhne ka tareeka:</strong> Docker Hub = "sabse bada public Registry". Har Docker Hub ek Registry hai, lekin har Registry Docker Hub nahi hai (jaise "har Xerox photocopier hai, har photocopier Xerox nahi").</div>
+        <label class="mark-known"><input type="checkbox" class="know-check"> Mark as learned</label>
+      </div>
+    </article>
+
+  </div>
+
+  <div class="chapter-recap">
+    <span class="recap-label">Quick Revision &mdash; Fundamentals Summary</span>
+    <ul>
+      <li><strong>Docker</strong> &mdash; app + dependencies ko portable container mein pack karta hai; "works on my machine" problem solve karta hai.</li>
+      <li><strong>Container</strong> &mdash; ek image ka running, isolated instance; ek crash ho toh dusre unaffected rehte hain.</li>
+      <li><strong>vs VM</strong> &mdash; container host kernel share karta hai (namespaces + cgroups), VM apna poora guest OS chalata hai; container light aur fast hai.</li>
+      <li><strong>Architecture</strong> &mdash; CLI → dockerd → containerd → runc → kernel; images Registry (Docker Hub/ECR) se aati hain.</li>
+      <li><strong>Docker Engine</strong> &mdash; dockerd + REST API + CLI ka combined system.</li>
+      <li><strong>Docker CLI</strong> &mdash; commands leke Daemon tak pahunchata hai; terminal aur CI/CD scripts dono use karte hain.</li>
+      <li><strong>Image</strong> &mdash; read-only blueprint (layers ka stack); Container uska running instance; layer sharing se disk space bachta hai.</li>
+      <li><strong>Registry</strong> &mdash; general term, images store karne ki jagah (public ya private).</li>
+      <li><strong>Docker Hub</strong> &mdash; sabse bada public Registry, official images (Node/Mongo/Nginx) ka default source.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<section class="chapter" id="ch2" data-title="Dockerfile & Image Optimization">
+  <div class="chapter-head"><span class="chapter-num">02</span><h2>Dockerfile &amp; Image Optimization</h2></div>
+  <div class="qa-list">
+
+    <article class="qa important" data-id="2-1">
+      <button class="qa-toggle"><span class="qa-q">Dockerfile structure &amp; common instructions kya hain?</span><span class="flag important">V.IMP</span><span class="qa-chevron">›</span></button>
+      <div class="qa-body">
+        <pre><code class="language-dockerfile">FROM node:18-alpine        # base image
+WORKDIR /app                # container ke andar working directory
+COPY package*.json ./       # pehle sirf dependency files copy
+RUN npm install             # dependencies install (build-time)
+COPY . .                    # baaki saara source code
+ENV NODE_ENV=production     # environment variable
+EXPOSE 3000                 # documentation — kis port pe app sunega
+CMD ["node", "server.js"]   # container start hone pe run hoga</code></pre>
+        <div class="table-wrap"><table>
+          <tr><th>Instruction</th><th>Matlab</th></tr>
+          <tr><td><code>FROM</code></td><td>Base image &mdash; har Dockerfile ki pehli line.</td></tr>
+          <tr><td><code>WORKDIR</code></td><td>Baaki commands ke liye default directory set karta hai (cd karne jaisa).</td></tr>
+          <tr><td><code>COPY</code></td><td>Host se container mein files copy karta hai.</td></tr>
+          <tr><td><code>RUN</code></td><td><strong>Build-time</strong> command chalata hai (jaise <code>npm install</code>) &mdash; result image layer mein save hota hai.</td></tr>
+          <tr><td><code>ENV</code></td><td>Environment variable set karta hai, image mein bake ho jaata hai.</td></tr>
+          <tr><td><code>ARG</code></td><td>Sirf <strong>build-time</strong> variable (<code>--build-arg</code> se pass) &mdash; container run hote waqt available nahi rehta, <code>ENV</code> ke uljhat isi se hoti hai.</td></tr>
+          <tr><td><code>EXPOSE</code></td><td>Sirf <strong>documentation</strong> hai &mdash; actual port publish nahi karta, wo <code>docker run -p</code> se hota hai.</td></tr>
+          <tr><td><code>CMD</code></td><td><strong>Runtime</strong> pe container start hone par default command.</td></tr>
+        </table></div>
+        <label class="mark-known"><input type="checkbox" class="know-check"> Mark as learned</label>
+      </div>
+    </article>
+
+    <article class="qa important" data-id="2-2">
+      <button class="qa-toggle"><span class="qa-q">CMD vs ENTRYPOINT &mdash; interview trap</span><span class="flag important">V.IMP</span><span class="qa-chevron">›</span></button>
+      <div class="qa-body">
+        <p>Dono container start hone pe kya run hoga batate hain, lekin farq hai <strong>override behavior</strong> mein.</p>
+        <div class="table-wrap"><table>
+          <tr><th>#</th><th><code>CMD</code></th><th><code>ENTRYPOINT</code></th></tr>
+          <tr><td>Override</td><td><code>docker run image echo hi</code> se poora <strong>replace</strong> ho jaata hai</td><td><code>docker run</code> pe diya gaya extra arg <strong>append</strong> hota hai, replace nahi hota</td></tr>
+          <tr><td>Use case</td><td>Default command jo aksar override hoga</td><td>Fixed executable, jise args ke saath customize karna ho</td></tr>
+        </table></div>
+        <pre><code class="language-dockerfile"># Common senior pattern — dono ek saath
+ENTRYPOINT ["node"]
+CMD ["server.js"]
+# docker run myapp             → node server.js
+# docker run myapp worker.js   → node worker.js  (CMD replace hua, ENTRYPOINT fix raha)</code></pre>
+        <p><strong>Real project mein use:</strong> Ek hi image se production mein <code>node server.js</code> aur background job ke liye <code>node worker.js</code> dono chalane ho &mdash; <code>ENTRYPOINT</code> fixed rakhte hain, <code>CMD</code> ko override karte hain.</p>
+        <label class="mark-known"><input type="checkbox" class="know-check"> Mark as learned</label>
+      </div>
+    </article>
+
+    <article class="qa important" data-id="2-3">
+      <button class="qa-toggle"><span class="qa-q">COPY vs ADD &mdash; kaunsa use karna chahiye?</span><span class="flag important">V.IMP</span><span class="qa-chevron">›</span></button>
+      <div class="qa-body">
+        <p>Dono files host se image mein copy karte hain, lekin <code>ADD</code> ke paas <strong>extra "magic"</strong> features hain jo aksar <strong>unwanted side-effects</strong> deti hain.</p>
+        <div class="table-wrap"><table>
+          <tr><th>#</th><th><code>COPY</code></th><th><code>ADD</code></th></tr>
+          <tr><td>Basic copy</td><td>Sirf plain file/folder copy</td><td>Plain copy bhi karta hai</td></tr>
+          <tr><td>Tar auto-extract</td><td>Nahi</td><td><strong>Haan</strong> &mdash; local <code>.tar</code> file ko automatically extract kar deta hai</td></tr>
+          <tr><td>Remote URL download</td><td>Nahi</td><td><strong>Haan</strong> &mdash; URL se seedha download kar sakta hai (unpredictable, no caching control)</td></tr>
+        </table></div>
+        <p><strong>Interview gotcha:</strong> Zyada tar interviewer poochta hai "COPY better kyun hai?" &mdash; jawab: <code>ADD</code> ka <strong>implicit behavior</strong> (auto-extract/download) confusion aur security risk create karta hai (kisko pata URL se kya file aa rahi hai) &mdash; isliye best practice hai <strong>hamesha <code>COPY</code> use karo</strong>, <code>ADD</code> sirf tab jab tar-extraction genuinely chahiye ho.</p>
+        <label class="mark-known"><input type="checkbox" class="know-check"> Mark as learned</label>
+      </div>
+    </article>
+
+    <article class="qa important" data-id="2-4">
+      <button class="qa-toggle"><span class="qa-q">Layer caching &mdash; instruction order kyun matter karta hai?</span><span class="flag important">V.IMP</span><span class="qa-chevron">›</span></button>
+      <div class="qa-body">
+        <p>Docker har instruction ko <strong>ek layer</strong> banata hai aur <strong>cache</strong> karta hai. Rebuild pe, jis line tak kuch <strong>change nahi hua</strong>, uske upar ki saari layers <strong>cache se reuse</strong> hoti hain &mdash; jahan se change shuru hua, wahan se neeche <strong>saari layers dobara banti hain</strong>.</p>
+        <div class="table-wrap"><table>
+          <tr><th>Bad Order (slow rebuilds)</th><th>Good Order (fast rebuilds)</th></tr>
+          <tr><td><pre><code class="language-dockerfile">COPY . .
+RUN npm install</code></pre></td><td><pre><code class="language-dockerfile">COPY package*.json ./
+RUN npm install
+COPY . .</code></pre></td></tr>
+        </table></div>
+        <p><strong>Real problem, step-by-step:</strong> "Bad order" mein agar sirf ek <code>.js</code> file change hui (dependencies same hain), tab bhi <code>COPY . .</code> ki wajah se cache <strong>invalidate</strong> ho jaata hai, aur uske baad wala <code>npm install</code> <strong>dobara puri run</strong> hota hai &mdash; unnecessarily 2-3 minute waste. "Good order" mein <code>package.json</code> change na ho toh <code>npm install</code> wali layer cache se hi mil jaati hai, sirf last <code>COPY . .</code> dobara chalta hai &mdash; build seconds mein.</p>
+        <p><strong>Rule of thumb:</strong> Jo cheez <strong>kam badalti hai</strong> (dependencies) usko <strong>upar</strong> rakho, jo <strong>zyada badalti hai</strong> (source code) usko <strong>neeche</strong>.</p>
+        <label class="mark-known"><input type="checkbox" class="know-check"> Mark as learned</label>
+      </div>
+    </article>
+
+    <article class="qa important" data-id="2-5">
+      <button class="qa-toggle"><span class="qa-q">Multi-stage builds kya hain? (React build example)</span><span class="flag important">V.IMP</span><span class="qa-chevron">›</span></button>
+      <div class="qa-body">
+        <p><strong>Problem:</strong> React app build karne ke liye poora Node.js + <code>node_modules</code> + build tools chahiye (~1GB+), lekin <strong>production mein</strong> sirf static HTML/CSS/JS files serve karni hoti hain &mdash; agar single-stage Dockerfile banao, final image mein <strong>saara build junk bhi reh jaata hai</strong>, image unnecessarily bahut badi ban jaati hai.</p>
+        <p><strong>Solution &mdash; Multi-stage build:</strong> Ek se zyada <code>FROM</code> stages use karo &mdash; pehle stage mein <strong>build</strong> karo, doosre (final) stage mein sirf <strong>build ka output</strong> copy karo, poora build environment discard ho jaata hai.</p>
+        <pre><code class="language-dockerfile"># Stage 1 — build
+FROM node:18 AS build
+WORKDIR /app
+COPY package*.json ./
+RUN npm install
+COPY . .
+RUN npm run build              # dist/ folder banta hai
+
+# Stage 2 — production (sirf output copy)
+FROM nginx:alpine
+COPY --from=build /app/dist /usr/share/nginx/html
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]</code></pre>
+        <p><strong>Result:</strong> Final image mein Node.js, <code>node_modules</code>, source code &mdash; <strong>kuch bhi nahi</strong>, sirf compiled static files + Nginx. Image size <strong>1GB+ se ghatke ~25-40MB</strong> tak aa sakta hai.</p>
+        <p><strong>Real project mein use:</strong> Har production-grade React/Angular/Vue Docker setup mein multi-stage build <strong>standard practice</strong> hai; Node.js API ke liye bhi <code>devDependencies</code>/TypeScript compile step ko alag stage mein karke sirf compiled JS final image mein rakhte hain.</p>
+        <label class="mark-known"><input type="checkbox" class="know-check"> Mark as learned</label>
+      </div>
+    </article>
+
+    <article class="qa" data-id="2-6">
+      <button class="qa-toggle"><span class="qa-q">Image size kaise reduce karte hain? (Alpine, .dockerignore)</span><span class="qa-chevron">›</span></button>
+      <div class="qa-body">
+        <ul>
+          <li><strong>Alpine/distroless base images</strong> &mdash; <code>node:18</code> (~1GB) ke bajaye <code>node:18-alpine</code> (~180MB) ya <code>distroless</code> (bina shell/package-manager ke, sirf runtime) use karo.</li>
+          <li><strong>Multi-stage builds</strong> (upar dekha) &mdash; build tools final image mein na rakhna.</li>
+          <li><strong><code>.dockerignore</code></strong> &mdash; <code>node_modules</code>, <code>.git</code>, <code>.env</code>, logs jaisi files build context mein bhejne se rokta hai:</li>
+        </ul>
+        <pre><code>node_modules
+.git
+.env
+*.log
+Dockerfile
+.dockerignore</code></pre>
+        <p><strong>Without <code>.dockerignore</code>:</strong> Local <code>node_modules</code> poore build context ke saath daemon ko bheja jaata hai (slow build) aur agar <code>COPY . .</code> hai toh wahi purana/wrong-platform <code>node_modules</code> image mein chala jaata hai, jo <code>RUN npm install</code> ke fresh install ko override kar sakta hai &mdash; bugs.</p>
+        <li><strong>Combine <code>RUN</code> commands</strong> &mdash; har <code>RUN</code> ek layer banata hai; related commands ko <code>&&</code> se combine karke layers kam karo aur apt cache clean karo (<code>rm -rf /var/lib/apt/lists/*</code>).</li>
+        <label class="mark-known"><input type="checkbox" class="know-check"> Mark as learned</label>
+      </div>
+    </article>
+
+    <article class="qa" data-id="2-7">
+      <button class="qa-toggle"><span class="qa-q">BuildKit aur docker buildx kya hain?</span><span class="qa-chevron">›</span></button>
+      <div class="qa-body">
+        <p><strong>BuildKit</strong> Docker ka <strong>naya, faster build engine</strong> hai (ab default) &mdash; parallel layer builds, better caching, aur <strong>secrets/SSH mount</strong> support deta hai jo purana builder nahi deta tha.</p>
+        <pre><code class="language-bash"># Secret ko image layer mein bake hue bina use karna (BuildKit feature)
+RUN --mount=type=secret,id=npm_token \
+    npm config set //registry.npmjs.org/:_authToken=$(cat /run/secrets/npm_token) \
+    && npm install</code></pre>
+        <p><strong><code>docker buildx</code></strong> BuildKit ka CLI plugin hai jo <strong>multi-architecture images</strong> (jaise <code>amd64</code> + <code>arm64</code> ek saath) build karne deta hai:</p>
+        <pre><code class="language-bash">docker buildx build --platform linux/amd64,linux/arm64 -t myapp:latest --push .</code></pre>
+        <p><strong>Real project mein use:</strong> Team ke kuch developers Mac M1 (ARM) pe hain, production servers Intel (AMD64) pe &mdash; ek hi <code>buildx</code> command se dono architecture ke liye image ban jaati hai, "exec format error" jaisi runtime mismatch errors nahi aatin.</p>
+        <label class="mark-known"><input type="checkbox" class="know-check"> Mark as learned</label>
+      </div>
+    </article>
+
+    <article class="qa" data-id="2-8">
+      <button class="qa-toggle"><span class="qa-q">Image tagging aur Docker Hub push/pull kaise karte hain?</span><span class="qa-chevron">›</span></button>
+      <div class="qa-body">
+        <pre><code class="language-bash">docker build -t myusername/myapp:1.0 .
+docker login
+docker push myusername/myapp:1.0
+docker pull myusername/myapp:1.0</code></pre>
+        <p><strong>Real project mein use:</strong> CI/CD pipeline build ke baad image ko tag karke registry pe push karta hai, production server wahan se <code>pull</code> karke naya container start karta hai &mdash; source code seedha production pe copy nahi hota, sab image ke through jaata hai.</p>
+        <label class="mark-known"><input type="checkbox" class="know-check"> Mark as learned</label>
+      </div>
+    </article>
+
+  </div>
+
+  <div class="chapter-recap">
+    <span class="recap-label">Quick Revision &mdash; Dockerfile Summary</span>
+    <ul>
+      <li><strong>Instructions</strong> &mdash; <code>FROM</code>/<code>WORKDIR</code>/<code>COPY</code>/<code>RUN</code>/<code>ENV</code>/<code>ARG</code>/<code>EXPOSE</code>/<code>CMD</code>; <code>ARG</code> build-time only, <code>ENV</code> runtime tak persist.</li>
+      <li><strong>CMD vs ENTRYPOINT</strong> &mdash; CMD replace hota hai, ENTRYPOINT ke args append hote hain; dono combine karna common senior pattern hai.</li>
+      <li><strong>COPY vs ADD</strong> &mdash; COPY predictable/plain; ADD tar-extract/URL-download karta hai, isliye avoid karte hain.</li>
+      <li><strong>Layer caching</strong> &mdash; kam-badalne-wali cheezein (dependencies) upar, zyada-badalne-wali (source code) neeche rakho.</li>
+      <li><strong>Multi-stage builds</strong> &mdash; build stage alag, final stage mein sirf output &mdash; image size drastically kam.</li>
+      <li><strong>Size reduction</strong> &mdash; Alpine/distroless base, <code>.dockerignore</code>, combined RUN commands.</li>
+      <li><strong>BuildKit/buildx</strong> &mdash; faster builds, secret mounts, multi-architecture (amd64+arm64) images.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<section class="chapter" id="ch3" data-title="Containers, Lifecycle & Debugging">
+  <div class="chapter-head"><span class="chapter-num">03</span><h2>Containers, Lifecycle &amp; Debugging</h2></div>
+  <div class="qa-list">
+
+    <article class="qa important" data-id="3-1">
+      <button class="qa-toggle"><span class="qa-q">Container lifecycle commands kya hain?</span><span class="flag important">V.IMP</span><span class="qa-chevron">›</span></button>
+      <div class="qa-body">
+        <div class="table-wrap"><table>
+          <tr><th>Command</th><th>Kaam</th></tr>
+          <tr><td><code>docker run -d -p 3000:3000 --name myapp myimage</code></td><td>Naya container create + start (detached mode)</td></tr>
+          <tr><td><code>docker start / stop myapp</code></td><td>Existing container start/stop</td></tr>
+          <tr><td><code>docker rm myapp</code></td><td>Stopped container delete</td></tr>
+          <tr><td><code>docker exec -it myapp sh</code></td><td>Running container ke andar shell khol ke jaana</td></tr>
+          <tr><td><code>docker logs -f myapp</code></td><td>Container ke logs (live follow ke saath)</td></tr>
+          <tr><td><code>docker ps</code> / <code>docker ps -a</code></td><td>Running / sab containers list</td></tr>
+        </table></div>
+        <p><strong><code>exec</code> vs <code>attach</code>:</strong> <code>exec</code> ek <strong>naya process</strong> container ke andar start karta hai (jaise debug shell) &mdash; exit karne pe container chalta rehta hai. <code>attach</code> container ke <strong>main process (PID 1)</strong> se seedha judta hai &mdash; galti se <code>Ctrl+C</code> daba diya toh main process hi ruk sakta hai, container stop ho jaayega. Isi wajah se debugging ke liye <code>exec</code> zyada safe hai.</p>
+        <label class="mark-known"><input type="checkbox" class="know-check"> Mark as learned</label>
+      </div>
+    </article>
+
+    <article class="qa important" data-id="3-2">
+      <button class="qa-toggle"><span class="qa-q">docker stop vs docker kill &mdash; kya farq hai?</span><span class="flag important">V.IMP</span><span class="qa-chevron">›</span></button>
+      <div class="qa-body">
+        <div class="table-wrap"><table>
+          <tr><th>#</th><th><code>docker stop</code></th><th><code>docker kill</code></th></tr>
+          <tr><td>Signal</td><td><strong>SIGTERM</strong> bhejta hai, phir grace period (default 10s) wait karta hai</td><td><strong>SIGKILL</strong> seedha bhejta hai &mdash; turant</td></tr>
+          <tr><td>Graceful?</td><td>Haan &mdash; app ko cleanup ka time milta hai (open DB connections close, in-flight requests finish)</td><td>Nahi &mdash; process turant force-terminate</td></tr>
+          <tr><td>Timeout par kya</td><td>Agar 10s mein app khud exit nahi hui, Docker khud SIGKILL bhej deta hai</td><td>N/A</td></tr>
+        </table></div>
+        <p><strong>Real project mein use:</strong> Deploy/restart ke waqt hamesha <code>docker stop</code> use karte hain (ya orchestrator khud yehi karta hai) &mdash; app ko <strong>SIGTERM handle</strong> karke graceful shutdown ka mauka milta hai (jaise ongoing HTTP requests complete karna, DB connection close karna). <code>kill</code> sirf tab jab process <strong>hang/unresponsive</strong> ho aur graceful stop kaam na kare.</p>
+        <label class="mark-known"><input type="checkbox" class="know-check"> Mark as learned</label>
+      </div>
+    </article>
+
+    <article class="qa important" data-id="3-3">
+      <button class="qa-toggle"><span class="qa-q">PID 1 problem kya hai? Zombie processes aur signal handling</span><span class="flag important">V.IMP</span><span class="qa-chevron">›</span></button>
+      <div class="qa-body">
+        <p>Container ke andar jo bhi process <code>CMD</code>/<code>ENTRYPOINT</code> se start hota hai, wo <strong>PID 1</strong> ban jaata hai. Normal Linux system mein PID 1 (<code>init</code>/<code>systemd</code>) ke special jobs hote hain jo container ke andar Node/Python jaisi apps <strong>khud nahi karti</strong>:</p>
+        <ul>
+          <li><strong>Signal handling</strong> &mdash; kernel default signal behavior sirf PID 1 ke liye <strong>alag</strong> hota hai; agar app khud explicitly <code>SIGTERM</code> handler register nahi karti, container <strong>graceful shutdown ke bajaye seedha kill</strong> ho sakta hai poore 10s wait ke baad.</li>
+          <li><strong>Zombie process reaping</strong> &mdash; agar app andar se child processes spawn karti hai (jaise shell scripts), aur wo child exit ho jaaye, unka exit-status kisi ko "reap" karna padta hai. Normal init yeh khud karta hai; PID 1 pe chal rahi simple app (jaise Node) yeh nahi karti &mdash; <strong>zombie processes</strong> accumulate hote rehte hain.</li>
+        </ul>
+        <div class="diagram"><span class="diagram-label">Fix — Init process use karo</span>
+<pre>docker run --init myimage
+# ya Dockerfile mein
+ENTRYPOINT ["/tini", "--", "node", "server.js"]</pre>
+        </div>
+        <p><strong>Real project mein use:</strong> <code>docker run --init</code> flag (ya <code>tini</code> jaisa lightweight init tool) daalte hain &mdash; yeh ek chhota init process PID 1 pe baithata hai, jo signals sahi se forward karta hai aur zombie processes reap karta hai, asli app ko clean environment milta hai.</p>
+        <label class="mark-known"><input type="checkbox" class="know-check"> Mark as learned</label>
+      </div>
+    </article>
+
+    <article class="qa important" data-id="3-4">
+      <button class="qa-toggle"><span class="qa-q">Diagnostic commands &mdash; docker inspect, stats, top kab use karte hain?</span><span class="flag important">V.IMP</span><span class="qa-chevron">›</span></button>
+      <div class="qa-body">
+        <div class="table-wrap"><table>
+          <tr><th>Command</th><th>Kya dikhata hai</th><th>Kab use</th></tr>
+          <tr><td><code>docker inspect myapp</code></td><td>Poora JSON config &mdash; IP address, mounts, env vars, restart count, exit code</td><td>"Container ka IP kya hai?", "Kaunsi env vars set hain?" jaise deep debugging</td></tr>
+          <tr><td><code>docker stats</code></td><td>Live CPU%, memory usage, network I/O sab containers ka</td><td>"Konsa container resources zyada khaa raha hai?" real-time check</td></tr>
+          <tr><td><code>docker top myapp</code></td><td>Container ke andar chal rahe processes (jaise host pe <code>ps</code>)</td><td>"Container ke andar kya processes chal rahe hain?" &mdash; hung process dhoondhna</td></tr>
+          <tr><td><code>docker logs --tail 100 -f myapp</code></td><td>Recent logs + live follow</td><td>Error debug karne ka pehla step</td></tr>
+        </table></div>
+        <p><strong>Real scenario:</strong> Container baar-baar restart ho raha hai &mdash; pehle <code>docker inspect myapp</code> se <code>.State.ExitCode</code> aur <code>.State.OOMKilled</code> check karo (memory issue tha?), phir <code>docker logs myapp</code> se crash ka reason dekho, aur agar CPU/memory suspicious lage toh <code>docker stats</code> se live confirm karo.</p>
+        <label class="mark-known"><input type="checkbox" class="know-check"> Mark as learned</label>
+      </div>
+    </article>
+
+    <article class="qa important" data-id="3-5">
+      <button class="qa-toggle"><span class="qa-q">Resource limits (--memory, --cpus) &mdash; OOM kill scenario</span><span class="flag important">V.IMP</span><span class="qa-chevron">›</span></button>
+      <div class="qa-body">
+        <pre><code class="language-bash">docker run -d --memory=512m --cpus=1.0 --name myapp myimage</code></pre>
+        <p>Bina limit ke, ek buggy container (memory leak) poore <strong>host ka RAM khatam</strong> kar sakta hai, jisse <strong>dusre saare containers bhi crash</strong> ho jaayenge (noisy neighbor problem). <code>--memory</code>/<code>--cpus</code> se har container ko <strong>cgroups level</strong> pe hard limit milti hai.</p>
+        <h4 style="margin:1.2rem 0 .6rem;color:var(--accent)">Real scenario &mdash; OOM Kill</h4>
+        <ol>
+          <li>Container ko <code>--memory=512m</code> di gayi hai.</li>
+          <li>App mein memory leak hai &mdash; usage dheere-dheere badhta hai.</li>
+          <li>512MB cross hote hi Linux kernel ka <strong>OOM Killer</strong> us container ke process ko <strong>forcefully SIGKILL</strong> kar deta hai.</li>
+          <li><code>docker inspect</code> mein <code>"OOMKilled": true</code> dikhta hai &mdash; yeh <strong>confirm</strong> karta hai crash memory-limit ki wajah se hua, kisi normal bug se nahi.</li>
+        </ol>
+        <p><strong>Real project mein use:</strong> Production mein <strong>hamesha</strong> memory/CPU limits set karte hain, taaki ek faulty service poore host/cluster ko down na kar de; Kubernetes mein isi concept ko <code>resources.limits</code> kehte hain.</p>
+        <label class="mark-known"><input type="checkbox" class="know-check"> Mark as learned</label>
+      </div>
+    </article>
+
+    <article class="qa important" data-id="3-6">
+      <button class="qa-toggle"><span class="qa-q">Crash-looping container ko debug kaise karoge? (real scenario)</span><span class="flag important">V.IMP</span><span class="qa-chevron">›</span></button>
+      <div class="qa-body">
+        <p><strong>Scenario:</strong> Production mein ek container <code>docker ps</code> mein baar-baar "Restarting" dikha raha hai. Step-by-step troubleshooting:</p>
+        <pre><code class="language-bash">docker ps -a                      # 1. status + exit code dekho
+docker logs myapp --tail 50        # 2. crash se pehle ke logs
+docker inspect myapp | grep -A3 State   # 3. OOMKilled? exit code kya?
+docker run -it --entrypoint sh myimage  # 4. entrypoint override — shell mein interactively debug
+docker events                      # 5. container events timeline (kya kya trigger hua)</code></pre>
+        <div class="table-wrap"><table>
+          <tr><th>Exit code</th><th>Matlab</th></tr>
+          <tr><td><strong>0</strong></td><td>Normal exit</td></tr>
+          <tr><td><strong>1</strong></td><td>App-level error (unhandled exception)</td></tr>
+          <tr><td><strong>137</strong></td><td>SIGKILL (128+9) &mdash; often OOM kill</td></tr>
+          <tr><td><strong>139</strong></td><td>Segmentation fault</td></tr>
+        </table></div>
+        <p><strong>Interview line:</strong> <code>docker run -it --entrypoint sh myimage</code> se container ka default startup command <strong>bypass</strong> karke interactively andar jaake manually commands chala sakte ho &mdash; jab crash itna fast ho ki normal <code>exec</code> ka mauka hi na mile.</p>
+        <label class="mark-known"><input type="checkbox" class="know-check"> Mark as learned</label>
+      </div>
+    </article>
+
+    <article class="qa" data-id="3-7">
+      <button class="qa-toggle"><span class="qa-q">Restart policies kya hain?</span><span class="qa-chevron">›</span></button>
+      <div class="qa-body">
+        <pre><code class="language-bash">docker run -d --restart=always myimage
+docker run -d --restart=unless-stopped myimage
+docker run -d --restart=on-failure:5 myimage</code></pre>
+        <div class="table-wrap"><table>
+          <tr><th>Policy</th><th>Behavior</th></tr>
+          <tr><td><code>no</code></td><td>Default &mdash; kabhi auto-restart nahi</td></tr>
+          <tr><td><code>always</code></td><td>Hamesha restart, chahe manually stop kiya ho (Docker daemon restart pe bhi)</td></tr>
+          <tr><td><code>unless-stopped</code></td><td><code>always</code> jaisa, lekin agar <strong>manually stop</strong> kiya tha toh daemon restart pe wapas start nahi hoga</td></tr>
+          <tr><td><code>on-failure:N</code></td><td>Sirf non-zero exit code pe, max N baar retry</td></tr>
+        </table></div>
+        <p><strong>Real project mein use:</strong> Production services ke liye <code>unless-stopped</code> most common hai &mdash; server reboot pe apne aap start ho jaaye, lekin agar kisi ne intentionally maintenance ke liye stop kiya tha, wo respect ho.</p>
+        <label class="mark-known"><input type="checkbox" class="know-check"> Mark as learned</label>
+      </div>
+    </article>
+
+    <article class="qa" data-id="3-8">
+      <button class="qa-toggle"><span class="qa-q">Port mapping (-p) aur environment variables (-e) kaise dete hain?</span><span class="qa-chevron">›</span></button>
+      <div class="qa-body">
+        <pre><code class="language-bash">docker run -d -p 8080:3000 myimage
+# host:8080 → container:3000
+
+docker run -d -e NODE_ENV=production -e DB_URL=mongodb://... myimage
+docker run -d --env-file .env myimage   # kai variables ek file se</code></pre>
+        <p><code>-p HOST:CONTAINER</code> format yaad rakho &mdash; ulta likhne se galat port pe expose ho jaata hai. Secrets ke liye <code>--env-file</code> (aur woh file <code>.gitignore</code> mein) common pattern hai, seedha <code>-e</code> mein hardcode karna shell history mein reh jaata hai.</p>
+        <label class="mark-known"><input type="checkbox" class="know-check"> Mark as learned</label>
+      </div>
+    </article>
+
+  </div>
+
+  <div class="chapter-recap">
+    <span class="recap-label">Quick Revision &mdash; Containers &amp; Debugging Summary</span>
+    <ul>
+      <li><strong>Lifecycle</strong> &mdash; run/start/stop/rm/exec/logs; <code>exec</code> naya process spawn karta hai, <code>attach</code> risky hai (main process se juda).</li>
+      <li><strong>stop vs kill</strong> &mdash; stop = SIGTERM + grace period (graceful); kill = SIGKILL turant (force).</li>
+      <li><strong>PID 1 problem</strong> &mdash; app khud signal handle/zombie reap nahi karti &mdash; <code>--init</code> ya <code>tini</code> use karo.</li>
+      <li><strong>Diagnostics</strong> &mdash; <code>inspect</code> (config/state), <code>stats</code> (live resources), <code>top</code> (andar ke processes).</li>
+      <li><strong>Resource limits</strong> &mdash; <code>--memory</code>/<code>--cpus</code> na ho toh ek leak poore host ko OOM kill tak le ja sakta hai.</li>
+      <li><strong>Crash debugging</strong> &mdash; exit code check karo (137=OOM), logs dekho, <code>--entrypoint sh</code> se interactively andar jaao.</li>
+      <li><strong>Restart policy</strong> &mdash; production mein <code>unless-stopped</code> common choice.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<section class="chapter" id="ch4" data-title="Volumes & Data">
+  <div class="chapter-head"><span class="chapter-num">04</span><h2>Volumes &amp; Data Persistence</h2></div>
+  <div class="qa-list">
+
+    <article class="qa important" data-id="4-1">
+      <button class="qa-toggle"><span class="qa-q">Volumes kyun chahiye? (containers ephemeral hote hain)</span><span class="flag important">V.IMP</span><span class="qa-chevron">›</span></button>
+      <div class="qa-body">
+        <p>Container ki writable layer <strong>temporary</strong> hoti hai &mdash; container delete (<code>docker rm</code>) hote hi uska saara data <strong>hamesha ke liye gayab</strong> ho jaata hai. Database jaisi <strong>stateful</strong> cheez ke liye yeh disaster hai &mdash; container restart/update karte hi saara data loss.</p>
+        <p><strong>Solution:</strong> Data ko container ki writable layer ke bajaye <strong>host filesystem</strong> (ya Docker-managed location) pe rakho, jo container life-cycle se <strong>independent</strong> ho.</p>
+        <label class="mark-known"><input type="checkbox" class="know-check"> Mark as learned</label>
+      </div>
+    </article>
+
+    <article class="qa important" data-id="4-2">
+      <button class="qa-toggle"><span class="qa-q">Bind mount vs Named volume vs tmpfs &mdash; kab kya use karein?</span><span class="flag important">V.IMP</span><span class="qa-chevron">›</span></button>
+      <div class="qa-body">
+        <div class="table-wrap"><table>
+          <tr><th>#</th><th>Bind Mount</th><th>Named Volume</th><th>tmpfs</th></tr>
+          <tr><td>Location</td><td>Host ka <strong>specific path</strong> (jo tum decide karo)</td><td>Docker-managed location (<code>/var/lib/docker/volumes/...</code>)</td><td>Host RAM (disk pe kabhi nahi jaata)</td></tr>
+          <tr><td>Managed by</td><td>Tumhara OS/filesystem</td><td>Docker khud</td><td>Docker (memory)</td></tr>
+          <tr><td>Persistence</td><td>Yes</td><td>Yes</td><td>No &mdash; container/reboot pe gayab</td></tr>
+          <tr><td>Use case</td><td>Local dev &mdash; live code reload</td><td>Production DB data, portable backups</td><td>Sensitive temp data (secrets in-memory)</td></tr>
+        </table></div>
+        <pre><code class="language-bash"># Bind mount — local dev, live code changes reflect
+docker run -v $(pwd):/app myimage
+
+# Named volume — production DB
+docker run -v mongo_data:/data/db mongo
+
+# tmpfs — sensitive temp data, RAM only
+docker run --tmpfs /app/temp myimage</code></pre>
+        <p><strong>Real project mein use:</strong> Local development mein bind mount se source code change karte hi container ke andar bhi reflect ho jaata hai (nodemon ke saath live reload). Production mein named volume use karte hain kyunki wo Docker CLI (<code>docker volume</code>) se manage/backup karna easy hota hai aur host filesystem structure pe depend nahi karta.</p>
+        <label class="mark-known"><input type="checkbox" class="know-check"> Mark as learned</label>
+      </div>
+    </article>
+
+    <article class="qa important" data-id="4-3">
+      <button class="qa-toggle"><span class="qa-q">Bind mount permission issues (UID/GID mismatch) &mdash; real problem</span><span class="flag important">V.IMP</span><span class="qa-chevron">›</span></button>
+      <div class="qa-body">
+        <p><strong>Real scenario:</strong> Dockerfile mein security best-practice follow karke container ko <strong>non-root user</strong> (jaise <code>UID 1000</code>) se run karwaya. Local machine pe bind mount kiya:</p>
+        <pre><code class="language-bash">docker run -v $(pwd)/uploads:/app/uploads myimage</code></pre>
+        <p>Container ke andar <code>UID 1000</code> user file likhne ki koshish karta hai, lekin host ke <code>uploads/</code> folder ka owner <strong>UID 1001</strong> hai (host machine ka apna user) &mdash; <strong>Permission denied</strong> error, bhale hi container "successfully" chal raha ho.</p>
+        <p><strong>Wajah:</strong> Bind mounts container ke andar <strong>host ke same UID/GID</strong> ko carry karte hain &mdash; Linux permission checking UID number se hoti hai, username se nahi; container ke andar ka user (UID 1000) aur host folder ka owner (UID 1001) match nahi karte.</p>
+        <h4 style="margin:1.2rem 0 .6rem;color:var(--accent)">Fixes</h4>
+        <pre><code class="language-bash"># 1) Host folder permission open kar do (dev-only, production mein risky)
+chmod -R 777 uploads/
+
+# 2) Container ke user ka UID host user ke UID se match karo
+docker run --user $(id -u):$(id -g) -v $(pwd)/uploads:/app/uploads myimage
+
+# 3) Dockerfile mein hi specific UID create karo jo host se match ho
+RUN addgroup -g 1001 appgroup && adduser -u 1001 -G appgroup -D appuser
+USER appuser</code></pre>
+        <p><strong>Interview line:</strong> Yeh classic "isolation ka side-effect" hai &mdash; container process host se isolated dikhta hai, lekin bind-mounted filesystem permissions <strong>host ke UID system</strong> se hi govern hoti hain.</p>
+        <label class="mark-known"><input type="checkbox" class="know-check"> Mark as learned</label>
+      </div>
+    </article>
+
+    <article class="qa" data-id="4-4">
+      <button class="qa-toggle"><span class="qa-q">Volume backup/restore strategy kya hai?</span><span class="qa-chevron">›</span></button>
+      <div class="qa-body">
+        <pre><code class="language-bash"># Backup — temporary container se volume ko tar mein compress karo
+docker run --rm -v mongo_data:/data -v $(pwd):/backup alpine \
+  tar czf /backup/mongo_backup.tar.gz /data
+
+# Restore — naye volume mein extract karo
+docker run --rm -v mongo_data:/data -v $(pwd):/backup alpine \
+  tar xzf /backup/mongo_backup.tar.gz -C /</code></pre>
+        <p><strong>Real project mein use:</strong> Production DB volume ka daily automated backup CI/CD cron job se isi pattern se liya jaata hai, aur cloud storage (S3) pe upload kiya jaata hai.</p>
+        <label class="mark-known"><input type="checkbox" class="know-check"> Mark as learned</label>
+      </div>
+    </article>
+
+    <article class="qa" data-id="4-5">
+      <button class="qa-toggle"><span class="qa-q">Real example — MongoDB data persistence</span><span class="qa-chevron">›</span></button>
+      <div class="qa-body">
+        <pre><code class="language-bash">docker volume create mongo_data
+docker run -d --name mongodb -v mongo_data:/data/db -p 27017:27017 mongo</code></pre>
+        <p>Ab container <code>docker rm mongodb</code> se delete bhi kar do aur wapas naya container <strong>same volume</strong> ke saath start karo, saara data <strong>wahi ka wahi</strong> milega:</p>
+        <pre><code class="language-bash">docker rm -f mongodb
+docker run -d --name mongodb -v mongo_data:/data/db -p 27017:27017 mongo
+# data intact — kyunki data container mein nahi, volume mein tha</code></pre>
+        <label class="mark-known"><input type="checkbox" class="know-check"> Mark as learned</label>
+      </div>
+    </article>
+
+  </div>
+
+  <div class="chapter-recap">
+    <span class="recap-label">Quick Revision &mdash; Volumes Summary</span>
+    <ul>
+      <li><strong>Kyun chahiye</strong> &mdash; container writable layer temporary hai; container delete = data loss, bina volume ke.</li>
+      <li><strong>Bind mount</strong> &mdash; host ka specific path, dev/live-reload ke liye.</li>
+      <li><strong>Named volume</strong> &mdash; Docker-managed, production DB data ke liye.</li>
+      <li><strong>tmpfs</strong> &mdash; RAM-only, sensitive temp data.</li>
+      <li><strong>Permission mismatch</strong> &mdash; container UID aur host folder owner UID alag hone se "Permission denied"; fix: <code>--user</code> flag ya matching UID.</li>
+      <li><strong>Backup</strong> &mdash; temporary alpine container se volume ko tar karke external storage mein le jaate hain.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<section class="chapter" id="ch5" data-title="Networking">
+  <div class="chapter-head"><span class="chapter-num">05</span><h2>Networking</h2></div>
+  <div class="qa-list">
+
+    <article class="qa important" data-id="5-1">
+      <button class="qa-toggle"><span class="qa-q">Docker network drivers kya hain? (bridge, host, none, overlay)</span><span class="flag important">V.IMP</span><span class="qa-chevron">›</span></button>
+      <div class="qa-body">
+        <div class="table-wrap"><table>
+          <tr><th>Driver</th><th>Kaam</th><th>Kab use</th></tr>
+          <tr><td><strong>bridge</strong> (default)</td><td>Container ko ek private internal network deta hai, host se isolated, NAT ke through bahar jaata hai</td><td>Single-host apps, most common default</td></tr>
+          <tr><td><strong>host</strong></td><td>Container koi alag network namespace use nahi karta &mdash; seedha host ka network use karta hai</td><td>Max performance chahiye, port mapping ki zaroorat nahi (Linux-only)</td></tr>
+          <tr><td><strong>none</strong></td><td>Koi networking hi nahi</td><td>Pure offline/isolated batch processing jobs</td></tr>
+          <tr><td><strong>overlay</strong></td><td>Multiple <strong>Docker hosts</strong> ke containers ko ek virtual network pe connect karta hai</td><td>Swarm/multi-host cluster setups</td></tr>
+        </table></div>
+        <label class="mark-known"><input type="checkbox" class="know-check"> Mark as learned</label>
+      </div>
+    </article>
+
+    <article class="qa important" data-id="5-2">
+      <button class="qa-toggle"><span class="qa-q">Default bridge vs Custom bridge &mdash; container name resolution (DNS)</span><span class="flag important">V.IMP</span><span class="qa-chevron">›</span></button>
+      <div class="qa-body">
+        <p><strong>Default bridge network</strong> (<code>docker0</code>) pe containers ek-dusre se sirf <strong>IP address</strong> se baat kar sakte hain (koi built-in DNS nahi) &mdash; aur IP restart pe <strong>change</strong> ho sakta hai, isliye hardcode karna fragile hai.</p>
+        <p><strong>Custom (user-defined) bridge network</strong> banate hi Docker ek <strong>automatic DNS resolution</strong> deta hai &mdash; container apne <strong>container/service name se</strong> ek-dusre ko ping/connect kar sakte hain, IP yaad rakhne ki zaroorat nahi.</p>
+        <pre><code class="language-bash">docker network create mynet
+
+docker run -d --name mongodb --network mynet mongo
+docker run -d --name api --network mynet -p 3000:3000 myapi
+# api container ke andar code mein: mongodb://mongodb:27017/mydb
+#                                            ^^^^^^^ — container naam hi hostname ban gaya</code></pre>
+        <p><strong>Interview trap:</strong> "Default bridge use kyun nahi karte production mein?" &mdash; kyunki uspe DNS-based service discovery nahi milta, sirf IP se connect karna padta hai jo unreliable hai. Isliye <strong>hamesha custom network banao</strong>.</p>
+        <label class="mark-known"><input type="checkbox" class="know-check"> Mark as learned</label>
+      </div>
+    </article>
+
+    <article class="qa important" data-id="5-3">
+      <button class="qa-toggle"><span class="qa-q">EXPOSE vs Publish (-p) &mdash; interview trap</span><span class="flag important">V.IMP</span><span class="qa-chevron">›</span></button>
+      <div class="qa-body">
+        <div class="table-wrap"><table>
+          <tr><th>#</th><th><code>EXPOSE</code> (Dockerfile)</th><th><code>-p</code> / <code>--publish</code> (docker run)</th></tr>
+          <tr><td>Effect</td><td>Sirf <strong>documentation/metadata</strong> &mdash; "yeh container is port pe sunta hai"</td><td>Actual host-to-container port <strong>binding</strong> karta hai</td></tr>
+          <tr><td>Bina iske</td><td>Container phir bhi us port pe sun sakta hai</td><td>Bina <code>-p</code> ke, container ka port <strong>host se accessible nahi</strong> hoga</td></tr>
+        </table></div>
+        <p><strong>Interview gotcha:</strong> Bahut log samajhte hain <code>EXPOSE 3000</code> likhne se port "khul" jaata hai &mdash; <strong>galat</strong>. Yeh sirf ek <strong>hint</strong> hai (aur <code>docker run -P</code> capital-P ke saath saari <code>EXPOSE</code>d ports ko random host ports pe map karne ke kaam aata hai). Asli binding <code>-p host:container</code> se hi hoti hai.</p>
+        <label class="mark-known"><input type="checkbox" class="know-check"> Mark as learned</label>
+      </div>
+    </article>
+
+    <article class="qa" data-id="5-4">
+      <button class="qa-toggle"><span class="qa-q">Real example — Node.js + MongoDB containers ek network pe</span><span class="qa-chevron">›</span></button>
+      <div class="qa-body">
+        <pre><code class="language-bash">docker network create app_network
+
+docker run -d --name mongodb --network app_network -v mongo_data:/data/db mongo
+
+docker run -d --name node_api --network app_network -p 3000:3000 \
+  -e MONGO_URL=mongodb://mongodb:27017/myapp myapi</code></pre>
+        <p>Node app ke andar connection string mein <code>mongodb</code> (container name) hi hostname ki tarah use hota hai &mdash; Docker ka internal DNS ise resolve kar deta hai, actual IP kabhi hardcode nahi karna padta.</p>
+        <label class="mark-known"><input type="checkbox" class="know-check"> Mark as learned</label>
+      </div>
+    </article>
+
+  </div>
+
+  <div class="chapter-recap">
+    <span class="recap-label">Quick Revision &mdash; Networking Summary</span>
+    <ul>
+      <li><strong>Drivers</strong> &mdash; bridge (default, single host), host (no isolation), none (no network), overlay (multi-host).</li>
+      <li><strong>Default vs custom bridge</strong> &mdash; custom bridge pe container-name-based DNS milta hai, default pe nahi.</li>
+      <li><strong>EXPOSE vs -p</strong> &mdash; EXPOSE sirf documentation, <code>-p</code> asli port binding karta hai.</li>
+      <li><strong>Real pattern</strong> &mdash; custom network banao, containers ko usme daalo, connection string mein container name use karo.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<section class="chapter" id="ch6" data-title="Docker Compose">
+  <div class="chapter-head"><span class="chapter-num">06</span><h2>Docker Compose</h2></div>
+  <div class="qa-list">
+
+    <article class="qa important" data-id="6-1">
+      <button class="qa-toggle"><span class="qa-q">Docker Compose kya hai aur kyun use karte hain?</span><span class="flag important">V.IMP</span><span class="qa-chevron">›</span></button>
+      <div class="qa-body">
+        <p>Multi-container app (jaise Node API + MongoDB + Nginx) ko manually alag-alag <code>docker run</code> commands se chalana <strong>error-prone aur repetitive</strong> hai. <strong>Compose</strong> saare services, networks, volumes ko ek <strong>single YAML file</strong> mein define karke, ek command (<code>docker compose up</code>) se poora stack start kar deta hai.</p>
+        <p><strong>Real project mein use:</strong> Local development mein poori team ek hi <code>docker-compose.yml</code> commit karti hai &mdash; naya developer sirf <code>docker compose up</code> chalaye, poora environment (API + DB + cache) uske machine pe ready ho jaata hai, bina manually har service install kiye.</p>
+        <label class="mark-known"><input type="checkbox" class="know-check"> Mark as learned</label>
+      </div>
+    </article>
+
+    <article class="qa important" data-id="6-2">
+      <button class="qa-toggle"><span class="qa-q">docker-compose.yml structure kya hai?</span><span class="flag important">V.IMP</span><span class="qa-chevron">›</span></button>
+      <div class="qa-body">
+        <pre><code class="language-yaml">version: "3.8"
+services:
+  api:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      - MONGO_URL=mongodb://mongodb:27017/myapp
+    depends_on:
+      - mongodb
+    networks:
+      - app_network
+
+  mongodb:
+    image: mongo:6
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - app_network
+
+networks:
+  app_network:
+
+volumes:
+  mongo_data:</code></pre>
+        <div class="table-wrap"><table>
+          <tr><th>Key</th><th>Matlab</th></tr>
+          <tr><td><code>build</code></td><td>Local Dockerfile se image build karo (vs <code>image:</code> jo ready-made pull karta hai)</td></tr>
+          <tr><td><code>ports</code></td><td><code>docker run -p</code> ka YAML equivalent</td></tr>
+          <tr><td><code>environment</code></td><td>Env vars (ya <code>env_file:</code> se ek file se load)</td></tr>
+          <tr><td><code>depends_on</code></td><td>Startup <strong>order</strong> control karta hai (agla point mein detail)</td></tr>
+          <tr><td><code>networks</code>/<code>volumes</code></td><td>Top-level define karke services mein reference karte hain &mdash; Compose khud bana deta hai</td></tr>
+        </table></div>
+        <label class="mark-known"><input type="checkbox" class="know-check"> Mark as learned</label>
+      </div>
+    </article>
+
+    <article class="qa important" data-id="6-3">
+      <button class="qa-toggle"><span class="qa-q">depends_on gotcha &mdash; sirf "started" wait karta hai, "ready" nahi</span><span class="flag important">V.IMP</span><span class="qa-chevron">›</span></button>
+      <div class="qa-body">
+        <p><strong>Common misconception:</strong> <code>depends_on: mongodb</code> likhne ka matlab yeh <strong>nahi</strong> hai ki API container tab tak wait karega jab tak MongoDB <strong>fully ready</strong> (accepting connections) na ho jaaye &mdash; yeh sirf itna guarantee karta hai ki MongoDB container <strong>start ho chuka</strong> hai (container process launch ho gaya), uske andar ka database engine abhi bhi initialize ho raha ho sakta hai.</p>
+        <div class="diagram"><span class="diagram-label">Real bug jo isse hota hai</span>
+<pre>t=0s   mongodb container start hua (process launched)
+t=0.1s api container bhi start ho gaya (depends_on satisfied)
+t=0.2s api MongoDB se connect karne ki koshish karta hai
+       → "Connection refused" — MongoDB abhi initialize ho raha tha!
+t=2s   MongoDB actually ready hota hai — par tab tak api crash ho chuka</pre>
+        </div>
+        <h4 style="margin:1.2rem 0 .6rem;color:var(--accent)">Fix — healthcheck ke saath condition</h4>
+        <pre><code class="language-yaml">services:
+  mongodb:
+    image: mongo:6
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  api:
+    build: .
+    depends_on:
+      mongodb:
+        condition: service_healthy   # ab genuinely "ready" hone tak wait karega</code></pre>
+        <p><strong>Real project mein use:</strong> Ya phir app-level pe hi <strong>retry logic</strong> likhte hain (Mongoose/DB client connection retry with backoff) &mdash; production-grade apps dono approaches combine karte hain, kyunki network/infra level pe kabhi bhi temporary disconnect ho sakta hai.</p>
+        <label class="mark-known"><input type="checkbox" class="know-check"> Mark as learned</label>
+      </div>
+    </article>
+
+    <article class="qa" data-id="6-4">
+      <button class="qa-toggle"><span class="qa-q">Compose override files — dev vs prod config split</span><span class="qa-chevron">›</span></button>
+      <div class="qa-body">
+        <p>Ek hi <code>docker-compose.yml</code> mein dev aur prod dono ka config mix karna messy hota hai. Compose <strong>override files</strong> aur <strong>profiles</strong> se alag-alag environments manage karte hain.</p>
+        <pre><code class="language-bash"># docker-compose.yml — base/common config
+# docker-compose.override.yml — automatically merge hoti hai (local dev defaults)
+# docker-compose.prod.yml — explicit prod overrides
+
+docker compose up                                            # base + override.yml (auto)
+docker compose -f docker-compose.yml -f docker-compose.prod.yml up   # base + prod explicitly</code></pre>
+        <div class="table-wrap"><table>
+          <tr><th>File</th><th>Typical content</th></tr>
+          <tr><td><code>docker-compose.yml</code></td><td>Common services, image names, networks (sabke liye same)</td></tr>
+          <tr><td><code>docker-compose.override.yml</code></td><td>Dev-only: bind mounts (live reload), exposed debug ports, <code>build:</code> instead of <code>image:</code></td></tr>
+          <tr><td><code>docker-compose.prod.yml</code></td><td>Prod-only: resource limits, restart policies, no bind mounts, real secrets</td></tr>
+        </table></div>
+        <p><strong>Real project mein use:</strong> Developer <code>docker compose up</code> chalaye toh khud override.yml merge ho jaati hai (local dev experience), aur CI/CD deploy pipeline explicitly <code>-f docker-compose.prod.yml</code> pass karke production config use karti hai &mdash; dono ek hi base file share karte hain, duplication nahi.</p>
+        <label class="mark-known"><input type="checkbox" class="know-check"> Mark as learned</label>
+      </div>
+    </article>
+
+    <article class="qa important" data-id="6-5">
+      <button class="qa-toggle"><span class="qa-q">Full real example — Node + Mongo + Nginx ek compose file mein</span><span class="flag important">V.IMP</span><span class="qa-chevron">›</span></button>
+      <div class="qa-body">
+        <pre><code class="language-yaml">version: "3.8"
+services:
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - api
+    networks:
+      - app_network
+
+  api:
+    build: .
+    environment:
+      - MONGO_URL=mongodb://mongodb:27017/myapp
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    networks:
+      - app_network
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+
+  mongodb:
+    image: mongo:6
+    volumes:
+      - mongo_data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 5s
+      retries: 5
+    networks:
+      - app_network
+
+networks:
+  app_network:
+
+volumes:
+  mongo_data:</code></pre>
+        <pre><code class="language-bash">docker compose up -d       # sab services background mein start
+docker compose logs -f api  # sirf api service ke logs
+docker compose down         # sab stop + network cleanup (volumes rehte hain)
+docker compose down -v      # volumes bhi delete (careful — data loss)</code></pre>
+        <label class="mark-known"><input type="checkbox" class="know-check"> Mark as learned</label>
+      </div>
+    </article>
+
+  </div>
+
+  <div class="chapter-recap">
+    <span class="recap-label">Quick Revision &mdash; Docker Compose Summary</span>
+    <ul>
+      <li><strong>Kyun</strong> &mdash; multi-container app ko ek YAML se, ek command se manage karta hai.</li>
+      <li><strong>Structure</strong> &mdash; <code>services</code>, <code>networks</code>, <code>volumes</code> top-level keys; <code>build</code> vs <code>image</code>.</li>
+      <li><strong>depends_on gotcha</strong> &mdash; sirf "container started" guarantee karta hai, "app ready" nahi &mdash; <code>condition: service_healthy</code> ya retry logic chahiye.</li>
+      <li><strong>Override files</strong> &mdash; base + override.yml (dev, auto-merge) + prod.yml (explicit) &mdash; ek base, alag environments.</li>
+      <li><strong>Production mein Compose sirf single-host</strong> hai &mdash; multi-host scaling ke liye Swarm/Kubernetes chahiye (Chapter 09).</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<section class="chapter" id="ch7" data-title="Security">
+  <div class="chapter-head"><span class="chapter-num">07</span><h2>Security</h2></div>
+  <div class="qa-list">
+
+    <article class="qa important" data-id="7-1">
+      <button class="qa-toggle"><span class="qa-q">Non-root user aur read-only filesystem kyun zaroori hai?</span><span class="flag important">V.IMP</span><span class="qa-chevron">›</span></button>
+      <div class="qa-body">
+        <p>Default mein container ke andar process <strong>root (UID 0)</strong> se chalta hai. Agar attacker container ke andar <strong>code execution</strong> paa le (jaise koi vulnerable npm package), aur kahin <strong>container escape</strong> vulnerability bhi mil jaaye, root privileges ke saath <strong>host machine</strong> tak compromise ho sakta hai.</p>
+        <pre><code class="language-dockerfile">RUN addgroup -g 1001 appgroup && adduser -u 1001 -G appgroup -D appuser
+USER appuser          # ab is line ke baad ka sab kuch non-root user se</code></pre>
+        <pre><code class="language-bash">docker run --read-only --tmpfs /tmp myimage
+# filesystem read-only — malware/attacker kuch likh nahi sakta, sirf /tmp writable</code></pre>
+        <p><strong>Real project mein use:</strong> Production Dockerfiles mein <strong>non-root user</strong> banana aur <code>USER</code> directive set karna standard security practice hai; <code>--read-only</code> stateless services (jaise pure API containers, no local writes) ke liye extra hardening layer hai.</p>
+        <label class="mark-known"><input type="checkbox" class="know-check"> Mark as learned</label>
+      </div>
+    </article>
+
+    <article class="qa important" data-id="7-2">
+      <button class="qa-toggle"><span class="qa-q">Secrets management &mdash; ENV mein secrets kyun nahi daalte?</span><span class="flag important">V.IMP</span><span class="qa-chevron">›</span></button>
+      <div class="qa-body">
+        <p><strong>Galat tarika:</strong></p>
+        <pre><code class="language-dockerfile">ENV DB_PASSWORD=supersecret123   # NAHI — image ke andar permanently bake ho jaata hai</code></pre>
+        <p><code>ENV</code>/<code>ARG</code> se set kiya gaya secret <strong>image layers mein hamesha ke liye save</strong> ho jaata hai &mdash; koi bhi <code>docker history</code> ya <code>docker inspect</code> se, ya image ko pull karke, secret <strong>plain text mein nikaal sakta hai</strong>, chahe baad mein wo variable "unset" bhi kar do.</p>
+        <h4 style="margin:1.2rem 0 .6rem;color:var(--accent)">Sahi approaches</h4>
+        <ul>
+          <li><strong>Runtime env injection</strong> &mdash; <code>docker run -e</code> ya <code>--env-file</code> (secrets image mein nahi, sirf running container ki memory mein).</li>
+          <li><strong>Docker Secrets</strong> (Swarm) / <strong>Kubernetes Secrets</strong> &mdash; encrypted store, sirf runtime pe mount hote hain.</li>
+          <li><strong>BuildKit secret mount</strong> (Chapter 02) &mdash; build-time secrets (jaise private npm token) bina image layer mein bake kiye use karna.</li>
+          <li><strong>External secret managers</strong> &mdash; AWS Secrets Manager, HashiCorp Vault &mdash; app runtime pe fetch karta hai.</li>
+        </ul>
+        <label class="mark-known"><input type="checkbox" class="know-check"> Mark as learned</label>
+      </div>
+    </article>
+
+    <article class="qa" data-id="7-3">
+      <button class="qa-toggle"><span class="qa-q">Image scanning kaise karte hain? (Trivy)</span><span class="qa-chevron">›</span></button>
+      <div class="qa-body">
+        <pre><code class="language-bash">trivy image myapp:1.0
+# Base image ke known CVEs (vulnerabilities) list karta hai, severity ke saath</code></pre>
+        <p><strong>Real project mein use:</strong> CI/CD pipeline mein <code>docker build</code> ke baad ek <strong>scan step</strong> add karte hain &mdash; agar <strong>HIGH/CRITICAL</strong> severity vulnerability mile, pipeline <strong>fail</strong> kar dete hain, image production tak push hi nahi hoti. Purani/unmaintained base images (jaise <code>node:14</code>) mein aksar known CVEs milte hain &mdash; isliye base images regularly update karna important hai.</p>
+        <label class="mark-known"><input type="checkbox" class="know-check"> Mark as learned</label>
+      </div>
+    </article>
+
+    <article class="qa important" data-id="7-4">
+      <button class="qa-toggle"><span class="qa-q">Docker socket (/var/run/docker.sock) expose karna kyun dangerous hai?</span><span class="flag important">V.IMP</span><span class="qa-chevron">›</span></button>
+      <div class="qa-body">
+        <pre><code class="language-bash"># Dikhne mein normal lagta hai (CI tools mein common pattern)
+docker run -v /var/run/docker.sock:/var/run/docker.sock myimage</code></pre>
+        <p>Docker socket container ke andar mount karna matlab us container ko <strong>poore Docker daemon ka full control</strong> de dena &mdash; jo host pe root-equivalent access ke barabar hai. Agar us container mein <strong>koi bhi vulnerability</strong> ho, attacker socket ke through:</p>
+        <ul>
+          <li>Naya <strong>privileged container</strong> spawn kar sakta hai jo host filesystem <code>/</code> ko mount kare.</li>
+          <li>Us naye container ke andar se <strong>seedha host ko control</strong> kar sakta hai &mdash; effectively <strong>container escape</strong>, bina kisi kernel exploit ke.</li>
+        </ul>
+        <p><strong>Real project mein use:</strong> Jenkins/CI tools jo "Docker-in-Docker" ke liye socket mount karte hain, wahan yeh risk consciously accept kiya jaata hai (trusted CI environment mein) &mdash; lekin <strong>kabhi bhi untrusted/user-facing containers</strong> ko socket access mat do. Safer alternative: <strong>rootless Docker</strong> ya dedicated "Docker-in-Docker" sidecar with proper isolation.</p>
+        <label class="mark-known"><input type="checkbox" class="know-check"> Mark as learned</label>
+      </div>
+    </article>
+
+  </div>
+
+  <div class="chapter-recap">
+    <span class="recap-label">Quick Revision &mdash; Security Summary</span>
+    <ul>
+      <li><strong>Non-root user</strong> &mdash; <code>USER</code> directive, root se container escape ka blast radius kam karta hai.</li>
+      <li><strong>Read-only filesystem</strong> &mdash; <code>--read-only</code> se runtime tampering rokta hai.</li>
+      <li><strong>Secrets</strong> &mdash; kabhi <code>ENV</code>/<code>ARG</code> mein hardcode mat karo &mdash; image layers mein permanently store ho jaate hain; runtime injection ya secret manager use karo.</li>
+      <li><strong>Image scanning</strong> &mdash; Trivy jaise tools CI/CD mein CVEs pakadte hain, vulnerable image ko production tak jaane se rokte hain.</li>
+      <li><strong>Docker socket</strong> &mdash; container mein mount karna near-root access dena hai; sirf trusted CI context mein hi karo.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<section class="chapter" id="ch8" data-title="Production Operations">
+  <div class="chapter-head"><span class="chapter-num">08</span><h2>Production Operations</h2></div>
+  <div class="qa-list">
+
+    <article class="qa important" data-id="8-1">
+      <button class="qa-toggle"><span class="qa-q">HEALTHCHECK aur graceful shutdown kaise implement karte hain?</span><span class="flag important">V.IMP</span><span class="qa-chevron">›</span></button>
+      <div class="qa-body">
+        <pre><code class="language-dockerfile">HEALTHCHECK --interval=30s --timeout=3s --retries=3 \
+  CMD curl -f http://localhost:3000/health || exit 1</code></pre>
+        <p><code>docker ps</code> mein container status <code>healthy</code>/<code>unhealthy</code> dikhata hai &mdash; orchestrators (Swarm/K8s) ise use karke <strong>traffic sirf healthy containers ko</strong> bhejte hain, aur unhealthy ko automatically restart/replace kar sakte hain.</p>
+        <h4 style="margin:1.2rem 0 .6rem;color:var(--accent)">Graceful shutdown (app code mein)</h4>
+        <pre><code class="language-javascript">process.on('SIGTERM', () => {
+  console.log('SIGTERM received — closing server gracefully');
+  server.close(() => {
+    mongoose.connection.close();
+    process.exit(0);
+  });
+});</code></pre>
+        <p><strong>Real project mein use:</strong> Bina isko handle kiye, <code>docker stop</code> pe app ko 10s ke andar hi seedha SIGKILL mil jaata hai, jisse <strong>in-flight requests aur DB transactions corrupt/incomplete</strong> reh sakte hain. SIGTERM handler existing requests complete hone dega, phir clean exit karega.</p>
+        <label class="mark-known"><input type="checkbox" class="know-check"> Mark as learned</label>
+      </div>
+    </article>
+
+    <article class="qa" data-id="8-2">
+      <button class="qa-toggle"><span class="qa-q">Logging strategy — json-file driver limits aur centralized logging</span><span class="qa-chevron">›</span></button>
+      <div class="qa-body">
+        <p>Default <code>json-file</code> log driver <strong>disk pe unlimited</strong> grow kar sakta hai agar limit set na ho &mdash; ek chatty container mahino mein <strong>poora disk bhar</strong> sakta hai.</p>
+        <pre><code class="language-bash">docker run --log-opt max-size=10m --log-opt max-file=3 myimage
+# har log file max 10MB, max 3 files rotate</code></pre>
+        <p><strong>Real project mein use:</strong> Production mein logs ko container ke andar hi rakhne ke bajaye <strong>centralized logging</strong> (ELK stack, CloudWatch, Loki) mein bhejte hain &mdash; container delete ho jaaye toh bhi logs preserved rehte hain, aur multiple containers ke logs ek jagah search/correlate ho paate hain.</p>
+        <label class="mark-known"><input type="checkbox" class="know-check"> Mark as learned</label>
+      </div>
+    </article>
+
+    <article class="qa important" data-id="8-3">
+      <button class="qa-toggle"><span class="qa-q">Disk space issue — dangling images/volumes cleanup (real incident)</span><span class="flag important">V.IMP</span><span class="qa-chevron">›</span></button>
+      <div class="qa-body">
+        <p><strong>Real incident:</strong> CI/CD pipeline har deploy pe naya image build karta hai, purani image <strong>untagged</strong> ho jaati hai (dangling) lekin disk pe <strong>reh jaati hai</strong>. Mahino baad, production server ka disk <strong>95%+ full</strong> ho jaata hai, naye deploys fail hone lagte hain ("no space left on device"), aur kabhi-kabhi running containers bhi crash hone lagte hain.</p>
+        <pre><code class="language-bash">docker system df                  # kitni space kis cheez mein use ho rahi hai, dekho
+docker image prune -a              # unused (dangling + untagged) images delete
+docker volume prune                # kisi container se attached na hone wale volumes delete
+docker system prune -a --volumes   # sab ek saath (careful — production mein soch samajh ke)</code></pre>
+        <div class="gotcha" style="border-left-color:var(--warn); background:var(--warn-tint);"><span class="lbl" style="color:var(--warn);">Caution</span><code>docker volume prune</code> un named volumes ko bhi delete kar dega jo abhi kisi container se attached nahi hain lekin <strong>data important tha</strong> (jaise temporarily stopped DB container ka volume) &mdash; production mein blindly chalane se pehle <strong>zaroor check</strong> karo <code>docker volume ls</code> se.</div>
+        <p><strong>Prevention:</strong> CI/CD pipeline mein hi <strong>automated cleanup step</strong> (old images/builds prune) schedule karte hain, taaki manually intervene karne ki naubat hi na aaye.</p>
+        <label class="mark-known"><input type="checkbox" class="know-check"> Mark as learned</label>
+      </div>
+    </article>
+
+    <article class="qa" data-id="8-4">
+      <button class="qa-toggle"><span class="qa-q">Containers ke saath zero-downtime deploy kaise karte hain?</span><span class="qa-chevron">›</span></button>
+      <div class="qa-body">
+        <p>Naya container start karo, <strong>health check pass hone tak wait</strong> karo, tabhi purana container band karo &mdash; kabhi bhi "zero containers running" wala moment nahi aana chahiye.</p>
+        <div class="diagram"><span class="diagram-label">Blue-Green style single-host pattern</span>
+<pre>1. Naya container (v2) start karo — alag naam/port se
+2. HEALTHCHECK pass hone tak wait karo
+3. Load balancer (Nginx) ka upstream naye container (v2) pe point karo
+4. Purana container (v1) ab traffic-free hai — safely stop karo</pre>
+        </div>
+        <p><strong>Real project mein use:</strong> Single-host setups mein yeh manually/script se karte hain; multi-host/orchestrated setups (Swarm/K8s) mein <strong>rolling update</strong> yehi pattern built-in automate karke deta hai (Chapter 09).</p>
+        <label class="mark-known"><input type="checkbox" class="know-check"> Mark as learned</label>
+      </div>
+    </article>
+
+    <article class="qa important" data-id="8-5">
+      <button class="qa-toggle"><span class="qa-q">Environment variable precedence — kaun jeetta hai?</span><span class="flag important">V.IMP</span><span class="qa-chevron">›</span></button>
+      <div class="qa-body">
+        <p>Same variable multiple jagah define ho sakta hai — Dockerfile, Compose file, ya CLI flag. Jo <strong>zyada specific / baad mein apply hota hai</strong>, wo jeetta hai:</p>
+        <div class="diagram"><span class="diagram-label">Priority (highest jeetega)</span>
+<pre>docker run -e VAR=x  (CLI, run-time)          ← highest priority
+      ↑
+docker-compose.yml "environment:"
+      ↑
+docker-compose.yml "env_file:"
+      ↑
+Dockerfile "ENV VAR=x"                        ← lowest priority (image default)</pre>
+        </div>
+        <p><strong>Real project mein use:</strong> Dockerfile mein <code>ENV NODE_ENV=production</code> ek <strong>safe default</strong> set karte hain, lekin local dev/testing ke waqt <code>docker run -e NODE_ENV=development</code> se easily override kar dete hain &mdash; bina image rebuild kiye.</p>
+        <label class="mark-known"><input type="checkbox" class="know-check"> Mark as learned</label>
+      </div>
+    </article>
+
+  </div>
+
+  <div class="chapter-recap">
+    <span class="recap-label">Quick Revision &mdash; Production Ops Summary</span>
+    <ul>
+      <li><strong>HEALTHCHECK</strong> &mdash; container ki actual readiness batata hai; app mein SIGTERM handler graceful shutdown ke liye zaroori.</li>
+      <li><strong>Logging</strong> &mdash; <code>max-size</code>/<code>max-file</code> se disk-fill se bachao; production mein centralized logging (ELK/CloudWatch).</li>
+      <li><strong>Disk cleanup</strong> &mdash; <code>docker system df</code> se check, <code>image/volume prune</code> se cleanup; <code>volume prune</code> se pehle zaroor verify karo.</li>
+      <li><strong>Zero-downtime</strong> &mdash; naya container healthy hone tak purana chalta rahe, phir switch.</li>
+      <li><strong>ENV precedence</strong> &mdash; <code>docker run -e</code> &gt; compose <code>environment</code> &gt; <code>env_file</code> &gt; Dockerfile <code>ENV</code>.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<section class="chapter" id="ch9" data-title="Orchestration & CI/CD">
+  <div class="chapter-head"><span class="chapter-num">09</span><h2>Orchestration &amp; CI/CD</h2></div>
+  <div class="qa-list">
+
+    <article class="qa important" data-id="9-1">
+      <button class="qa-toggle"><span class="qa-q">Docker Swarm vs Kubernetes &mdash; kab kya use karoge?</span><span class="flag important">V.IMP</span><span class="qa-chevron">›</span></button>
+      <div class="qa-body">
+        <p>Dono <strong>multi-host container orchestration</strong> solve karte hain &mdash; scaling, self-healing, load balancing containers across <strong>multiple machines</strong> (jo single Docker/Compose nahi kar sakta).</p>
+        <div class="table-wrap"><table>
+          <tr><th>#</th><th>Docker Swarm</th><th>Kubernetes (K8s)</th></tr>
+          <tr><td>Setup complexity</td><td>Simple &mdash; Docker mein hi built-in</td><td>Complex &mdash; alag learning curve, zyada moving parts</td></tr>
+          <tr><td>Feature set</td><td>Basic (scaling, rolling update, service discovery)</td><td>Bahut zyada advanced (auto-scaling, custom resources, huge ecosystem)</td></tr>
+          <tr><td>Industry adoption</td><td>Kam, chhote/simple projects</td><td>Industry standard, large-scale production</td></tr>
+          <tr><td>Kab use</td><td>Chhoti team, simple multi-host needs, fast setup</td><td>Large-scale, complex microservices, enterprise</td></tr>
+        </table></div>
+        <p><strong>Interview line:</strong> "Real-world mein zyada tar companies Kubernetes use karti hain uske bade ecosystem (Helm, Operators, cloud-managed EKS/GKE/AKS) ki wajah se; Swarm simplicity ke liye chota use-case mein theek hai, lekin community/adoption Kubernetes ke mukable kaafi kam hai."</p>
+        <label class="mark-known"><input type="checkbox" class="know-check"> Mark as learned</label>
+      </div>
+    </article>
+
+    <article class="qa important" data-id="9-2">
+      <button class="qa-toggle"><span class="qa-q">Image tagging strategy in CI/CD — 'latest' kyun dangerous hai?</span><span class="flag important">V.IMP</span><span class="qa-chevron">›</span></button>
+      <div class="qa-body">
+        <pre><code class="language-bash"># Bad — production mein kaunsa exact code chal raha hai, pata hi nahi
+docker build -t myapp:latest .
+docker push myapp:latest
+
+# Good — git commit SHA ya semantic version se traceable
+docker build -t myapp:$(git rev-parse --short HEAD) .
+docker build -t myapp:v1.4.2 .</code></pre>
+        <p><strong>Problem with <code>:latest</code>:</strong></p>
+        <ul>
+          <li><strong>Not reproducible</strong> &mdash; "latest" ka matlab har build ke baad <strong>badal jaata hai</strong>; agar production issue aaye, exact pata nahi chalta kaunsa code version chal raha tha.</li>
+          <li><strong>Rollback impossible</strong> &mdash; agar sirf <code>:latest</code> use kiya, purana version wapas laane ka koi seedha tareeka nahi (jab tak alag se track na kiya ho).</li>
+          <li><strong>Accidental deploy risk</strong> &mdash; koi aur team member <code>:latest</code> push kar de, tumhara production khud-ba-khud unintended version pe chala jaaye (agar auto-pull configured hai).</li>
+        </ul>
+        <p><strong>Real project mein use:</strong> CI/CD pipeline har build ko <strong>git commit SHA</strong> ya <strong>semver tag</strong> se tag karta hai; deployment configs (Compose/K8s manifests) usi specific tag ko reference karte hain &mdash; rollback matlab bas <strong>purana tag deploy</strong> karna, koi rebuild nahi.</p>
+        <label class="mark-known"><input type="checkbox" class="know-check"> Mark as learned</label>
+      </div>
+    </article>
+
+    <article class="qa" data-id="9-3">
+      <button class="qa-toggle"><span class="qa-q">Registry push/pull aur rollback strategy kaise kaam karti hai?</span><span class="qa-chevron">›</span></button>
+      <div class="qa-body">
+        <pre><code class="language-bash"># CI/CD pipeline stages
+docker build -t myregistry.com/myapp:$COMMIT_SHA .
+docker push myregistry.com/myapp:$COMMIT_SHA
+
+# Production server / orchestrator
+docker pull myregistry.com/myapp:$COMMIT_SHA
+docker service update --image myregistry.com/myapp:$COMMIT_SHA myapp   # Swarm example
+
+# Rollback — bas purana tag wapas deploy karo
+docker service update --image myregistry.com/myapp:$PREVIOUS_SHA myapp</code></pre>
+        <p><strong>Real project mein use:</strong> Private registry (AWS ECR, GitLab Container Registry) mein saare tagged versions store rehte hain &mdash; production issue detect hote hi, naya code likhe bina, <strong>seconds mein</strong> purane working version pe rollback ho sakta hai.</p>
+        <label class="mark-known"><input type="checkbox" class="know-check"> Mark as learned</label>
+      </div>
+    </article>
+
+    <article class="qa" data-id="9-4">
+      <button class="qa-toggle"><span class="qa-q">Rolling updates aur scaling basics kya hain?</span><span class="qa-chevron">›</span></button>
+      <div class="qa-body">
+        <pre><code class="language-bash">docker service scale myapp=5              # 5 instances chalao (Swarm)
+docker service update --image myapp:v2 --update-parallelism 1 --update-delay 10s myapp</code></pre>
+        <p><strong>Rolling update:</strong> Orchestrator ek-ek (ya batch) karke purane containers ko naye version se <strong>replace</strong> karta hai, har step ke beech health check verify karke &mdash; kabhi bhi saare instances ek saath down nahi hote (Nginx ke <code>pm2 reload</code>/graceful-reload concept jaisa hi hai, bas cluster-level pe).</p>
+        <p><strong>Scaling:</strong> Traffic badhne pe <strong>horizontal scaling</strong> &mdash; same image ke <strong>zyada replicas</strong> chala do, orchestrator khud load balance kar deta hai unke beech.</p>
+        <label class="mark-known"><input type="checkbox" class="know-check"> Mark as learned</label>
+      </div>
+    </article>
+
+  </div>
+
+  <div class="chapter-recap">
+    <span class="recap-label">Quick Revision &mdash; Orchestration &amp; CI/CD Summary</span>
+    <ul>
+      <li><strong>Swarm vs Kubernetes</strong> &mdash; Swarm simple/built-in; K8s industry-standard, complex, feature-rich.</li>
+      <li><strong>Tagging</strong> &mdash; <code>:latest</code> avoid karo production mein &mdash; git-SHA/semver se traceable, reproducible, rollback-friendly.</li>
+      <li><strong>Registry</strong> &mdash; CI push karta hai, production pull karta hai; rollback = purana tag deploy karna.</li>
+      <li><strong>Rolling updates</strong> &mdash; ek-ek batch karke replace, zero-downtime; <strong>scaling</strong> = replicas badhao, orchestrator load balance karta hai.</li>
+    </ul>
+  </div>
+</section>
+
+  </div>
+
+  <footer>
+    Docker interview prep &mdash; containers, images, networking, security aur orchestration ke fundamentals, 5 YOE level depth ke saath. Progress aur learned-status is browser mein locally save hota hai.
+  </footer>
+</main>
+</div>
+
+<script>
+hljs.highlightAll();
+
+const chapters = Array.from(document.querySelectorAll('.chapter'));
+const qas = Array.from(document.querySelectorAll('.qa'));
+const STORAGE_KEY = 'docker-notes-progress-v1';
+
+function loadProgress(){
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; }
+  catch(e){ return {}; }
+}
+function saveProgress(data){
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); } catch(e){}
+}
+let progress = loadProgress();
+
+function updateProgressUI(){
+  const total = qas.length;
+  const done = Object.values(progress).filter(Boolean).length;
+  document.getElementById('progressLabel').textContent = done + ' / ' + total;
+  document.getElementById('progressFill').style.width = (total ? (done/total*100) : 0) + '%';
+}
+
+function updateStats(){
+  const total = qas.length;
+  const impCount = qas.filter(qa => qa.classList.contains('important')).length;
+  document.getElementById('statsLine').textContent = chapters.length + ' chapters · ' + total + ' questions';
+  document.getElementById('impCount').textContent = '(' + impCount + ')';
+}
+updateStats();
+
+qas.forEach(qa => {
+  const id = qa.dataset.id;
+  const check = qa.querySelector('.know-check');
+  if (progress[id]) { check.checked = true; qa.classList.add('learned'); }
+  check.addEventListener('change', (e) => {
+    e.stopPropagation();
+    progress[id] = check.checked;
+    qa.classList.toggle('learned', check.checked);
+    saveProgress(progress);
+    updateProgressUI();
+    buildNav();
+  });
+  const toggleBtn = qa.querySelector('.qa-toggle');
+  toggleBtn.addEventListener('click', () => {
+    const open = qa.dataset.open === 'true';
+    qa.dataset.open = open ? 'false' : 'true';
+    toggleBtn.setAttribute('aria-expanded', String(!open));
+  });
+});
+updateProgressUI();
+
+document.getElementById('expandAllBtn').addEventListener('click', () => {
+  qas.forEach(qa => { if(qa.style.display !== 'none'){ qa.dataset.open = 'true'; } });
+});
+document.getElementById('collapseAllBtn').addEventListener('click', () => {
+  qas.forEach(qa => { qa.dataset.open = 'false'; });
+});
+
+function buildNav(){
+  const nav = document.getElementById('chapterNav');
+  nav.innerHTML = '';
+  chapters.forEach((ch, i) => {
+    const list = ch.querySelectorAll('.qa');
+    const done = Array.from(list).filter(qa => progress[qa.dataset.id]).length;
+    const a = document.createElement('a');
+    a.href = '#' + ch.id;
+    a.innerHTML = '<span class="n">' + String(i+1).padStart(2,'0') + '</span>'
+      + '<span class="title">' + ch.dataset.title + '</span>'
+      + '<span class="count">' + done + '/' + list.length + '</span>';
+    nav.appendChild(a);
+  });
+}
+buildNav();
+
+const searchInput = document.getElementById('searchInput');
+const importantOnly = document.getElementById('importantOnly');
+const noResults = document.getElementById('noResults');
+
+function applyFilters(){
+  const q = searchInput.value.trim().toLowerCase();
+  const impOnly = importantOnly.checked;
+  let anyVisible = false;
+
+  chapters.forEach(ch => {
+    let chapterHasVisible = false;
+    ch.querySelectorAll('.qa').forEach(qa => {
+      const text = qa.textContent.toLowerCase();
+      const matchesSearch = !q || text.includes(q);
+      const matchesImportant = !impOnly || qa.classList.contains('important');
+      const visible = matchesSearch && matchesImportant;
+      qa.style.display = visible ? '' : 'none';
+      if (visible) chapterHasVisible = true;
+    });
+    ch.style.display = chapterHasVisible ? '' : 'none';
+    if (chapterHasVisible) anyVisible = true;
+  });
+
+  noResults.style.display = anyVisible ? 'none' : 'block';
+}
+searchInput.addEventListener('input', applyFilters);
+importantOnly.addEventListener('change', applyFilters);
+</script>
+</body>
+</html>

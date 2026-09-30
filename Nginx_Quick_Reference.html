@@ -1,0 +1,555 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Nginx Quick Reference</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,600;8..60,700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/nginx.min.js"></script>
+<style>
+:root{
+  --bg:#f4f6f5;
+  --surface:#ffffff;
+  --surface-alt:#eaf0ed;
+  --text:#1c2624;
+  --text-secondary:#54625d;
+  --accent:#2f7d64;
+  --accent-strong:#1f5b47;
+  --accent-tint:#e2efe9;
+  --warn:#a9691a;
+  --warn-tint:#faecd7;
+  --border:#dbe3df;
+  --code-bg:#eef2f0;
+  --code-text:#28352f;
+  --shadow: 0 1px 2px rgba(20,30,26,0.05), 0 6px 20px rgba(20,30,26,0.06);
+  --radius-s:6px;
+  --radius-m:10px;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#121815; --surface:#182120; --surface-alt:#1e2926;
+    --text:#e6ece9; --text-secondary:#96a49e;
+    --accent:#5cc19d; --accent-strong:#8adcbc; --accent-tint:#1d332b;
+    --warn:#e3a548; --warn-tint:#332714;
+    --border:#2b3532; --code-bg:#141c1a; --code-text:#d9e4de;
+    --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px rgba(0,0,0,0.35);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#121815; --surface:#182120; --surface-alt:#1e2926;
+  --text:#e6ece9; --text-secondary:#96a49e;
+  --accent:#5cc19d; --accent-strong:#8adcbc; --accent-tint:#1d332b;
+  --warn:#e3a548; --warn-tint:#332714;
+  --border:#2b3532; --code-bg:#141c1a; --code-text:#d9e4de;
+  --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px rgba(0,0,0,0.35);
+}
+*{box-sizing:border-box;}
+html{color-scheme:light dark; scroll-behavior:smooth;}
+body{margin:0; background:var(--bg); color:var(--text); font-family:'IBM Plex Sans', system-ui, sans-serif; font-size:15px; line-height:1.55;}
+h1,h2,h3{font-family:'Source Serif 4', Georgia, serif; text-wrap:balance; color:var(--text); margin:0;}
+code, pre, .mono{font-family:'IBM Plex Mono','Consolas',monospace;}
+a{color:var(--accent-strong);}
+
+.app{display:grid; grid-template-columns:250px minmax(0,1fr); max-width:1280px; margin:0 auto; min-height:100vh;}
+@media (max-width:860px){ .app{grid-template-columns:1fr;} .sidebar{position:relative; height:auto; top:0;} }
+
+.sidebar{border-right:1px solid var(--border); padding:24px 16px; position:sticky; top:0; align-self:start; height:100vh; overflow-y:auto;}
+.brand .eyebrow{font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:0.09em; text-transform:uppercase; color:var(--accent-strong);}
+.brand h1{font-size:19px; font-weight:600; margin-top:3px;}
+.brand .sub{font-size:12px; color:var(--text-secondary); display:block; margin-top:4px;}
+nav.toc{margin-top:20px; display:flex; flex-direction:column; gap:2px;}
+nav.toc a{text-decoration:none; color:var(--text-secondary); padding:6px 8px; border-radius:var(--radius-s); font-size:12.5px; display:flex; gap:8px;}
+nav.toc a:hover{background:var(--surface-alt); color:var(--text);}
+nav.toc a .n{font-family:'IBM Plex Mono',monospace; font-size:10.5px; color:var(--accent-strong); min-width:16px;}
+.print-hint{margin-top:18px; font-size:11.5px; color:var(--text-secondary); padding-top:14px; border-top:1px dashed var(--border);}
+
+main{padding:28px 36px 100px; min-width:0;}
+@media (max-width:620px){ main{padding:20px 16px 80px;} }
+
+.top-banner{background:var(--accent-tint); border:1px solid var(--border); border-radius:var(--radius-m); padding:12px 16px; font-size:13px; color:var(--text-secondary); margin-bottom:26px;}
+.top-banner strong{color:var(--accent-strong);}
+
+.chapter{padding-top:34px; scroll-margin-top:20px;}
+.chapter:first-of-type{padding-top:0;}
+.chapter-head{display:flex; align-items:baseline; gap:12px; margin-bottom:14px; padding-bottom:8px; border-bottom:2px solid var(--accent-tint);}
+.chapter-num{font-size:12px; color:var(--accent-strong); font-weight:600; font-family:'IBM Plex Mono',monospace;}
+.chapter-head h2{font-size:20px; font-weight:600;}
+
+.grid{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+@media (max-width:760px){ .grid{grid-template-columns:1fr;} }
+.card{background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-m); padding:13px 15px; box-shadow:var(--shadow);}
+.card.wide{grid-column:1/-1;}
+.card h3{font-size:14px; font-weight:600; margin-bottom:7px; display:flex; align-items:center; gap:7px;}
+.card h3 .flag{font-family:'IBM Plex Mono',monospace; font-size:9.5px; letter-spacing:0.05em; text-transform:uppercase; padding:2px 6px; border-radius:20px; background:var(--warn-tint); color:var(--warn); font-weight:600;}
+.card p{margin:0 0 7px; font-size:13px; color:var(--text-secondary); line-height:1.5;}
+.card p:last-child{margin-bottom:0;}
+.card p strong{color:var(--text); font-weight:600;}
+.card ul{margin:0 0 7px; padding-left:16px;}
+.card li{margin-bottom:4px; font-size:13px; color:var(--text-secondary); line-height:1.45;}
+.card li strong{color:var(--text);}
+
+.example{margin:7px 0; padding:7px 10px; border-left:3px solid var(--accent); background:var(--accent-tint); border-radius:0 var(--radius-s) var(--radius-s) 0; font-size:12.5px; color:var(--text-secondary);}
+.example .lbl{font-family:'IBM Plex Mono',monospace; font-size:9.5px; text-transform:uppercase; letter-spacing:0.07em; color:var(--accent-strong); display:block; margin-bottom:3px;}
+.gotcha{margin:7px 0; padding:7px 10px; border-left:3px solid var(--warn); background:var(--warn-tint); border-radius:0 var(--radius-s) var(--radius-s) 0; font-size:12.5px; color:var(--text-secondary);}
+.gotcha .lbl{font-family:'IBM Plex Mono',monospace; font-size:9.5px; text-transform:uppercase; letter-spacing:0.07em; color:var(--warn); display:block; margin-bottom:3px;}
+
+pre{background:var(--code-bg); border:1px solid var(--border); border-radius:var(--radius-s); padding:9px 11px; overflow-x:auto; margin:7px 0; font-size:12px;}
+pre code{font-size:11.5px; line-height:1.5; color:var(--code-text); background:none;}
+code{background:var(--code-bg); padding:1px 5px; border-radius:4px; font-size:12px; color:var(--accent-strong);}
+pre code{background:none; padding:0;}
+
+.qtable{width:100%; border-collapse:collapse; font-size:12.5px; margin:7px 0;}
+.qtable th, .qtable td{border:1px solid var(--border); padding:6px 8px; text-align:left; vertical-align:top;}
+.qtable th{background:var(--surface-alt); font-weight:600; font-size:11px; text-transform:uppercase; letter-spacing:0.03em; color:var(--text-secondary);}
+
+.oneline{background:var(--surface); border:1px dashed var(--accent); border-radius:var(--radius-m); padding:11px 14px; font-size:12.5px; color:var(--text-secondary); margin-top:12px;}
+.oneline strong{color:var(--accent-strong);}
+
+.rapid{background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-m); padding:18px 20px; margin-top:10px;}
+.rapid h3{font-size:13px; color:var(--accent-strong); font-family:'IBM Plex Mono',monospace; text-transform:uppercase; letter-spacing:0.06em; margin-bottom:10px;}
+.rapid ol{margin:0; padding-left:20px; columns:2; column-gap:26px;}
+.rapid li{margin-bottom:8px; break-inside:avoid; font-size:13px; line-height:1.45;}
+.rapid li strong{color:var(--text);}
+.rapid li span{color:var(--text-secondary);}
+@media (max-width:760px){ .rapid ol{columns:1;} }
+
+footer{margin-top:40px; padding-top:16px; border-top:1px solid var(--border); font-size:11.5px; color:var(--text-secondary);}
+</style>
+</head>
+<body>
+<div class="app">
+
+<aside class="sidebar">
+  <div class="brand">
+    <span class="eyebrow">Quick Reference &middot; Interview Prep</span>
+    <h1>Nginx — One-Pass Revision</h1>
+    <span class="sub">Sab concepts + interview points + real examples, ek hi page mein</span>
+  </div>
+  <nav class="toc">
+    <a href="#c1"><span class="n">01</span>Basics</a>
+    <a href="#c2"><span class="n">02</span>Reverse Proxy</a>
+    <a href="#c3"><span class="n">03</span>SSL / HTTPS</a>
+    <a href="#c4"><span class="n">04</span>Load Balancing</a>
+    <a href="#c5"><span class="n">05</span>Static Files</a>
+    <a href="#c6"><span class="n">06</span>Performance</a>
+    <a href="#c7"><span class="n">07</span>Security</a>
+    <a href="#c8"><span class="n">08</span>Logs &amp; Errors</a>
+    <a href="#c9"><span class="n">09</span>Production</a>
+    <a href="#rapid"><span class="n">⚡</span>Rapid-fire Q&amp;A</a>
+  </nav>
+  <div class="print-hint">Ctrl/Cmd+F se koi bhi term seedha search kar sakte ho — poora page ek jagah hai.</div>
+</aside>
+
+<main>
+  <div class="top-banner">Yeh <strong>Nginx_Setup.html</strong> ka condensed version hai — sirf revision ke liye, click-to-expand nahi. Har card mein: concept 1-liner, interview gotcha, real-life example.</div>
+
+<!-- ============ 01 BASICS ============ -->
+<section class="chapter" id="c1">
+  <div class="chapter-head"><span class="chapter-num">01</span><h2>Basics</h2></div>
+  <div class="grid">
+    <div class="card">
+      <h3>What is Nginx <span class="flag">V.IMP</span></h3>
+      <p>4 roles: <strong>web server</strong> (static files), <strong>reverse proxy</strong> (forward to backend), <strong>load balancer</strong> (traffic split), <strong>SSL termination / cache</strong>.</p>
+      <div class="example"><span class="lbl">Real use</span>Node app port 3000 ke aage Nginx laga do — users 80/443 pe aate hain, andar se Node ko proxy hota hai.</div>
+    </div>
+    <div class="card">
+      <h3>Architecture — Master/Worker <span class="flag">V.IMP</span></h3>
+      <p><strong>Master</strong> = config read + workers manage (kabhi request handle nahi karta). <strong>Workers</strong> = single-threaded but event-driven/non-blocking (epoll/kqueue) → 1000s connections/worker.</p>
+      <div class="example"><span class="lbl">Interview line</span>Isi wajah se Nginx C10k problem (10k concurrent) kam memory mein solve karta hai — thread-per-request nahi hai.</div>
+    </div>
+    <div class="card">
+      <h3>Nginx vs Apache <span class="flag">V.IMP</span></h3>
+      <table class="qtable">
+        <tr><th></th><th>Nginx</th><th>Apache</th></tr>
+        <tr><td>Model</td><td>Event-driven async</td><td>Process/thread per connection</td></tr>
+        <tr><td>Concurrency</td><td>High, low memory</td><td>Memory heavy at scale</td></tr>
+        <tr><td>Dynamic content</td><td>Forwards to Node/PHP-FPM</td><td><code>mod_php</code> built-in</td></tr>
+        <tr><td>.htaccess</td><td>Not supported</td><td>Supported</td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <h3>Commands</h3>
+      <table class="qtable">
+        <tr><td><code>nginx -t</code></td><td>Syntax test — <strong>hamesha reload se pehle</strong></td></tr>
+        <tr><td><code>nginx -s reload</code></td><td>Zero-downtime config reload</td></tr>
+        <tr><td><code>nginx -s quit</code></td><td>Graceful stop (finish in-flight requests)</td></tr>
+        <tr><td><code>nginx -s stop</code></td><td>Fast/immediate stop</td></tr>
+      </table>
+    </div>
+    <div class="card wide">
+      <h3>Config Structure &amp; Hierarchy <span class="flag">V.IMP</span></h3>
+      <pre><code class="language-nginx">events { worker_connections 1024; }
+http {
+  include mime.types;
+  server {
+    listen 80; server_name example.com;
+    root /var/www/html; index index.html;
+    location / { try_files $uri $uri/ =404; }
+    location /api/ { proxy_pass http://localhost:3000; }
+  }
+}</code></pre>
+      <ul>
+        <li><strong>events{}</strong> — connection settings, once at top.</li>
+        <li><strong>http{}</strong> — HTTP settings + one/more <code>server{}</code>.</li>
+        <li><strong>server{}</strong> — one virtual host (domain/port).</li>
+        <li><strong>location{}</strong> — rules per URL path.</li>
+        <li><code>listen</code>, <code>server_name</code>, <code>root</code>, <code>index</code>, <code>include</code> — directive basics.</li>
+      </ul>
+      <div class="gotcha"><span class="lbl">Interview gotcha</span>Settings <strong>upar se neeche inherit</strong> hoti hain; priority: <code>location &gt; server &gt; http &gt; main</code>. <code>http{}</code> mein <code>gzip on;</code> likha toh sab servers ko milega, jab tak override na ho.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 02 REVERSE PROXY ============ -->
+<section class="chapter" id="c2">
+  <div class="chapter-head"><span class="chapter-num">02</span><h2>Reverse Proxy &amp; Backend</h2></div>
+  <div class="grid">
+    <div class="card wide">
+      <h3>Reverse Proxy Flow <span class="flag">V.IMP</span></h3>
+      <p>Client → Nginx (public, port 80/443) → Backend (Node, port 3000, sirf internal). Client ko backend ka pata hi nahi chalta.</p>
+      <div class="example"><span class="lbl">Real project</span>React frontend <code>root</code> se static serve; <code>fetch('/api/products')</code> → Nginx <code>/api/</code> match → <code>proxy_pass http://localhost:3000/</code> → Express route → Mongo → response wapas Nginx se browser tak. <strong>Security:</strong> port 3000 firewall se sirf localhost accessible.</div>
+    </div>
+    <div class="card">
+      <h3>proxy_pass — trailing slash <span class="flag">V.IMP</span></h3>
+      <table class="qtable">
+        <tr><th>Config</th><th>/api/users →</th></tr>
+        <tr><td><code>proxy_pass http://x:3000/;</code></td><td><code>/users</code> (prefix strip)</td></tr>
+        <tr><td><code>proxy_pass http://x:3000;</code></td><td><code>/api/users</code> (as-is)</td></tr>
+      </table>
+      <div class="gotcha"><span class="lbl">Common bug</span>Trailing <code>/</code> hai ya nahi — isi se 404 aata hai real projects mein.</div>
+    </div>
+    <div class="card">
+      <h3>proxy_set_header <span class="flag">V.IMP</span></h3>
+      <pre><code class="language-nginx">proxy_set_header Host $host;
+proxy_set_header X-Real-IP $remote_addr;
+proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+proxy_set_header X-Forwarded-Proto $scheme;</code></pre>
+      <div class="example"><span class="lbl">Real use</span>Bina <code>X-Real-IP</code> ke, backend ko sabka IP <code>127.0.0.1</code> dikhega → rate-limiting/IP-ban ek attacker block karega toh <strong>sab users</strong> block ho jaayenge.</div>
+    </div>
+    <div class="card wide">
+      <h3>Proxy Timeouts</h3>
+      <table class="qtable">
+        <tr><td><code>proxy_connect_timeout</code></td><td>TCP connect banane ka max time</td></tr>
+        <tr><td><code>proxy_send_timeout</code></td><td>Request bhejne ka max time</td></tr>
+        <tr><td><code>proxy_read_timeout</code></td><td>Response wapas aane ka max time (most important)</td></tr>
+      </table>
+      <div class="gotcha"><span class="lbl">Real problem</span>Heavy report route (90s) default 60s timeout se pehle hi 504 de deta hai. <strong>Fix:</strong> poore server ka timeout mat badhao — sirf us specific <code>location</code> (jyada specific path) ke liye alag <code>proxy_read_timeout</code> do.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 03 SSL/HTTPS ============ -->
+<section class="chapter" id="c3">
+  <div class="chapter-head"><span class="chapter-num">03</span><h2>SSL / HTTPS</h2></div>
+  <div class="grid">
+    <div class="card">
+      <h3>HTTP vs HTTPS <span class="flag">V.IMP</span></h3>
+      <p>HTTP = plain text, port 80, "Not Secure". HTTPS = TLS-encrypted, port 443, padlock, SEO boost.</p>
+      <div class="example"><span class="lbl">Real scenario</span>Cafe wifi pe login: HTTP → attacker seedha password padh le; HTTPS → sirf encrypted bytes dikhein.</div>
+    </div>
+    <div class="card">
+      <h3>TLS Handshake</h3>
+      <pre>1. Client hello (HTTPS chahiye)
+2. Server cert bhejta hai (public key)
+3. Client CA se verify karta hai
+4. Shared session key agree hoti hai
+5. Data usi key se encrypt/decrypt</pre>
+    </div>
+    <div class="card">
+      <h3>Certificates</h3>
+      <p>CA issue karti hai (Let's Encrypt). 2 files chahiye: <strong>cert</strong> (.crt/.pem, public) + <strong>private key</strong> (.key, secret).</p>
+      <p>Types: <strong>DV</strong> (domain only, free) → <strong>OV</strong> (org verified) → <strong>EV</strong> (banks, deep verification).</p>
+    </div>
+    <div class="card">
+      <h3>Nginx HTTPS Config <span class="flag">V.IMP</span></h3>
+      <pre><code class="language-nginx">server {
+  listen 443 ssl;
+  server_name myshop.com;
+  ssl_certificate     .../fullchain.pem;
+  ssl_certificate_key .../privkey.pem;
+}
+# HTTP → HTTPS redirect
+server {
+  listen 80; server_name myshop.com;
+  return 301 https://$host$request_uri;
+}</code></pre>
+    </div>
+    <div class="card">
+      <h3>Let's Encrypt + Certbot <span class="flag">V.IMP</span></h3>
+      <pre><code class="language-bash">sudo apt install certbot python3-certbot-nginx
+sudo certbot --nginx -d myshop.com -d www.myshop.com</code></pre>
+      <p>Ek command mein: cert issue + Nginx config + redirect, sab automate, free.</p>
+    </div>
+    <div class="card">
+      <h3>Renewal</h3>
+      <p>Certs sirf <strong>90 din</strong> valid. Certbot khud cron/systemd timer laga deta hai — din mein 2 baar check, expiry se 30 din pehle auto-renew.</p>
+      <div class="gotcha"><span class="lbl">Interview Q</span>"Site achanak HTTPS error de rahi hai, sabse pehle kya check karoge?" → <code>certbot certificates</code> se expiry date.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 04 LOAD BALANCING ============ -->
+<section class="chapter" id="c4">
+  <div class="chapter-head"><span class="chapter-num">04</span><h2>Load Balancing</h2></div>
+  <div class="grid">
+    <div class="card wide">
+      <h3>upstream block <span class="flag">V.IMP</span></h3>
+      <pre><code class="language-nginx">upstream backend_servers {
+  server localhost:3001;
+  server localhost:3002;
+  server localhost:3003;
+}
+server { location / { proxy_pass http://backend_servers; } }</code></pre>
+      <div class="example"><span class="lbl">Real use</span>PM2 cluster mode ya multiple Docker containers ko ek upstream group mein daalte hain.</div>
+    </div>
+    <div class="card">
+      <h3>Algorithms</h3>
+      <table class="qtable">
+        <tr><th>Type</th><th>Kab use</th></tr>
+        <tr><td><strong>Round Robin</strong> (default)</td><td>Sab servers equal capacity</td></tr>
+        <tr><td><strong>weight=N</strong></td><td>Ek server zyada powerful</td></tr>
+        <tr><td><strong>least_conn</strong></td><td>Processing time vary karta ho</td></tr>
+        <tr><td><strong>ip_hash</strong></td><td>Session local memory mein (sticky needed)</td></tr>
+      </table>
+      <div class="gotcha"><span class="lbl">Gotcha</span>Session server-memory mein ho aur <code>ip_hash</code> na lagao → user baar-baar login maanga jaayega (dusre server pe session missing). Better fix: Redis shared session.</div>
+    </div>
+    <div class="card">
+      <h3>Backend Failure Handling <span class="flag">V.IMP</span></h3>
+      <pre><code class="language-nginx">upstream backend_servers {
+  server localhost:3001 max_fails=3 fail_timeout=30s;
+  server localhost:3002 max_fails=3 fail_timeout=30s;
+  server localhost:3003 backup;
+}</code></pre>
+      <p><code>max_fails</code>/<code>fail_timeout</code> = crashed server ko temporarily skip; <code>backup</code> = sab down ho tabhi use.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 05 STATIC FILES ============ -->
+<section class="chapter" id="c5">
+  <div class="chapter-head"><span class="chapter-num">05</span><h2>Static Files</h2></div>
+  <div class="grid">
+    <div class="card">
+      <h3>root vs alias <span class="flag">V.IMP</span></h3>
+      <table class="qtable">
+        <tr><th></th><th>root</th><th>alias</th></tr>
+        <tr><td>Rule</td><td>path append</td><td>path replace</td></tr>
+        <tr><td>Example</td><td><code>root /var/www;</code> /images/cat.png → /var/www/images/cat.png</td><td><code>alias /var/www/pics/;</code> /images/cat.png → /var/www/pics/cat.png</td></tr>
+      </table>
+      <div class="gotcha"><span class="lbl">Gotcha</span><code>alias</code> mein trailing <code>/</code> bhoolna = 404.</div>
+    </div>
+    <div class="card">
+      <h3>try_files &amp; SPA fallback <span class="flag">V.IMP</span></h3>
+      <pre><code class="language-nginx">location / { try_files $uri $uri/ /index.html; }</code></pre>
+      <p>Order: exact file → folder → fallback. SPA routing (<code>/about</code>) client-side hai; bina fallback ke refresh pe 404.</p>
+    </div>
+    <div class="card wide">
+      <h3>Caching + hashed filenames</h3>
+      <pre><code class="language-nginx">location ~* \.(js|css|png|jpg|svg|woff2)$ {
+  expires 30d;
+  add_header Cache-Control "public, immutable";
+}</code></pre>
+      <div class="gotcha"><span class="lbl">Problem → Fix</span>File update ho jaaye tab bhi browser 30 din purana cached JS deta rehta — build tools filename mein content-hash daalte hain (<code>app.a3f9e7.js</code>) taaki naya build = naya naam = purani cache kabhi reuse na ho.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 06 PERFORMANCE ============ -->
+<section class="chapter" id="c6">
+  <div class="chapter-head"><span class="chapter-num">06</span><h2>Performance</h2></div>
+  <div class="grid">
+    <div class="card">
+      <h3>Workers &amp; Connections</h3>
+      <pre><code class="language-nginx">worker_processes auto;
+events { worker_connections 1024; }
+# max clients ≈ processes × connections</code></pre>
+    </div>
+    <div class="card">
+      <h3>Keepalive</h3>
+      <pre><code class="language-nginx">keepalive_timeout 65;   # client↔Nginx
+upstream x { keepalive 32; }  # Nginx↔backend</code></pre>
+      <p>TCP handshake baar-baar avoid — connection reuse.</p>
+    </div>
+    <div class="card">
+      <h3>Buffering vs Gzip</h3>
+      <p><strong>proxy_buffering</strong> — Nginx response ko buffer karke backend ko jaldi free karta hai (streaming mein off).</p>
+      <p><strong>gzip on;</strong> — response compress (200KB → ~50KB).</p>
+    </div>
+    <div class="card">
+      <h3>proxy_cache <span class="flag">V.IMP</span></h3>
+      <pre><code class="language-nginx">proxy_cache_path /var/cache/nginx keys_zone=my_cache:10m;
+location /api/products {
+  proxy_cache my_cache;
+  proxy_cache_valid 200 10m;
+}</code></pre>
+      <p>Same request baar-baar DB tak na jaaye — DB load drastically kam.</p>
+    </div>
+    <div class="card">
+      <h3>client_max_body_size <span class="flag">V.IMP</span></h3>
+      <pre><code class="language-nginx">http { client_max_body_size 20M; }</code></pre>
+      <div class="gotcha"><span class="lbl">Gotcha</span>Default sirf <strong>1MB</strong> — set na kiya toh file upload pe seedha <strong>413</strong>, Node tak pahunchti hi nahi.</div>
+    </div>
+    <div class="card">
+      <h3>Timeouts = graceful failure</h3>
+      <p>Bina timeout ke crashed backend Nginx ke saare workers busy kar deta hai → poori site down lagti hai. Timeout se turant error, resources free.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 07 SECURITY ============ -->
+<section class="chapter" id="c7">
+  <div class="chapter-head"><span class="chapter-num">07</span><h2>Security</h2></div>
+  <div class="grid">
+    <div class="card">
+      <h3>Rate Limiting <span class="flag">V.IMP</span></h3>
+      <pre><code class="language-nginx">limit_req_zone $binary_remote_addr zone=mylimit:10m rate=5r/s;
+location /api/login { limit_req zone=mylimit burst=10 nodelay; }</code></pre>
+      <p>Brute-force login attempts rokta hai — 429 after limit.</p>
+    </div>
+    <div class="card">
+      <h3>IP Blocking &amp; Access Control</h3>
+      <pre><code class="language-nginx">location /admin/ { allow 203.0.113.10; deny all; }
+location ~ /\.(env|git) { deny all; }</code></pre>
+      <p><code>.env</code> block na karo toh secrets public expose ho sakte hain.</p>
+    </div>
+    <div class="card">
+      <h3>Security Headers</h3>
+      <pre><code class="language-nginx">add_header X-Frame-Options "SAMEORIGIN";
+add_header X-Content-Type-Options "nosniff";
+add_header Strict-Transport-Security "max-age=31536000";
+add_header Content-Security-Policy "default-src 'self'";</code></pre>
+      <p>Clickjacking / MIME-sniffing / forced-HTTPS protection.</p>
+    </div>
+    <div class="card">
+      <h3>CORS &amp; SSL Hardening</h3>
+      <pre><code class="language-nginx">add_header Access-Control-Allow-Origin "https://myshop.com";
+ssl_protocols TLSv1.2 TLSv1.3;
+ssl_ciphers HIGH:!aNULL:!MD5;</code></pre>
+      <p>Alag-domain frontend/backend ke liye CORS zaroori; purane TLS band karo warna downgrade attack.</p>
+    </div>
+    <div class="card wide">
+      <h3>DDoS Basics</h3>
+      <pre><code class="language-nginx">limit_req_zone $binary_remote_addr zone=req_limit:10m rate=10r/s;
+limit_conn_zone $binary_remote_addr zone=conn_limit:10m;
+server { limit_req zone=req_limit burst=20; limit_conn conn_limit 20; }</code></pre>
+      <p>Rate limit + conn limit + timeouts = basic layer; bade DDoS ke liye Cloudflare/AWS Shield chahiye.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 08 LOGS ============ -->
+<section class="chapter" id="c8">
+  <div class="chapter-head"><span class="chapter-num">08</span><h2>Logs &amp; Troubleshooting</h2></div>
+  <div class="grid">
+    <div class="card">
+      <h3>Access vs Error Log</h3>
+      <p><strong>access_log</strong> = "kya hua" (IP, URL, status). <strong>error_log</strong> = "kyun fail hua" — site down pe sabse pehle yahi dekho.</p>
+    </div>
+    <div class="card wide">
+      <h3>Status Codes <span class="flag">V.IMP</span></h3>
+      <table class="qtable">
+        <tr><th>Code</th><th>Matlab</th><th>Wajah</th></tr>
+        <tr><td><strong>403</strong></td><td>Forbidden</td><td><code>deny all;</code> ya permission issue</td></tr>
+        <tr><td><strong>404</strong></td><td>Not found</td><td>Galat URL / root path / try_files missing</td></tr>
+        <tr><td><strong>413</strong></td><td>Payload too large</td><td><code>client_max_body_size</code> se badi file</td></tr>
+        <tr><td><strong>502</strong></td><td>Bad gateway</td><td>Backend <strong>down/crashed</strong></td></tr>
+        <tr><td><strong>504</strong></td><td>Gateway timeout</td><td>Backend <strong>slow/hung</strong> — timeout cross</td></tr>
+      </table>
+      <div class="gotcha"><span class="lbl">Interview line</span>502 = backend respond hi nahi kar raha (restart karo); 504 = respond kar raha but slow (optimize/timeout badhao).</div>
+    </div>
+    <div class="card wide">
+      <h3>Troubleshooting Order <span class="flag">V.IMP</span></h3>
+      <pre><code class="language-bash">sudo nginx -t                          # 1. syntax check
+sudo tail -f /var/log/nginx/error.log  # 2. live error
+sudo systemctl status nginx            # 3. Nginx chal raha hai?
+curl http://localhost:3000             # 4. backend reachable?
+sudo systemctl reload nginx            # 5. reload (restart nahi)</code></pre>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 09 PRODUCTION ============ -->
+<section class="chapter" id="c9">
+  <div class="chapter-head"><span class="chapter-num">09</span><h2>Production</h2></div>
+  <div class="grid">
+    <div class="card">
+      <h3>PM2 + Nginx</h3>
+      <pre><code class="language-bash">pm2 start server.js -i max --name myshop-api
+pm2 startup && pm2 save</code></pre>
+      <p>Crash pe auto-restart; cluster mode = multiple instances, Nginx unke beech load balance.</p>
+    </div>
+    <div class="card">
+      <h3>EC2 Deployment</h3>
+      <div class="gotcha"><span class="lbl">Common mistake</span>Nginx config sab sahi, lekin EC2 <strong>Security Group</strong> mein port 80/443 inbound allow nahi — site bahar se open hi nahi hoti.</div>
+    </div>
+    <div class="card">
+      <h3>Zero-Downtime Deploy <span class="flag">V.IMP</span></h3>
+      <pre><code class="language-bash">pm2 reload myshop-api    # rolling restart — koi downtime nahi
+sudo nginx -t && sudo nginx -s reload   # graceful config reload</code></pre>
+      <div class="gotcha"><span class="lbl">Gotcha</span><code>systemctl restart nginx</code> connections turant kaat deta hai — <code>-s reload</code> use karo, purane workers ko current requests complete karne deta hai.</div>
+    </div>
+    <div class="card wide">
+      <h3>Production Config — sab kuch ek jagah <span class="flag">V.IMP</span></h3>
+      <pre><code class="language-nginx">server {
+  listen 443 ssl;
+  server_name myshop.com;
+  ssl_certificate     /etc/letsencrypt/live/myshop.com/fullchain.pem;
+  ssl_certificate_key /etc/letsencrypt/live/myshop.com/privkey.pem;
+  root /var/www/myshop/dist;
+  index index.html;
+  client_max_body_size 20M;
+  gzip on;
+  location / { try_files $uri $uri/ /index.html; }
+  location /api/ {
+    proxy_pass http://backend_servers/;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_read_timeout 10s;
+  }
+}</code></pre>
+      <p>Interview mein aksar poocha jaata hai: "production config likho" — isi tarah SSL + static/SPA + body-size/gzip + proxy headers/timeout combine karke dikhao.</p>
+    </div>
+  </div>
+
+  <div class="oneline"><strong>Poora syllabus ek line mein:</strong> Nginx = reverse proxy + LB + SSL termination → Master/Worker se high concurrency → config <code>events→http→server→location</code>, priority location&gt;server&gt;http → <code>proxy_pass</code>/<code>proxy_set_header</code> se backend ko forward + real client info do → Certbot se free auto-renewing HTTPS → <code>upstream</code> + round-robin/weight/least_conn/ip_hash se load balance → static <code>root/alias/try_files</code> + SPA fallback + cache-busting hash → gzip/keepalive/proxy_cache/timeouts se performance → rate-limit/headers/CORS/SSL-hardening se security → access/error log + status codes se debug → PM2 + graceful reload se zero-downtime production.</div>
+</section>
+
+<!-- ============ RAPID FIRE ============ -->
+<section class="chapter" id="rapid">
+  <div class="chapter-head"><span class="chapter-num">⚡</span><h2>Rapid-fire Interview Q&amp;A</h2></div>
+  <div class="rapid">
+    <h3>Bolo aur khud test karo — answer chhupa hai <em>(hover/select nahi, bas yaad karo)</em></h3>
+    <ol>
+      <li><strong>Nginx 3 kaam?</strong> <span>Web server, reverse proxy, load balancer (+ SSL/cache).</span></li>
+      <li><strong>Master vs Worker?</strong> <span>Master manage karta hai, Worker requests handle karta hai (event-driven).</span></li>
+      <li><strong>Nginx event-driven kyun fast?</strong> <span>Single-threaded per worker but non-blocking, epoll/kqueue se 1000s conn.</span></li>
+      <li><strong>proxy_pass trailing slash effect?</strong> <span>Prefix strip hota hai ya nahi — 404 ka common cause.</span></li>
+      <li><strong>X-Real-IP kyun chahiye?</strong> <span>Warna backend ko sab requests 127.0.0.1 se aati dikhti hain.</span></li>
+      <li><strong>502 vs 504?</strong> <span>502 = backend down/crashed; 504 = backend slow, timeout cross.</span></li>
+      <li><strong>Round Robin vs least_conn?</strong> <span>RR turn-wise; least_conn = jisme abhi kam connections.</span></li>
+      <li><strong>ip_hash kab use?</strong> <span>Session server memory mein ho, sticky session chahiye.</span></li>
+      <li><strong>root vs alias?</strong> <span>root path append karta hai, alias replace.</span></li>
+      <li><strong>SPA 404 on refresh — fix?</strong> <span><code>try_files $uri $uri/ /index.html;</code></span></li>
+      <li><strong>client_max_body_size default?</strong> <span>1MB — file upload ke liye badhana padta hai.</span></li>
+      <li><strong>nginx -s reload vs systemctl restart?</strong> <span>reload graceful (no downtime); restart connections cut karta hai.</span></li>
+      <li><strong>Certbot kya automate karta hai?</strong> <span>Cert issue + Nginx config + HTTP→HTTPS redirect + auto-renewal.</span></li>
+      <li><strong>Let's Encrypt cert validity?</strong> <span>90 din, auto-renew cron/systemd timer se.</span></li>
+      <li><strong>Config change ke baad pehla command?</strong> <span><code>nginx -t</code> — syntax check, phir reload.</span></li>
+      <li><strong>gzip kyun on karte hain?</strong> <span>Response size chhota (200KB→~50KB), fast load.</span></li>
+      <li><strong>proxy_cache ka fayda?</strong> <span>Repeated requests DB tak nahi jaati — DB load kam.</span></li>
+      <li><strong>Rate limiting kis attack se bachata hai?</strong> <span>Brute-force / login abuse — 429 error deta hai limit ke baad.</span></li>
+      <li><strong>HSTS header kya karta hai?</strong> <span>Browser ko force karta hai hamesha HTTPS use kare.</span></li>
+      <li><strong>Site down — troubleshoot order?</strong> <span>nginx -t → error.log → systemctl status → curl backend → reload.</span></li>
+    </ol>
+  </div>
+</section>
+
+  <footer>Nginx Quick Reference — one-pass interview revision. Full detailed notes: Nginx_Setup.html.</footer>
+</main>
+</div>
+<script>hljs.highlightAll();</script>
+</body>
+</html>

@@ -1,0 +1,411 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Angular project setup</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,600;8..60,700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/typescript.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/xml.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"></script>
+<style>
+:root{
+  --bg:#f4f6f5;
+  --surface:#ffffff;
+  --surface-alt:#eaf0ed;
+  --text:#1c2624;
+  --text-secondary:#54625d;
+  --accent:#2f7d64;
+  --accent-strong:#1f5b47;
+  --accent-tint:#e2efe9;
+  --warn:#a9691a;
+  --warn-tint:#faecd7;
+  --border:#dbe3df;
+  --code-bg:#eef2f0;
+  --code-text:#28352f;
+  --shadow: 0 1px 2px rgba(20,30,26,0.05), 0 6px 20px rgba(20,30,26,0.06);
+  --radius-s:6px;
+  --radius-m:10px;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#121815; --surface:#182120; --surface-alt:#1e2926;
+    --text:#e6ece9; --text-secondary:#96a49e;
+    --accent:#5cc19d; --accent-strong:#8adcbc; --accent-tint:#1d332b;
+    --warn:#e3a548; --warn-tint:#332714;
+    --border:#2b3532; --code-bg:#141c1a; --code-text:#d9e4de;
+    --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px rgba(0,0,0,0.35);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#121815; --surface:#182120; --surface-alt:#1e2926;
+  --text:#e6ece9; --text-secondary:#96a49e;
+  --accent:#5cc19d; --accent-strong:#8adcbc; --accent-tint:#1d332b;
+  --warn:#e3a548; --warn-tint:#332714;
+  --border:#2b3532; --code-bg:#141c1a; --code-text:#d9e4de;
+  --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px rgba(0,0,0,0.35);
+}
+*{box-sizing:border-box;}
+html{color-scheme:light dark; scroll-behavior:smooth;}
+body{margin:0; background:var(--bg); color:var(--text); font-family:'IBM Plex Sans', system-ui, sans-serif; font-size:15px; line-height:1.55;}
+h1,h2,h3{font-family:'Source Serif 4', Georgia, serif; text-wrap:balance; color:var(--text); margin:0;}
+code, pre, .mono{font-family:'IBM Plex Mono','Consolas',monospace;}
+a{color:var(--accent-strong);}
+
+.app{display:grid; grid-template-columns:250px minmax(0,1fr); max-width:1280px; margin:0 auto; min-height:100vh;}
+@media (max-width:860px){ .app{grid-template-columns:1fr;} .sidebar{position:relative; height:auto; top:0;} }
+
+.sidebar{border-right:1px solid var(--border); padding:24px 16px; position:sticky; top:0; align-self:start; height:100vh; overflow-y:auto;}
+.brand .eyebrow{font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:0.09em; text-transform:uppercase; color:var(--accent-strong);}
+.brand h1{font-size:19px; font-weight:600; margin-top:3px;}
+.brand .sub{font-size:12px; color:var(--text-secondary); display:block; margin-top:4px;}
+nav.toc{margin-top:20px; display:flex; flex-direction:column; gap:2px;}
+nav.toc a{text-decoration:none; color:var(--text-secondary); padding:6px 8px; border-radius:var(--radius-s); font-size:12.5px; display:flex; gap:8px; align-items:baseline;}
+nav.toc a:hover{background:var(--surface-alt); color:var(--text);}
+nav.toc a .n{font-family:'IBM Plex Mono',monospace; font-size:10.5px; color:var(--accent-strong); min-width:16px;}
+nav.toc a.soon{opacity:0.55;}
+nav.toc a.soon .n{color:var(--text-secondary);}
+.print-hint{margin-top:18px; font-size:11.5px; color:var(--text-secondary); padding-top:14px; border-top:1px dashed var(--border);}
+
+main{padding:28px 36px 100px; min-width:0;}
+@media (max-width:620px){ main{padding:20px 16px 80px;} }
+
+.top-banner{background:var(--accent-tint); border:1px solid var(--border); border-radius:var(--radius-m); padding:12px 16px; font-size:13px; color:var(--text-secondary); margin-bottom:26px;}
+.top-banner strong{color:var(--accent-strong);}
+
+.chapter{padding-top:34px; scroll-margin-top:20px;}
+.chapter:first-of-type{padding-top:0;}
+.chapter-head{display:flex; align-items:baseline; gap:12px; margin-bottom:14px; padding-bottom:8px; border-bottom:2px solid var(--accent-tint);}
+.chapter-num{font-size:12px; color:var(--accent-strong); font-weight:600; font-family:'IBM Plex Mono',monospace;}
+.chapter-head h2{font-size:20px; font-weight:600;}
+
+.grid{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+@media (max-width:760px){ .grid{grid-template-columns:1fr;} }
+.card{background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-m); padding:13px 15px; box-shadow:var(--shadow);}
+.card.wide{grid-column:1/-1;}
+.card h3{font-size:14px; font-weight:600; margin-bottom:7px; display:flex; align-items:center; gap:7px;}
+.card h3 .flag{font-family:'IBM Plex Mono',monospace; font-size:9.5px; letter-spacing:0.05em; text-transform:uppercase; padding:2px 6px; border-radius:20px; background:var(--warn-tint); color:var(--warn); font-weight:600;}
+.card h3 .flag.soon{background:var(--surface-alt); color:var(--text-secondary);}
+.card p{margin:0 0 7px; font-size:13px; color:var(--text-secondary); line-height:1.5;}
+.card p:last-child{margin-bottom:0;}
+.card p strong{color:var(--text); font-weight:600;}
+.card ul{margin:0 0 7px; padding-left:16px;}
+.card li{margin-bottom:4px; font-size:13px; color:var(--text-secondary); line-height:1.45;}
+.card li strong{color:var(--text);}
+
+.example{margin:7px 0; padding:7px 10px; border-left:3px solid var(--accent); background:var(--accent-tint); border-radius:0 var(--radius-s) var(--radius-s) 0; font-size:12.5px; color:var(--text-secondary);}
+.example .lbl{font-family:'IBM Plex Mono',monospace; font-size:9.5px; text-transform:uppercase; letter-spacing:0.07em; color:var(--accent-strong); display:block; margin-bottom:3px;}
+.gotcha{margin:7px 0; padding:7px 10px; border-left:3px solid var(--warn); background:var(--warn-tint); border-radius:0 var(--radius-s) var(--radius-s) 0; font-size:12.5px; color:var(--text-secondary);}
+.gotcha .lbl{font-family:'IBM Plex Mono',monospace; font-size:9.5px; text-transform:uppercase; letter-spacing:0.07em; color:var(--warn); display:block; margin-bottom:3px;}
+
+pre{background:var(--code-bg); border:1px solid var(--border); border-radius:var(--radius-s); padding:9px 11px; overflow-x:auto; margin:7px 0; font-size:12px;}
+pre code{font-size:11.5px; line-height:1.5; color:var(--code-text); background:none;}
+code{background:var(--code-bg); padding:1px 5px; border-radius:4px; font-size:12px; color:var(--accent-strong);}
+pre code{background:none; padding:0;}
+
+.qtable{width:100%; border-collapse:collapse; font-size:12.5px; margin:7px 0;}
+.qtable th, .qtable td{border:1px solid var(--border); padding:6px 8px; text-align:left; vertical-align:top;}
+.qtable th{background:var(--surface-alt); font-weight:600; font-size:11px; text-transform:uppercase; letter-spacing:0.03em; color:var(--text-secondary);}
+
+.oneline{background:var(--surface); border:1px dashed var(--accent); border-radius:var(--radius-m); padding:11px 14px; font-size:12.5px; color:var(--text-secondary); margin-top:12px;}
+.oneline strong{color:var(--accent-strong);}
+
+.rapid{background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-m); padding:18px 20px; margin-top:10px;}
+.rapid h3{font-size:13px; color:var(--accent-strong); font-family:'IBM Plex Mono',monospace; text-transform:uppercase; letter-spacing:0.06em; margin-bottom:10px;}
+.rapid ol{margin:0; padding-left:20px; columns:2; column-gap:26px;}
+.rapid li{margin-bottom:8px; break-inside:avoid; font-size:13px; line-height:1.45;}
+.rapid li strong{color:var(--text);}
+.rapid li span{color:var(--text-secondary);}
+@media (max-width:760px){ .rapid ol{columns:1;} }
+
+.roadmap-card{background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-m); padding:11px 14px; box-shadow:var(--shadow);}
+.roadmap-card .rhead{display:flex; align-items:baseline; justify-content:space-between; gap:8px; margin-bottom:5px;}
+.roadmap-card h4{font-size:13px; font-weight:600; margin:0;}
+.roadmap-card .status{font-family:'IBM Plex Mono',monospace; font-size:9px; text-transform:uppercase; letter-spacing:0.05em; padding:2px 6px; border-radius:20px; background:var(--surface-alt); color:var(--text-secondary); white-space:nowrap;}
+.roadmap-card p{margin:0; font-size:12px; color:var(--text-secondary); line-height:1.5;}
+
+footer{margin-top:40px; padding-top:16px; border-top:1px solid var(--border); font-size:11.5px; color:var(--text-secondary);}
+</style>
+</head>
+<body>
+<div class="app">
+
+<aside class="sidebar">
+  <div class="brand">
+    <span class="eyebrow">Interview Syllabus &middot; 5+ Years</span>
+    <h1>Angular — Senior Interview Prep</h1>
+    <span class="sub">13-phase syllabus &middot; abhi Phase 1 fully detailed hai, baaki phase-wise banega</span>
+  </div>
+  <nav class="toc">
+    <a href="#p1"><span class="n">01</span>Angular Core</a>
+    <a href="#rapid1"><span class="n">⚡</span>Phase 1 Rapid-fire</a>
+    <a href="#roadmap"><span class="n">🗺</span>Roadmap · Phase 2-13</a>
+  </nav>
+  <div class="print-hint">Ctrl/Cmd+F se koi bhi term seedha search kar sakte ho — poora page ek jagah hai.</div>
+</aside>
+
+<main>
+  <div class="top-banner">Yeh <strong>Angular Interview Prep</strong> notes ka Phase 1 build hai — Angular Core (components, binding, directives, pipes, lifecycle, communication, content projection) poori detail mein. Phase 2-13 ka structure neeche <strong>Roadmap</strong> mein hai, jab bologe "phase 2 karo" tab wahi detail level mein add hoga.</div>
+
+<!-- ============ PHASE 1 — ANGULAR CORE ============ -->
+<section class="chapter" id="p1">
+  <div class="chapter-head"><span class="chapter-num">01</span><h2>Angular Core</h2></div>
+  <div class="grid">
+
+    <div class="card">
+      <h3>Angular Architecture <span class="flag">V.IMP</span></h3>
+      <p>Angular = <strong>component-based</strong> framework. Building blocks: <strong>Modules</strong> (NgModule — code organize), <strong>Components</strong> (UI+logic), <strong>Templates</strong> (HTML+Angular syntax), <strong>Services</strong> (shared logic/data via DI), <strong>Directives</strong> (DOM behavior), <strong>Pipes</strong> (display transform), <strong>Router</strong> (navigation).</p>
+      <div class="example"><span class="lbl">Flow</span><code>main.ts</code> root component bootstrap karta hai → component tree render → template ↔ class sync change detection se → services DI se shared data/logic provide karte hain.</div>
+      <div class="gotcha"><span class="lbl">Interview gotcha</span>Angular 14+ mein <strong>standalone components</strong> aaye — NgModule optional ho gaya (component khud <code>imports: []</code> define karta hai). Detail Phase 2 mein.</div>
+    </div>
+
+    <div class="card">
+      <h3>Component Anatomy <span class="flag">V.IMP</span></h3>
+      <pre><code class="language-typescript">@Component({
+  selector: 'app-user-card',
+  templateUrl: './user-card.component.html',
+  styleUrls: ['./user-card.component.css']
+})
+export class UserCardComponent {
+  @Input() user!: User;
+}</code></pre>
+      <ul>
+        <li><strong>selector</strong> — custom HTML tag jisse component use hota hai.</li>
+        <li><strong>template/templateUrl</strong> — inline ya external HTML.</li>
+        <li><strong>styleUrls</strong> — component-scoped CSS.</li>
+      </ul>
+      <div class="gotcha"><span class="lbl">Interview gotcha</span>Component styles default <strong>encapsulated</strong> hote hain (attribute-based, shadow-DOM jaisa) — global CSS leak nahi karti, jab tak <code>ViewEncapsulation.None</code> na ho.</div>
+    </div>
+
+    <div class="card">
+      <h3>Templates &amp; Syntax</h3>
+      <p>Template = HTML + Angular-specific syntax jo component class se connect hota hai.</p>
+      <ul>
+        <li><code>{{ expression }}</code> — interpolation (text content).</li>
+        <li><code>#ref</code> — template reference variable (DOM element/component instance ka local handle).</li>
+        <li><code>?.</code> — safe navigation, null/undefined pe crash nahi hota.</li>
+      </ul>
+      <div class="gotcha"><span class="lbl">Gotcha</span>Template expressions mein assignment (<code>=</code>), <code>new</code>, <code>++</code> allowed nahi — sirf simple read expressions, side-effects component class mein hi rakho.</div>
+    </div>
+
+    <div class="card wide">
+      <h3>Data Binding — 4 Types <span class="flag">V.IMP</span></h3>
+      <table class="qtable">
+        <tr><th>Type</th><th>Syntax</th><th>Direction</th><th>Example</th></tr>
+        <tr><td>Interpolation</td><td><code>{{ expr }}</code></td><td>Component → View</td><td><code>{{ user.name }}</code></td></tr>
+        <tr><td>Property binding</td><td><code>[prop]="expr"</code></td><td>Component → View</td><td><code>[disabled]="isLoading"</code></td></tr>
+        <tr><td>Event binding</td><td><code>(event)="handler($event)"</code></td><td>View → Component</td><td><code>(click)="save()"</code></td></tr>
+        <tr><td>Two-way binding</td><td><code>[(ngModel)]="prop"</code></td><td>Both</td><td><code>[(ngModel)]="username"</code></td></tr>
+      </table>
+      <div class="example"><span class="lbl">Banana in a box</span><code>[(ngModel)]</code> = <code>[ngModel]</code> (property bind) + <code>(ngModelChange)</code> (event bind) ka shorthand — isi shape se "banana in a box" naam pada.</div>
+      <div class="gotcha"><span class="lbl">Interview gotcha</span>Two-way binding ke liye <code>FormsModule</code> import chahiye (template-driven). Reactive forms mein <code>[formControl]</code> use hota hai, <code>ngModel</code> nahi.</div>
+    </div>
+
+    <div class="card">
+      <h3>Directives — Structural vs Attribute <span class="flag">V.IMP</span></h3>
+      <table class="qtable">
+        <tr><th>Type</th><th>Examples</th><th>Kya karte hain</th></tr>
+        <tr><td>Structural</td><td><code>*ngIf</code>, <code>*ngFor</code>, <code>*ngSwitch</code></td><td>DOM add/remove — <code>*</code> prefix = <code>&lt;ng-template&gt;</code> sugar</td></tr>
+        <tr><td>Attribute</td><td><code>ngClass</code>, <code>ngStyle</code></td><td>Appearance/behavior change, DOM structure same rehta hai</td></tr>
+      </table>
+      <div class="gotcha"><span class="lbl">Gotcha</span>Ek element pe <strong>do structural directives</strong> ek saath nahi laga sakte (e.g. <code>*ngIf</code> + <code>*ngFor</code> same tag) — wrapper <code>&lt;ng-container&gt;</code> use karo.</div>
+    </div>
+
+    <div class="card wide">
+      <h3>Custom Directive <span class="flag">V.IMP</span></h3>
+      <pre><code class="language-typescript">@Directive({ selector: '[appHighlight]' })
+export class HighlightDirective {
+  @Input() appHighlight = 'yellow';
+  constructor(private el: ElementRef, private renderer: Renderer2) {}
+
+  @HostListener('mouseenter') onEnter() {
+    this.renderer.setStyle(this.el.nativeElement, 'background', this.appHighlight);
+  }
+  @HostListener('mouseleave') onLeave() {
+    this.renderer.removeStyle(this.el.nativeElement, 'background');
+  }
+}</code></pre>
+      <div class="example"><span class="lbl">Real use</span>Reusable hover-highlight, role-based show/hide, auto-focus directive.</div>
+      <div class="gotcha"><span class="lbl">Interview gotcha</span>DOM manipulation seedha <code>ElementRef.nativeElement</code> se mat karo — <code>Renderer2</code> use karo (SSR-safe, XSS-safer, platform-agnostic).</div>
+    </div>
+
+    <div class="card wide">
+      <h3>Pipes — Built-in, Custom, Pure vs Impure <span class="flag">V.IMP</span></h3>
+      <p>Pipe = display-time data transform, template mein <code>|</code> se use hota hai, chain bhi kar sakte ho.</p>
+      <div class="example"><span class="lbl">Built-in</span><code>date</code>, <code>currency</code>, <code>uppercase/lowercase</code>, <code>decimal</code>, <code>percent</code>, <code>json</code>, <code>slice</code>, <code>keyvalue</code>, <code>async</code>.</div>
+      <pre><code class="language-html">{{ price | currency:'INR':'symbol':'1.2-2' }}
+{{ user$ | async }}</code></pre>
+      <pre><code class="language-typescript">@Pipe({ name: 'truncate' })
+export class TruncatePipe implements PipeTransform {
+  transform(value: string, limit = 20): string {
+    return value.length > limit ? value.slice(0, limit) + '…' : value;
+  }
+}</code></pre>
+      <div class="gotcha"><span class="lbl">Interview gotcha — Pure vs Impure</span><strong>Pure</strong> (default): sirf input <em>reference</em> change hone par re-run. <strong>Impure</strong> (<code>pure: false</code>): <strong>har</strong> change detection cycle mein re-run. Array/object filter pipe pure hai toh mutate karne se UI update nahi hogi — naya reference do; impure banana perf hit deta hai.</div>
+    </div>
+
+    <div class="card wide">
+      <h3>Component Lifecycle Hooks — Execution Order <span class="flag">V.IMP</span></h3>
+      <table class="qtable">
+        <tr><th>#</th><th>Hook</th><th>Kab chalta hai</th></tr>
+        <tr><td>1</td><td><code>constructor</code></td><td>DI resolve hoti hai — <strong>@Input abhi undefined</strong></td></tr>
+        <tr><td>2</td><td><code>ngOnChanges</code></td><td>@Input bound property change hote hi (pehli baar bhi), reference-change based</td></tr>
+        <tr><td>3</td><td><code>ngOnInit</code></td><td>Pehle ngOnChanges ke baad, ek hi baar — data fetch/init logic yahan</td></tr>
+        <tr><td>4</td><td><code>ngDoCheck</code></td><td>Har change detection cycle mein — custom change detection</td></tr>
+        <tr><td>5</td><td><code>ngAfterContentInit</code></td><td>ng-content se projected content init hone ke baad, ek baar</td></tr>
+        <tr><td>6</td><td><code>ngAfterContentChecked</code></td><td>Har CD cycle, projected content check hone ke baad</td></tr>
+        <tr><td>7</td><td><code>ngAfterViewInit</code></td><td>Component + child views fully init, ek baar — yahi se ViewChild available</td></tr>
+        <tr><td>8</td><td><code>ngAfterViewChecked</code></td><td>Har CD cycle, view check hone ke baad</td></tr>
+        <tr><td>9</td><td><code>ngOnDestroy</code></td><td>Component destroy hone se pehle — cleanup: unsubscribe, clearInterval</td></tr>
+      </table>
+      <div class="gotcha"><span class="lbl">Interview gotcha</span><code>ngOnChanges</code> sirf <strong>@Input-bound</strong> properties ke liye fire hota hai, aur sirf jab <em>reference</em> change ho (<code>array.push()</code> se nahi chalega, naya array assign karna padega).</div>
+      <div class="gotcha"><span class="lbl">Real scenario</span>"Component destroy hone ke baad API/subscription chal rahi hai" — fix: <code>ngOnDestroy</code> mein <code>takeUntil</code> ya <code>Subscription.unsubscribe()</code>, warna memory leak.</div>
+    </div>
+
+    <div class="card">
+      <h3>Parent → Child / Child → Parent <span class="flag">V.IMP</span></h3>
+      <pre><code class="language-typescript">// child
+@Input() product!: Product;
+@Output() addToCart = new EventEmitter&lt;Product&gt;();
+onClick() { this.addToCart.emit(this.product); }</code></pre>
+      <pre><code class="language-html">&lt;app-product [product]="item"
+  (addToCart)="handleAdd($event)"&gt;
+&lt;/app-product&gt;</code></pre>
+      <div class="gotcha"><span class="lbl">Gotcha</span>@Input() <strong>setter</strong> use karke bhi change pe react kar sakte ho — ngOnChanges ka alternative, especially jab sirf ek property track karni ho.</div>
+    </div>
+
+    <div class="card">
+      <h3>ViewChild / ViewChildren <span class="flag">V.IMP</span></h3>
+      <pre><code class="language-typescript">@ViewChild('nameInput')
+nameInput!: ElementRef&lt;HTMLInputElement&gt;;
+
+@ViewChild(ChildComponent) child!: ChildComponent;
+@ViewChildren(ItemComponent) items!: QueryList&lt;ItemComponent&gt;;
+
+ngAfterViewInit() {
+  this.nameInput.nativeElement.focus();
+}</code></pre>
+      <div class="gotcha"><span class="lbl">Interview gotcha</span>Reference <strong>ngOnInit mein undefined</strong> hota hai — sirf <code>ngAfterViewInit</code> ke baad available. <code>static: true</code> chahiye agar element <code>*ngIf</code> ke andar nahi hai aur usse pehle access karna ho.</div>
+    </div>
+
+    <div class="card wide">
+      <h3>Content Projection — ng-content</h3>
+      <pre><code class="language-html">&lt;!-- card.component.html --&gt;
+&lt;div class="card"&gt;
+  &lt;ng-content select="[card-header]"&gt;&lt;/ng-content&gt;
+  &lt;ng-content&gt;&lt;/ng-content&gt;
+&lt;/div&gt;
+
+&lt;!-- usage --&gt;
+&lt;app-card&gt;
+  &lt;h3 card-header&gt;Title&lt;/h3&gt;
+  &lt;p&gt;Body content&lt;/p&gt;
+&lt;/app-card&gt;</code></pre>
+      <div class="example"><span class="lbl">Real use</span>Reusable Modal/Card/Layout components jahan bahar se arbitrary HTML pass karna ho — <code>select</code> attribute se multi-slot projection.</div>
+    </div>
+
+  </div>
+
+  <div class="oneline"><strong>Phase 1 ek line mein:</strong> Angular = modules + components (template ↔ class) + services(DI) architecture → 4-type data binding (interpolation/property/event/two-way) → structural vs attribute directives + custom directive (Renderer2) → pure/impure pipes → 9-step lifecycle (constructor→OnChanges→OnInit→DoCheck→AfterContent*→AfterView*→OnDestroy) → @Input/@Output se parent-child communication → ViewChild sirf AfterViewInit ke baad → ng-content se reusable wrapper components.</div>
+</section>
+
+<!-- ============ PHASE 1 RAPID FIRE ============ -->
+<section class="chapter" id="rapid1">
+  <div class="chapter-head"><span class="chapter-num">⚡</span><h2>Phase 1 Rapid-fire Q&amp;A</h2></div>
+  <div class="rapid">
+    <h3>Bolo aur khud test karo — answer chhupa hai <em>(hover/select nahi, bas yaad karo)</em></h3>
+    <ol>
+      <li><strong>Component vs Directive?</strong> <span>Component = template wala directive; plain directive ka apna template nahi hota.</span></li>
+      <li><strong>Interpolation vs property binding kab use karo?</strong> <span>Text content ke liye interpolation, non-string/attribute (disabled, src) ke liye property binding.</span></li>
+      <li><strong>*ngIf ka desugared form?</strong> <span><code>&lt;ng-template [ngIf]="cond"&gt;</code>.</span></li>
+      <li><strong>Pure pipe kab re-run hota hai?</strong> <span>Sirf jab input ka reference change ho.</span></li>
+      <li><strong>ngOnChanges kab nahi chalega?</strong> <span>Jab @Input object/array mutate ho (reference same rahe) ya property @Input na ho.</span></li>
+      <li><strong>Lifecycle mein ViewChild kab available hota hai?</strong> <span>ngAfterViewInit ke baad, ngOnInit mein undefined.</span></li>
+      <li><strong>ngOnDestroy mein kya karna chahiye?</strong> <span>Subscriptions unsubscribe, timers clear — memory leak se bachne ke liye.</span></li>
+      <li><strong>Banana in a box kya hai?</strong> <span><code>[(ngModel)]</code> — property + event binding ka combo shorthand.</span></li>
+      <li><strong>Two structural directives ek element pe kyun nahi?</strong> <span>Angular allow nahi karta — <code>&lt;ng-container&gt;</code> se wrap karo.</span></li>
+      <li><strong>Renderer2 kyun use karte ho, nativeElement seedha kyun nahi?</strong> <span>SSR-safe, platform-agnostic, XSS-safer.</span></li>
+      <li><strong>ng-content ka select attribute kya karta hai?</strong> <span>Multi-slot projection — specific matching elements ko specific slot mein bhejta hai.</span></li>
+      <li><strong>@Input setter ka use kab karo?</strong> <span>Jab ek specific property ke change pe hi react karna ho, poore ngOnChanges object se avoid karne ke liye.</span></li>
+    </ol>
+  </div>
+</section>
+
+<!-- ============ ROADMAP — PHASE 2-13 ============ -->
+<section class="chapter" id="roadmap">
+  <div class="chapter-head"><span class="chapter-num">🗺</span><h2>Roadmap — Phase 2-13</h2></div>
+  <p style="font-size:13px; color:var(--text-secondary); margin:0 0 14px;">Full syllabus reference ke liye rakha hai — jab bologe "phase N karo", wo Phase 1 jaisi hi detail (cards + examples + gotchas + code) mein yahan add hoga.</p>
+  <div class="grid">
+
+    <div class="roadmap-card">
+      <div class="rhead"><h4>Phase 2 — Modules &amp; Dependency Injection</h4><span class="status">Not started</span></div>
+      <p>NgModules, standalone components, feature/shared/core modules, lazy-loaded modules, providers, providedIn:'root', injection tokens, hierarchical DI.</p>
+    </div>
+
+    <div class="roadmap-card">
+      <div class="rhead"><h4>Phase 3 — Routing</h4><span class="status">Not started</span></div>
+      <p>Route config, params, child/nested routes, lazy loading, guards (CanActivate/CanDeactivate/CanMatch), resolvers, preloading strategies.</p>
+    </div>
+
+    <div class="roadmap-card">
+      <div class="rhead"><h4>Phase 4 — Forms</h4><span class="status">Not started</span></div>
+      <p>Template-driven vs reactive forms, FormControl/Group/Array, validators (sync/async/custom), dynamic forms, ControlValueAccessor.</p>
+    </div>
+
+    <div class="roadmap-card">
+      <div class="rhead"><h4>Phase 5 — HTTP &amp; API Integration</h4><span class="status">Not started</span></div>
+      <p>HttpClient CRUD, headers/params, error handling, HttpInterceptor, JWT + refresh token flow, retry/cancel, upload/download, pagination.</p>
+    </div>
+
+    <div class="roadmap-card">
+      <div class="rhead"><h4>Phase 6 — RxJS</h4><span class="status">Not started</span></div>
+      <p>Observable/Subject family, hot vs cold, operators (map/switchMap/mergeMap/concatMap/exhaustMap/forkJoin/combineLatest...), subscription management, memory leaks.</p>
+    </div>
+
+    <div class="roadmap-card">
+      <div class="rhead"><h4>Phase 7 — State Management</h4><span class="status">Not started</span></div>
+      <p>Component/service/BehaviorSubject state, Angular Signals vs RxJS, NgRx (store/actions/reducers/selectors/effects), when to use NgRx.</p>
+    </div>
+
+    <div class="roadmap-card">
+      <div class="rhead"><h4>Phase 8 — Change Detection &amp; Performance</h4><span class="status">Not started</span></div>
+      <p>Default vs OnPush, ChangeDetectorRef, trackBy, lazy loading/code splitting, AOT, tree shaking, bundle optimization, profiling.</p>
+    </div>
+
+    <div class="roadmap-card">
+      <div class="rhead"><h4>Phase 9 — Angular Security</h4><span class="status">Not started</span></div>
+      <p>XSS/sanitization/DomSanitizer, JWT auth/authz, route guards, RBAC, CSRF/CORS, secure token handling, innerHTML risks.</p>
+    </div>
+
+    <div class="roadmap-card">
+      <div class="rhead"><h4>Phase 10 — Testing</h4><span class="status">Not started</span></div>
+      <p>Jasmine/Karma/Jest, component/service/HTTP testing, TestBed, spies/mocks, E2E (Cypress/Playwright), coverage.</p>
+    </div>
+
+    <div class="roadmap-card">
+      <div class="rhead"><h4>Phase 11 — Angular Architecture</h4><span class="status">Not started</span></div>
+      <p>Enterprise folder structure, feature-based architecture, smart vs dumb components, API/interceptor/error/auth/RBAC/state architecture, SOLID, micro-frontends.</p>
+    </div>
+
+    <div class="roadmap-card">
+      <div class="rhead"><h4>Phase 12 — Deployment &amp; Production</h4><span class="status">Not started</span></div>
+      <p>ng build, environments, AOT, static hosting, Nginx + Angular, Docker multi-stage build, SPA routing with Nginx, cache/gzip, CI/CD, K8s basics.</p>
+    </div>
+
+    <div class="roadmap-card">
+      <div class="rhead"><h4>Phase 13 — 5-Year Scenario Questions</h4><span class="status">Not started</span></div>
+      <p>Slow app debugging, 10k records rendering, parallel API calls, debounced search, memory leaks, JWT refresh flow, RBAC menus, global error handling, large dynamic forms, OnPush not updating, Angular+Node+Nginx production architecture.</p>
+    </div>
+
+  </div>
+</section>
+
+  <footer>Angular Interview Prep — Phase 1 (Angular Core) complete. Phase 2-13 roadmap upar hai, incremental update hoga jaise Nginx/Node notes bane the.</footer>
+</main>
+</div>
+<script>hljs.highlightAll();</script>
+</body>
+</html>

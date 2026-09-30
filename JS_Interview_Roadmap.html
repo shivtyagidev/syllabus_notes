@@ -1,0 +1,1778 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JS Interview Roadmap</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --bg: #0d1117; --card: #161b22; --card2: #1c2128; --line: #30363d; --text: #c9d1d9; --muted: #8b949e;
+    --yellow: #f7df1e; --blue: #58a6ff; --lblue: #79c0ff; --purple: #d2a8ff; --green: #3fb950; --orange: #f0883e; --red: #ff7b72;
+  }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; background: var(--bg); color: var(--text); line-height: 1.7; }
+  .container { max-width: 1050px; margin: 0 auto; padding: 20px 16px 80px; }
+  h1 { text-align: center; color: var(--yellow); font-size: 2.3em; padding: 26px 0 8px; }
+  .subtitle { text-align: center; color: var(--muted); margin-bottom: 26px; }
+  .how-to { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 18px 22px; margin-bottom: 22px; }
+  .how-to h3 { color: var(--yellow); margin-bottom: 8px; }
+  .legend { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+  .legend span { font-size: .85em; padding: 3px 10px; border-radius: 12px; font-weight: 600; }
+
+  /* toolbar */
+  .toolbar { position: sticky; top: 0; z-index: 10; background: rgba(13,17,23,.95); backdrop-filter: blur(4px); padding: 10px 0; display: flex; gap: 10px; flex-wrap: wrap; border-bottom: 1px solid var(--line); margin-bottom: 22px; }
+  .toolbar button { background: var(--card2); color: var(--text); border: 1px solid var(--line); padding: 7px 14px; border-radius: 8px; cursor: pointer; font-size: .9em; }
+  .toolbar button:hover { border-color: var(--yellow); }
+  .toolbar button.on { background: var(--yellow); color: #000; border-color: var(--yellow); font-weight: 700; }
+
+  /* roadmap */
+  .roadmap { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 10px; margin-bottom: 40px; }
+  .roadmap a { display: block; background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; text-decoration: none; color: var(--text); transition: border-color .15s; }
+  .roadmap a:hover { border-color: var(--yellow); }
+  .roadmap .n { color: var(--yellow); font-weight: 700; font-size: .85em; }
+  .roadmap .t { display: block; font-weight: 600; color: #e6edf3; }
+  .roadmap .q { display: block; font-size: .78em; color: var(--muted); font-style: italic; }
+
+  /* section */
+  .section { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 26px; margin-bottom: 18px; scroll-margin-top: 70px; }
+  .sec-head { display: flex; gap: 14px; align-items: center; border-bottom: 2px solid var(--line); padding-bottom: 12px; margin-bottom: 16px; }
+  .sec-head .num { background: var(--yellow); color: #000; font-weight: 800; border-radius: 10px; padding: 6px 12px; font-size: 1.2em; }
+  .sec-head h2 { color: var(--yellow); font-size: 1.55em; line-height: 1.2; }
+  .sec-head .bridge { color: var(--muted); font-style: italic; font-size: .92em; }
+  .big { background: var(--card2); border-left: 4px solid var(--yellow); padding: 12px 16px; border-radius: 0 8px 8px 0; margin-bottom: 18px; }
+  .big b { color: var(--yellow); }
+
+  /* concept card */
+  .concept { border: 1px solid var(--line); border-radius: 10px; padding: 16px 18px; margin: 14px 0; background: #0f141a; }
+  .concept h3 { color: var(--lblue); font-size: 1.15em; margin-bottom: 10px; }
+  .wwwh { display: grid; gap: 6px; }
+  .wwwh > div { display: grid; grid-template-columns: 92px 1fr; gap: 10px; align-items: baseline; }
+  .l { font-size: .75em; font-weight: 800; text-transform: uppercase; letter-spacing: .5px; padding: 2px 8px; border-radius: 6px; text-align: center; }
+  .what { background: #1f6feb33; color: var(--blue); }
+  .why  { background: #d2a8ff26; color: var(--purple); }
+  .when { background: #3fb95026; color: var(--green); }
+  .how  { background: #f0883e26; color: var(--orange); }
+  code { background: var(--bg); color: var(--yellow); padding: 1px 6px; border-radius: 4px; font-family: Consolas, monospace; font-size: .9em; }
+  pre { background: var(--bg); border: 1px solid var(--line); border-left: 4px solid var(--yellow); border-radius: 8px; padding: 14px 16px; margin: 12px 0 4px; overflow-x: auto; font-family: Consolas, monospace; font-size: .87em; line-height: 1.55; color: #e6edf3; }
+  pre .c { color: var(--muted); font-style: italic; }
+  pre .o { color: var(--green); }
+  .say { background: #2a2500; border: 1px solid #f7df1e55; border-radius: 8px; padding: 9px 13px; margin-top: 10px; }
+  .say::before { content: "🎯 Interview line: "; color: var(--yellow); font-weight: 700; }
+  .trap { background: #2d1b00; border-left: 4px solid var(--orange); padding: 8px 13px; margin-top: 8px; border-radius: 0 8px 8px 0; font-size: .95em; }
+  .trap::before { content: "⚠️ Trap: "; color: var(--orange); font-weight: 700; }
+  table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: .92em; }
+  th { background: #21262d; color: var(--yellow); padding: 8px 10px; text-align: left; border: 1px solid var(--line); }
+  td { padding: 7px 10px; border: 1px solid var(--line); vertical-align: top; }
+  tr:nth-child(even) td { background: #0f141a; }
+  .tbl { overflow-x: auto; }
+
+  /* Q&A */
+  .qa { margin-top: 18px; }
+  .qa h4 { color: var(--purple); margin-bottom: 8px; }
+  details { background: var(--card2); border: 1px solid var(--line); border-radius: 8px; margin: 6px 0; }
+  summary { cursor: pointer; padding: 9px 13px; font-weight: 600; color: #e6edf3; }
+  summary:hover { color: var(--yellow); }
+  details > div { padding: 2px 14px 12px; }
+  .next { margin-top: 18px; text-align: right; }
+  .next a { color: var(--blue); text-decoration: none; font-weight: 600; }
+  .next a:hover { text-decoration: underline; }
+  .flow { text-align: center; color: var(--muted); font-style: italic; margin: 6px 0 18px; font-size: .95em; }
+  .flow::before { content: "▼ "; color: var(--yellow); font-style: normal; }
+  ul.pts { padding-left: 20px; margin: 6px 0; }
+  ul.pts li { margin: 3px 0; }
+  .totop { position: fixed; right: 18px; bottom: 18px; background: var(--yellow); color: #000; border-radius: 50%; width: 44px; height: 44px; display: grid; place-items: center; text-decoration: none; font-weight: 800; box-shadow: 0 4px 12px #0008; }
+
+  /* revision mode: sirf What + Interview line + traps */
+  body.rev pre, body.rev .wwwh > div:not(:first-child), body.rev .qa, body.rev .big, body.rev .tbl { display: none; }
+
+  @media (max-width: 640px) {
+    h1 { font-size: 1.7em; }
+    .section { padding: 18px 14px; }
+    .wwwh > div { grid-template-columns: 1fr; gap: 2px; }
+    .l { justify-self: start; }
+    .sec-head h2 { font-size: 1.25em; }
+  }
+</style>
+</head>
+<body>
+<div class="container" id="top">
+
+<h1>JavaScript Interview Roadmap</h1>
+<p class="subtitle">25 steps · Values se lekar Real Project Scenarios tak · Hinglish · Interview oriented</p>
+
+<div class="how-to">
+  <h3>Is sheet ko kaise padhna hai?</h3>
+  <ul class="pts">
+    <li>Har topic ek <b>question</b> se agle topic tak jaata hai. Isi order mein padho, tab concepts khud jud jaayenge.</li>
+    <li>Har concept 4 lines mein samjhaya hai: <b>What</b> (kya hai), <b>Why</b> (kyu aaya, kaunsi problem solve karta hai), <b>When</b> (kab use karein), <b>How</b> (kaise kaam karta hai / kaise likhein).</li>
+    <li><b>🎯 Interview line</b> = interview mein yahi 1–2 lines bolo. <b>⚠️ Trap</b> = interviewer yahi pakadta hai.</li>
+    <li>Interview se ek raat pehle <b>Quick Revision</b> button dabao. Tab sirf definitions, interview lines aur traps dikhenge.</li>
+  </ul>
+  <div class="legend">
+    <span class="what">WHAT</span><span class="why">WHY AAYA</span><span class="when">WHEN</span><span class="how">HOW</span>
+  </div>
+</div>
+
+<div class="toolbar">
+  <button id="revBtn">⚡ Quick Revision Mode</button>
+  <button id="qaBtn">📖 Saare Q&amp;A kholo</button>
+  <button onclick="location.hash='#roadmap'">🗺️ Roadmap</button>
+</div>
+
+<div class="roadmap" id="roadmap">
+  <a href="#s1"><span class="n">01</span><span class="t">Values</span><span class="q">Start here</span></a>
+  <a href="#s2"><span class="n">02</span><span class="t">Variables</span><span class="q">Data ko store karna hai</span></a>
+  <a href="#s3"><span class="n">03</span><span class="t">Scope</span><span class="q">Variable kahan available?</span></a>
+  <a href="#s4"><span class="n">04</span><span class="t">Hoisting + Scope Chain</span><span class="q">Declarations kaise handle?</span></a>
+  <a href="#s5"><span class="n">05</span><span class="t">Execution Model</span><span class="q">Code execute kaise hota?</span></a>
+  <a href="#s6"><span class="n">06</span><span class="t">Functions</span><span class="q">Functions?</span></a>
+  <a href="#s7"><span class="n">07</span><span class="t">Closure</span><span class="q">Function ke andar outer data?</span></a>
+  <a href="#s8"><span class="n">08</span><span class="t">this</span><span class="q">this kiska hai?</span></a>
+  <a href="#s9"><span class="n">09</span><span class="t">Object Model</span><span class="q">Data as entity?</span></a>
+  <a href="#s10"><span class="n">10</span><span class="t">Prototype &amp; Class</span><span class="q">Object ka relation?</span></a>
+  <a href="#s11"><span class="n">11</span><span class="t">Data Manipulation</span><span class="q">Data manipulate?</span></a>
+  <a href="#s12"><span class="n">12</span><span class="t">Copy &amp; Memory</span><span class="q">Copy?</span></a>
+  <a href="#s13"><span class="n">13</span><span class="t">Collections</span><span class="q">Special collections?</span></a>
+  <a href="#s14"><span class="n">14</span><span class="t">Async JS</span><span class="q">Code wait karega?</span></a>
+  <a href="#s15"><span class="n">15</span><span class="t">Promise</span><span class="q">Promise manage kaise?</span></a>
+  <a href="#s16"><span class="n">16</span><span class="t">Event Loop</span><span class="q">Async execute kaise?</span></a>
+  <a href="#s17"><span class="n">17</span><span class="t">Browser JS</span><span class="q">Browser interaction?</span></a>
+  <a href="#s18"><span class="n">18</span><span class="t">Memory</span><span class="q">Memory safe?</span></a>
+  <a href="#s19"><span class="n">19</span><span class="t">Modules</span><span class="q">Code split?</span></a>
+  <a href="#s20"><span class="n">20</span><span class="t">Error Handling</span><span class="q">Failure handle?</span></a>
+  <a href="#s21"><span class="n">21</span><span class="t">Advanced JS</span><span class="q">Advanced?</span></a>
+  <a href="#s22"><span class="n">22</span><span class="t">Functional JS</span><span class="q">Functional power?</span></a>
+  <a href="#s23"><span class="n">23</span><span class="t">Performance</span><span class="q">Production?</span></a>
+  <a href="#s24"><span class="n">24</span><span class="t">Real-World JS</span><span class="q">Kahan use hota?</span></a>
+  <a href="#s25"><span class="n">25</span><span class="t">Interview Scenarios</span><span class="q">Final round</span></a>
+</div>
+
+<!-- ============ 1. VALUES ============ -->
+<section class="section" id="s1">
+  <div class="sec-head"><span class="num">01</span><div><h2>Values — Data Types, Primitive/Object, Coercion</h2><p class="bridge">JavaScript mein sab kuch ek value hai. Pehle yeh samjho ki value kitne type ki hoti hai.</p></div></div>
+  <div class="big"><b>Big picture:</b> JS <b>dynamically typed</b> hai. Type <i>value</i> ka hota hai, variable ka nahi. Isliye ek hi variable mein pehle number aur baad mein string rakh sakte ho. Isi flexibility ki wajah se coercion wale bugs aate hain.</div>
+
+  <div class="concept">
+    <h3>1.1 Data Types (8 types)</h3>
+    <div class="wwwh">
+      <div><b class="l what">What</b><span>7 primitive: <code>string, number, bigint, boolean, undefined, null, symbol</code>. 1 non-primitive: <code>object</code> (arrays, functions, dates sab objects hain).</span></div>
+      <div><b class="l why">Why aaya</b><span>Engine ko pata hona chahiye ki memory kaise allocate kare aur kaunse operations allowed hain. <code>bigint</code> isliye aaya kyunki <code>number</code> 2^53 se bade integers safely nahi rakh sakta. <code>symbol</code> unique keys ke liye aaya.</span></div>
+      <div><b class="l when">When</b><span>Har jagah. Input validate karte waqt, API response check karte waqt aur debugging mein <code>typeof</code> use hota hai.</span></div>
+      <div><b class="l how">How</b><span>Type check karne ke liye <code>typeof</code> use karo. Array ke liye <code>Array.isArray()</code> aur null ke liye <code>=== null</code>.</span></div>
+    </div>
+<pre>typeof "hi"        // "string"
+typeof 42          // "number"
+typeof 10n         // "bigint"
+typeof undefined   // "undefined"
+typeof null        // "object"   ← JS ka purana bug
+typeof []          // "object"   → Array.isArray([]) use karo
+typeof function(){} // "function" (function bhi object hai)
+typeof NaN         // "number"   ← NaN bhi number hai</pre>
+    <div class="say">JS mein 7 primitive types aur 1 object type hai. Primitives immutable hote hain aur value se copy hote hain. Objects mutable hote hain aur reference se pass hote hain.</div>
+    <div class="trap"><code>typeof null === "object"</code> ek historical bug hai. <code>NaN !== NaN</code> hota hai, isliye check ke liye <code>Number.isNaN()</code> use karo.</div>
+  </div>
+
+  <div class="concept">
+    <h3>1.2 Primitive vs Object (Reference)</h3>
+    <div class="wwwh">
+      <div><b class="l what">What</b><span>Primitive ki <b>value</b> copy hoti hai. Object ka <b>reference</b> (address) copy hota hai.</span></div>
+      <div><b class="l why">Why aaya</b><span>Bade objects ko har baar copy karna costly hota. Isliye engine sirf pointer share karta hai. Chhoti primitive values seedha copy ho jaati hain.</span></div>
+      <div><b class="l when">When</b><span>Function mein object pass karna, React state update karna, ya copy banana ho, tab yeh samajhna zaroori hai.</span></div>
+      <div><b class="l how">How</b><span>Primitives zyada tar stack par rehte hain aur objects heap par. Variable ke paas sirf heap ka address hota hai.</span></div>
+    </div>
+<pre>let a = 10; let b = a; b = 20;
+console.log(a);           <span class="o">// 10  → value copy</span>
+
+let o1 = { x: 1 }; let o2 = o1; o2.x = 99;
+console.log(o1.x);        <span class="o">// 99  → same reference</span>
+
+console.log({} === {});   <span class="o">// false → alag address</span></pre>
+    <div class="say">Primitives value se compare aur copy hote hain. Objects reference se, isliye do same-looking objects bhi <code>===</code> mein false dete hain.</div>
+  </div>
+
+  <div class="concept">
+    <h3>1.3 Type Coercion (Implicit vs Explicit)</h3>
+    <div class="wwwh">
+      <div><b class="l what">What</b><span>Ek type ko doosre type mein convert karna. <b>Explicit</b> matlab tum khud karte ho (<code>Number("5")</code>). <b>Implicit</b> matlab JS khud kar deta hai (<code>"5" * 2</code>).</span></div>
+      <div><b class="l why">Why aaya</b><span>JS browser ke liye bani thi taaki galat input par bhi page crash na ho. Isliye yeh values ko "adjust" kar leti hai.</span></div>
+      <div><b class="l when">When</b><span>Form inputs hamesha string hote hain, isliye unhe explicitly convert karo. Implicit coercion par depend mat karo.</span></div>
+      <div><b class="l how">How</b><span><code>+</code> mein ek side string ho to <b>string concat</b> hota hai. <code>- * /</code> hamesha <b>number</b> mein convert karte hain. <code>if()</code> ke andar value <b>boolean</b> ban jaati hai.</span></div>
+    </div>
+<pre>"5" + 2      <span class="o">// "52"</span>
+"5" - 2      <span class="o">// 3</span>
+true + 1     <span class="o">// 2</span>
+[] + []      <span class="o">// ""</span>
+[] + {}      <span class="o">// "[object Object]"</span>
+null + 1     <span class="o">// 1     (null → 0)</span>
+undefined + 1 <span class="o">// NaN  (undefined → NaN)</span>
+
+// Falsy values (sirf 8): false, 0, -0, 0n, "", null, undefined, NaN
+// Baaki sab truthy hai: "0", "false", [], {} bhi</pre>
+    <div class="say">Coercion JS ka automatic type conversion hai. <code>+</code> string ko prefer karta hai aur baaki arithmetic operators number ko. Production code mein main explicit conversion aur <code>===</code> use karta hoon.</div>
+    <div class="trap"><code>[]</code> aur <code>{}</code> truthy hain. <code>if ([])</code> chalega. Empty array check karne ke liye <code>arr.length === 0</code> likho.</div>
+  </div>
+
+  <div class="qa"><h4>Interview Q&amp;A</h4>
+    <details><summary>null vs undefined mein kya farak hai?</summary><div><code>undefined</code> ka matlab hai value abhi assign nahi hui, yeh JS khud set karta hai. <code>null</code> ka matlab hai "yahan jaan-boojh kar koi value nahi hai", yeh developer set karta hai. <code>null == undefined</code> true hai, <code>null === undefined</code> false hai.</div></details>
+    <details><summary>0.1 + 0.2 === 0.3 false kyu hai?</summary><div>JS numbers IEEE-754 floating point mein store hote hain aur 0.1 binary mein exact represent nahi hota. Result 0.30000000000000004 aata hai. Fix: <code>Math.abs(a-b) &lt; Number.EPSILON</code>. Paison ke liye paise ko integer (cents) mein store karo.</div></details>
+    <details><summary>Primitive par method kaise chalta hai? ("hi".toUpperCase())</summary><div><b>Auto-boxing</b> hota hai. JS temporarily ek wrapper object (<code>new String("hi")</code>) banata hai, method call karta hai, phir us wrapper ko discard kar deta hai.</div></details>
+  </div>
+  <div class="next"><a href="#s2">Next: "Data ko store karna hai" → 02 Variables ↓</a></div>
+</section>
+
+<p class="flow">"Data ko store karna hai"</p>
+
+<!-- ============ 2. VARIABLES ============ -->
+<section class="section" id="s2">
+  <div class="sec-head"><span class="num">02</span><div><h2>Variables — var / let / const, TDZ</h2><p class="bridge">Value ko naam dena hai taaki baad mein use kar sakein.</p></div></div>
+  <div class="big"><b>Big picture:</b> ES5 mein sirf <code>var</code> tha, jo function-scoped tha aur hoisting ke saath <code>undefined</code> deta tha. Isse bahut bugs aate the. ES6 (2015) mein <code>let</code>/<code>const</code> aaye, jo block-scoped hain aur jinmein TDZ hai.</div>
+
+  <div class="concept">
+    <h3>2.1 var vs let vs const</h3>
+    <div class="tbl"><table>
+      <tr><th>Feature</th><th>var</th><th>let</th><th>const</th></tr>
+      <tr><td>Scope</td><td>Function</td><td>Block</td><td>Block</td></tr>
+      <tr><td>Hoisting</td><td>Haan, <code>undefined</code> ke saath</td><td>Haan, par TDZ mein</td><td>Haan, par TDZ mein</td></tr>
+      <tr><td>Re-declare</td><td>✅</td><td>❌</td><td>❌</td></tr>
+      <tr><td>Re-assign</td><td>✅</td><td>✅</td><td>❌</td></tr>
+      <tr><td>Global par window property?</td><td>✅ <code>window.x</code></td><td>❌</td><td>❌</td></tr>
+    </table></div>
+    <div class="wwwh">
+      <div><b class="l what">What</b><span>Teeno keywords variable declare karne ke liye hain, bas scope aur rules alag hain.</span></div>
+      <div><b class="l why">Why aaya</b><span><code>var</code> block ko ignore karta hai aur loop mein leak ho jaata hai. <code>let/const</code> is problem ko fix karne aaye, taaki code predictable rahe.</span></div>
+      <div><b class="l when">When</b><span>Default <b>const</b> rakho. Value badalni ho to <b>let</b>. Naye code mein <b>var</b> mat likho.</span></div>
+      <div><b class="l how">How</b><span><code>const</code> ka binding fix hota hai, value nahi. Const object ke andar ki properties badal sakte ho.</span></div>
+    </div>
+<pre>const user = { name: "A" };
+user.name = "B";      <span class="o">// ✅ allowed (mutation)</span>
+user = {};            <span class="o">// ❌ TypeError (re-assignment)</span>
+
+if (true) { var v = 1; let l = 2; }
+console.log(v);       <span class="o">// 1  (var block se bahar leak ho gaya)</span>
+console.log(l);       <span class="o">// ReferenceError</span></pre>
+    <div class="say">var function-scoped hai, let aur const block-scoped hain. const re-assignment rokta hai, mutation nahi. Poora object freeze karna ho to <code>Object.freeze</code> use karo.</div>
+  </div>
+
+  <div class="concept">
+    <h3>2.2 TDZ (Temporal Dead Zone)</h3>
+    <div class="wwwh">
+      <div><b class="l what">What</b><span>Block shuru hone se lekar <code>let/const</code> declaration line tak ka area. Is area mein variable exist karta hai par access karne par <b>ReferenceError</b> aata hai.</span></div>
+      <div><b class="l why">Why aaya</b><span><code>var</code> declaration se pehle chupchap <code>undefined</code> de deta tha, jisse silent bugs bante the. TDZ is galti ko turant error bana deta hai.</span></div>
+      <div><b class="l when">When</b><span>Declaration se pehle variable use karoge to yeh error dikhega. Interviews mein output questions mein bahut aata hai.</span></div>
+      <div><b class="l how">How</b><span>Creation phase mein let/const ko memory milti hai par <b>uninitialized</b> state mein. Declaration line execute hone par hi value set hoti hai.</span></div>
+    </div>
+<pre>console.log(a);  <span class="o">// undefined</span>
+var a = 1;
+
+console.log(b);  <span class="o">// ReferenceError: Cannot access 'b' before initialization</span>
+let b = 2;</pre>
+    <div class="say">let/const bhi hoist hote hain, lekin initialize nahi hote. Declaration tak ka area TDZ kehlata hai. Wahan access karne par ReferenceError aata hai.</div>
+  </div>
+
+  <div class="qa"><h4>Interview Q&amp;A</h4>
+    <details><summary>Kya let/const hoist hote hain?</summary><div>Haan, hote hain. Engine ko unka pata creation phase mein hi chal jaata hai. Farak yeh hai ki var <code>undefined</code> se initialize hota hai, jabki let/const TDZ mein rehte hain.</div></details>
+    <details><summary>const array mein push kyu ho jaata hai?</summary><div>const sirf variable ka binding lock karta hai, matlab variable doosre array ko point nahi kar sakta. Array ke andar ka data mutable hai.</div></details>
+  </div>
+  <div class="next"><a href="#s3">Next: "Variable kahan available?" → 03 Scope ↓</a></div>
+</section>
+
+<p class="flow">"Variable kahan available?"</p>
+
+<!-- ============ 3. SCOPE ============ -->
+<section class="section" id="s3">
+  <div class="sec-head"><span class="num">03</span><div><h2>Scope — Global, Function, Block, Lexical, Module</h2><p class="bridge">Variable code ke kis hisse se accessible hai?</p></div></div>
+  <div class="big"><b>Big picture:</b> Scope = variable ki <b>visibility</b>. Scope isliye hai taaki naam aapas mein na takraayein (naming collision) aur data ek controlled area mein rahe (encapsulation).</div>
+
+  <div class="concept">
+    <h3>3.1 Global, Function, Block Scope</h3>
+    <div class="wwwh">
+      <div><b class="l what">What</b><span><b>Global</b>: poore program mein accessible. <b>Function</b>: sirf function ke andar. <b>Block</b>: sirf <code>{ }</code> ke andar, aur sirf let/const ke liye.</span></div>
+      <div><b class="l why">Why aaya</b><span>Sab kuch global hota to har library ek-doosre ke variables overwrite kar deti. Scope isolation deta hai.</span></div>
+      <div><b class="l when">When</b><span>Variable ko hamesha sabse chhote scope mein rakho jahan uski zaroorat hai. Globals kam se kam rakho.</span></div>
+      <div><b class="l how">How</b><span>Har function call aur block ek naya scope banata hai. Andar wala scope bahar wale ke variables dekh sakta hai, bahar wala andar ke nahi.</span></div>
+    </div>
+<pre>let g = "global";
+function fn() {
+  let f = "function";
+  if (true) { let b = "block"; console.log(g, f, b); }  <span class="o">// sab accessible</span>
+  console.log(b);   <span class="o">// ReferenceError</span>
+}</pre>
+  </div>
+
+  <div class="concept">
+    <h3>3.2 Lexical Scope</h3>
+    <div class="wwwh">
+      <div><b class="l what">What</b><span>Scope is baat se decide hota hai ki code <b>kahan likha gaya hai</b>, is baat se nahi ki function kahan se call hua.</span></div>
+      <div><b class="l why">Why aaya</b><span>Isse code predictable rehta hai. Code padh kar hi pata chal jaata hai ki kaunsa variable use hoga. Closures isi par based hain.</span></div>
+      <div><b class="l when">When</b><span>Nested functions aur closures samajhne ke liye yeh zaroori hai.</span></div>
+      <div><b class="l how">How</b><span>Function banate waqt JS uske parent scope ka reference save kar leta hai (<code>[[Environment]]</code>).</span></div>
+    </div>
+<pre>let x = "outer";
+function a() { console.log(x); }
+function b() { let x = "inner"; a(); }
+b();   <span class="o">// "outer" → a() jahan LIKHA hai wahan ka x use hota hai</span></pre>
+    <div class="say">JS lexical (static) scoping follow karta hai. Function ka scope define hone ki jagah se decide hota hai, call hone ki jagah se nahi.</div>
+  </div>
+
+  <div class="concept">
+    <h3>3.3 Module Scope</h3>
+    <div class="wwwh">
+      <div><b class="l what">What</b><span>ES module (ya CommonJS file) ke top-level variables sirf usi file mein visible hote hain.</span></div>
+      <div><b class="l why">Why aaya</b><span>Pehle saari <code>&lt;script&gt;</code> files ek hi global scope share karti thi, jisse collisions hote the. Modules ne har file ko apna private scope diya.</span></div>
+      <div><b class="l when">When</b><span>Aaj ke saare React/Node projects mein yahi default hai.</span></div>
+      <div><b class="l how">How</b><span>Kuch share karna ho to <code>export</code> karo, use karna ho to <code>import</code>. Baaki sab private rehta hai.</span></div>
+    </div>
+  </div>
+
+  <div class="qa"><h4>Interview Q&amp;A</h4>
+    <details><summary>Lexical scope vs dynamic scope?</summary><div>Lexical scope mein function kahan define hua, woh matter karta hai. JS isi ko follow karta hai. Dynamic scope mein function kahan se call hua, woh matter karta hai. JS mein sirf <code>this</code> dynamic jaisa behave karta hai.</div></details>
+    <details><summary>Global scope pollution kaise avoid karein?</summary><div>Modules use karo, IIFE use karo, aur let/const use karo (var nahi). Browser globals ko ek namespace object mein rakho.</div></details>
+  </div>
+  <div class="next"><a href="#s4">Next: "JS declarations ko kaise handle karta?" → 04 Hoisting ↓</a></div>
+</section>
+
+<p class="flow">"JS declarations ko kaise handle karta?"</p>
+
+<!-- ============ 4. HOISTING ============ -->
+<section class="section" id="s4">
+  <div class="sec-head"><span class="num">04</span><div><h2>Hoisting + Scope Chain</h2><p class="bridge">Code chalne se pehle JS declarations ke saath kya karta hai?</p></div></div>
+
+  <div class="concept">
+    <h3>4.1 Hoisting</h3>
+    <div class="wwwh">
+      <div><b class="l what">What</b><span>Code execute hone se pehle declarations ko memory mil jaati hai. Isse aisa lagta hai jaise declarations "upar" chali gayi hon.</span></div>
+      <div><b class="l why">Why aaya</b><span>JS pehle code ko scan karta hai (creation phase). Isi wajah se function ko uski definition se pehle bhi call kar sakte ho, aur mutually recursive functions kaam karte hain.</span></div>
+      <div><b class="l when">When</b><span>Output questions mein, aur jab declaration se pehle use karne par koi bug aaye.</span></div>
+      <div><b class="l how">How</b><span>Code physically move nahi hota. Sirf memory allocation pehle ho jaata hai.</span></div>
+    </div>
+    <div class="tbl"><table>
+      <tr><th>Declaration</th><th>Hoisted?</th><th>Initial value</th></tr>
+      <tr><td><code>var</code></td><td>✅</td><td><code>undefined</code></td></tr>
+      <tr><td><code>let / const</code></td><td>✅</td><td>TDZ (uninitialized)</td></tr>
+      <tr><td>Function declaration</td><td>✅</td><td><b>Poora function</b></td></tr>
+      <tr><td>Function expression / arrow</td><td>Sirf variable hoist hota hai (var ya let ke rules se)</td><td>Function nahi</td></tr>
+      <tr><td><code>class</code></td><td>✅</td><td>TDZ</td></tr>
+    </table></div>
+<pre>greet();                 <span class="o">// "hi" ✅ function declaration</span>
+function greet(){ console.log("hi"); }
+
+sayHi();                 <span class="o">// TypeError: sayHi is not a function</span>
+var sayHi = () => console.log("hi");   <span class="c">// var sayHi = undefined hoist hua</span></pre>
+    <div class="say">Hoisting mein creation phase ke dauraan declarations ko memory milti hai. var ko undefined milta hai, function declaration ko poori body, aur let/const/class TDZ mein rehte hain.</div>
+  </div>
+
+  <div class="concept">
+    <h3>4.2 Scope Chain (Local → Outer → Global)</h3>
+    <div class="wwwh">
+      <div><b class="l what">What</b><span>Koi variable use hone par JS usse pehle current scope mein dhoondhta hai, phir parent scope mein, aur aise hi global tak jaata hai. Wahan bhi na mile to <b>ReferenceError</b>.</span></div>
+      <div><b class="l why">Why aaya</b><span>Nested functions ko bahar ka data chahiye hota hai, aur har baar pass karna practical nahi hai.</span></div>
+      <div><b class="l when">When</b><span>Nested functions, closures, aur shadowing samajhne mein.</span></div>
+      <div><b class="l how">How</b><span>Har execution context ke paas ek "outer environment" ka reference hota hai. Yeh references aapas mein jud kar ek chain banate hain.</span></div>
+    </div>
+<pre>let a = 1;
+function outer() {
+  let b = 2;
+  function inner() { let c = 3; console.log(a + b + c); }  <span class="o">// 6</span>
+  inner();
+}
+outer();
+
+// Shadowing: andar wala same naam bahar wale ko chhupa deta hai
+let n = 1; { let n = 2; console.log(n); }  <span class="o">// 2</span></pre>
+    <div class="say">Scope chain lexical environments ki ek linked list hai. Lookup andar se bahar ki taraf hota hai, ulta kabhi nahi.</div>
+  </div>
+
+  <div class="qa"><h4>Interview Q&amp;A</h4>
+    <details><summary>Function declaration aur same naam ka var, dono ho to kya hoga?</summary><div>Creation phase mein function declaration ko priority milti hai. Execution phase mein var ka assignment use overwrite kar deta hai.</div></details>
+    <details><summary>Illegal shadowing kya hai?</summary><div>Jab block ke andar <code>var</code> se aisa naam declare karo jo bahar <code>let</code> se already declared hai, to SyntaxError aata hai, kyunki var block ko cross karke function scope tak chala jaata hai.</div></details>
+  </div>
+  <div class="next"><a href="#s5">Next: "Code execute kaise hota?" → 05 Execution Model ↓</a></div>
+</section>
+
+<p class="flow">"Code execute kaise hota?"</p>
+
+<!-- ============ 5. EXECUTION MODEL ============ -->
+<section class="section" id="s5">
+  <div class="sec-head"><span class="num">05</span><div><h2>Execution Model — Execution Context, Phases, Call Stack</h2><p class="bridge">Hoisting, scope aur closure teeno isi ek model se samajh aate hain.</p></div></div>
+
+  <div class="concept">
+    <h3>5.1 Execution Context (EC)</h3>
+    <div class="wwwh">
+      <div><b class="l what">What</b><span>Woh environment jisme code chalta hai. Isme 3 cheezein hoti hain: <b>variables (memory)</b>, <b>scope chain</b>, aur <b><code>this</code></b>.</span></div>
+      <div><b class="l why">Why aaya</b><span>Engine ko track karna hota hai ki abhi kaunsa code chal raha hai, uske variables kaunse hain, aur <code>this</code> kya hai.</span></div>
+      <div><b class="l when">When</b><span>Program start hone par <b>Global EC</b> banta hai. Har function call par ek naya <b>Function EC</b> banta hai.</span></div>
+      <div><b class="l how">How</b><span>Har EC do phases mein chalta hai: Creation aur phir Execution.</span></div>
+    </div>
+  </div>
+
+  <div class="concept">
+    <h3>5.2 Creation Phase vs Execution Phase</h3>
+    <div class="tbl"><table>
+      <tr><th>Creation (Memory) Phase</th><th>Execution (Code) Phase</th></tr>
+      <tr><td>var ko <code>undefined</code> milta hai, functions ko poori body, let/const TDZ mein jaate hain</td><td>Code line-by-line chalta hai, values assign hoti hain</td></tr>
+      <tr><td>Scope chain set hoti hai, <code>this</code> decide hota hai</td><td>Function call par naya EC banta hai aur stack par push hota hai</td></tr>
+    </table></div>
+    <div class="say">Creation phase mein memory allocate hoti hai (isi se hoisting hoti hai). Execution phase mein code line by line chalta hai. Hoisting creation phase ka side-effect hai.</div>
+  </div>
+
+  <div class="concept">
+    <h3>5.3 Call Stack</h3>
+    <div class="wwwh">
+      <div><b class="l what">What</b><span>Ek LIFO stack jo track karta hai ki abhi kaunsa function chal raha hai.</span></div>
+      <div><b class="l why">Why aaya</b><span>JS <b>single-threaded</b> hai, ek time par ek hi kaam karta hai. Stack order maintain karta hai ki function khatam hone ke baad control kahan wapas jaayega.</span></div>
+      <div><b class="l when">When</b><span>Error stack trace padhne mein, recursion mein, aur event loop samajhne mein.</span></div>
+      <div><b class="l how">How</b><span>Function call hone par push, return hone par pop. Stack bahut bhar jaaye to <b>RangeError: Maximum call stack size exceeded</b> aata hai.</span></div>
+    </div>
+<pre>function a(){ b(); }
+function b(){ c(); }
+function c(){ console.trace(); }
+a();
+// Stack: [Global] → [a] → [b] → [c]   (c pehle pop hoga)
+
+function inf(){ inf(); } inf();   <span class="o">// RangeError: stack overflow</span></pre>
+    <div class="say">Call stack execution contexts ka LIFO stack hai. JS single-threaded hai, isliye ek hi call stack hota hai. Stack khaali ho tabhi event loop async callbacks andar daalta hai.</div>
+  </div>
+
+  <div class="qa"><h4>Interview Q&amp;A</h4>
+    <details><summary>JS single-threaded hai to async kaise hota hai?</summary><div>JS engine single-threaded hai, par runtime (browser ya Node) ke paas Web APIs/libuv hote hain. Timers, network aur I/O wahan chalte hain. Kaam poora hone par callback queue mein aata hai, aur event loop stack khaali hone par use andar daalta hai. (Detail: section 16)</div></details>
+  </div>
+  <div class="next"><a href="#s6">Next: "Functions?" → 06 Functions ↓</a></div>
+</section>
+
+<p class="flow">"Functions?"</p>
+
+<!-- ============ 6. FUNCTIONS ============ -->
+<section class="section" id="s6">
+  <div class="sec-head"><span class="num">06</span><div><h2>Functions — Declaration, Expression, Arrow, First-Class, Callback, HOF</h2><p class="bridge">Logic ko reusable unit mein pack karna.</p></div></div>
+
+  <div class="concept">
+    <h3>6.1 Declaration vs Expression vs Arrow</h3>
+    <div class="tbl"><table>
+      <tr><th></th><th>Declaration</th><th>Expression</th><th>Arrow (ES6)</th></tr>
+      <tr><td>Syntax</td><td><code>function f(){}</code></td><td><code>const f = function(){}</code></td><td><code>const f = () =&gt; {}</code></td></tr>
+      <tr><td>Hoisting</td><td>Poora function</td><td>Nahi</td><td>Nahi</td></tr>
+      <tr><td><code>this</code></td><td>Call-site se decide</td><td>Call-site se decide</td><td><b>Lexical</b> (parent ka)</td></tr>
+      <tr><td><code>arguments</code></td><td>✅</td><td>✅</td><td>❌ (rest <code>...args</code> use karo)</td></tr>
+      <tr><td><code>new</code> se call</td><td>✅</td><td>✅</td><td>❌</td></tr>
+    </table></div>
+    <div class="wwwh">
+      <div><b class="l why">Why arrow aaya</b><span>Callbacks ke andar <code>this</code> kho jaata tha, aur logon ko <code>var self = this</code> ya <code>.bind(this)</code> likhna padta tha. Arrow function parent ka <code>this</code> use karta hai. Syntax bhi chhota hai.</span></div>
+      <div><b class="l when">When</b><span>Arrow: callbacks, array methods, React handlers. Normal function: object methods, constructors, aur jab <code>arguments</code> chahiye.</span></div>
+    </div>
+    <div class="say">Arrow functions ka apna this, arguments aur prototype nahi hota, aur unhe new se call nahi kar sakte. Isliye yeh callbacks ke liye best hain, par object methods ke liye nahi.</div>
+  </div>
+
+  <div class="concept">
+    <h3>6.2 First-Class Functions</h3>
+    <div class="wwwh">
+      <div><b class="l what">What</b><span>Functions ko bhi <b>value</b> ki tarah treat kiya jaata hai. Unhe variable mein store kar sakte ho, argument mein pass kar sakte ho, aur return kar sakte ho.</span></div>
+      <div><b class="l why">Why aaya</b><span>Isi feature se callbacks, HOF, closures aur functional programming possible hote hain.</span></div>
+      <div><b class="l when">When</b><span>Event handlers, <code>map/filter</code>, middleware, aur Promise <code>.then</code> mein.</span></div>
+      <div><b class="l how">How</b><span>Function internally ek callable <b>object</b> hai. Uske paas properties bhi ho sakti hain, jaise <code>fn.name</code> aur <code>fn.length</code>.</span></div>
+    </div>
+  </div>
+
+  <div class="concept">
+    <h3>6.3 Callback &amp; Higher-Order Function (HOF)</h3>
+    <div class="wwwh">
+      <div><b class="l what">What</b><span><b>Callback</b> = woh function jo doosre function ko argument mein diya jaata hai, taaki woh use baad mein call kare. <b>HOF</b> = woh function jo function <i>leta</i> hai ya function <i>return</i> karta hai.</span></div>
+      <div><b class="l why">Why aaya</b><span>Behaviour ko customize karne ke liye. Loop ka logic ek hi baar likho, aur "kya karna hai" callback se bata do. Async kaam ke "baad" kya chalana hai, woh bhi callback se batate hain.</span></div>
+      <div><b class="l when">When</b><span><code>map, filter, reduce, setTimeout, addEventListener</code>, aur Express middleware mein.</span></div>
+    </div>
+<pre>// HOF: function return kar raha hai
+const multiplier = (n) => (x) => x * n;
+const double = multiplier(2);
+double(5);                        <span class="o">// 10</span>
+
+// Callback
+[1,2,3].map(x => x * 2);          <span class="o">// [2,4,6]  → map HOF hai, x=>x*2 callback hai</span></pre>
+    <div class="say">Callback woh function hai jo argument mein pass hota hai. HOF woh function hai jo function leta ya return karta hai. Dono first-class functions ki wajah se possible hain.</div>
+  </div>
+
+  <div class="concept">
+    <h3>6.4 IIFE, Default Params, Pure Function</h3>
+    <div class="wwwh">
+      <div><b class="l what">IIFE</b><span><code>(function(){ ... })()</code> matlab function define hote hi turant call ho jaata hai. Modules aane se pehle private scope banane ke liye use hota tha.</span></div>
+      <div><b class="l what">Default</b><span><code>function f(a = 10){}</code>. Default value tabhi lagti hai jab argument <code>undefined</code> ho, <code>null</code> par nahi lagti.</span></div>
+      <div><b class="l what">Pure</b><span>Same input par hamesha same output, aur koi side effect nahi. Aise functions test aur cache (memoize) karna aasaan hota hai. React reducers pure hone chahiye.</span></div>
+    </div>
+  </div>
+
+  <div class="qa"><h4>Interview Q&amp;A</h4>
+    <details><summary>Object method ke liye arrow kyu nahi use karna chahiye?</summary><div>Arrow function ka apna <code>this</code> nahi hota, woh bahar wala (module/global) <code>this</code> le leta hai. Isliye <code>obj.method()</code> mein <code>this.name</code> undefined aayega.</div></details>
+    <details><summary>Function ki length property kya batati hai?</summary><div>Kitne parameters declare hue hain, default value aur rest parameter se pehle tak ke. Currying implement karte waqt yeh kaam aata hai.</div></details>
+  </div>
+  <div class="next"><a href="#s7">Next: "Function ke andar outer data?" → 07 Closure ↓</a></div>
+</section>
+
+<p class="flow">"Function ke andar outer data?"</p>
+
+<!-- ============ 7. CLOSURE ============ -->
+<section class="section" id="s7">
+  <div class="sec-head"><span class="num">07</span><div><h2>Closure — Lexical Environment, Private State, Factory</h2><p class="bridge">Interview ka #1 topic. Scope aur Execution Context ka combination.</p></div></div>
+  <div class="big"><b>One line:</b> Closure = function + uska lexical environment. Outer function return ho jaaye tab bhi inner function outer ke variables yaad rakhta hai.</div>
+
+  <div class="concept">
+    <h3>7.1 Closure kya hai</h3>
+    <div class="wwwh">
+      <div><b class="l what">What</b><span>Jab inner function apne outer function ke variables ko <b>outer function khatam hone ke baad bhi</b> access karta hai.</span></div>
+      <div><b class="l why">Why aaya</b><span>JS mein functions first-class hain aur lexical scoping hai. Jab function ko return karke kahin aur chalaya jaata hai, use apna original data yaad rehna chahiye. Closure isi ki guarantee deta hai. JS mein <b>private variables</b> banane ka pehla tareeka bhi yahi tha.</span></div>
+      <div><b class="l when">When</b><span>Data hiding, factory functions, memoization, debounce/throttle, event handlers, aur React hooks mein.</span></div>
+      <div><b class="l how">How</b><span>Function banne par woh parent environment ka reference (<code>[[Environment]]</code>) save kar leta hai. Jab tak inner function reachable hai, woh environment garbage collect nahi hota.</span></div>
+    </div>
+<pre>function counter() {
+  let count = 0;                    <span class="c">// private state</span>
+  return {
+    inc: () => ++count,
+    get: () => count
+  };
+}
+const c = counter();
+c.inc(); c.inc();
+c.get();        <span class="o">// 2</span>
+c.count;        <span class="o">// undefined → bahar se direct access nahi hota</span></pre>
+    <div class="say">Closure ek function aur uske lexical environment ka bundle hai. Isse inner function outer ke variables ko baad mein bhi access kar sakta hai. Main ise private state, factories aur memoization ke liye use karta hoon.</div>
+  </div>
+
+  <div class="concept">
+    <h3>7.2 Factory Function (Closure se)</h3>
+    <div class="wwwh">
+      <div><b class="l what">What</b><span>Aisa function jo configured naye functions ya objects return karta hai, aur har ek ka apna alag closure hota hai.</span></div>
+      <div><b class="l when">When</b><span>Ek hi logic ke alag-alag configured versions chahiye hon, jaise loggers, API clients, validators.</span></div>
+    </div>
+<pre>const createLogger = (prefix) => (msg) => console.log(`[${prefix}] ${msg}`);
+const authLog = createLogger("AUTH");
+authLog("login ok");      <span class="o">// [AUTH] login ok</span></pre>
+  </div>
+
+  <div class="concept">
+    <h3>7.3 Classic Loop + setTimeout Problem</h3>
+    <div class="wwwh">
+      <div><b class="l what">What</b><span>Yeh interview ka sabse common closure output question hai.</span></div>
+      <div><b class="l why">Why hota</b><span><code>var</code> function-scoped hai, isliye teeno callbacks <b>ek hi</b> <code>i</code> share karte hain. Jab tak callbacks chalte hain, loop khatam ho chuka hota hai aur i = 3 hai. <code>let</code> har iteration mein naya binding banata hai.</span></div>
+    </div>
+<pre>for (var i = 0; i &lt; 3; i++) setTimeout(() => console.log(i));
+<span class="o">// 3 3 3</span>
+
+for (let i = 0; i &lt; 3; i++) setTimeout(() => console.log(i));
+<span class="o">// 0 1 2</span>
+
+// var ke saath fix: IIFE se har baar naya scope
+for (var i = 0; i &lt; 3; i++) ((j) => setTimeout(() => console.log(j)))(i);</pre>
+    <div class="trap">Closures variables ka <b>reference</b> yaad rakhte hain, value ki copy nahi. Isliye variable baad mein badle to closure ko nayi value dikhti hai.</div>
+  </div>
+
+  <div class="concept">
+    <h3>7.4 Closure ka nuksaan</h3>
+    <div class="wwwh">
+      <div><b class="l what">What</b><span>Jab tak closure zinda hai, uske captured variables memory mein rehte hain. Agar koi bada object capture hua hai aur listener ya timer kabhi remove nahi hua, to <b>memory leak</b> hota hai.</span></div>
+      <div><b class="l how">Fix</b><span>Listeners remove karo, timers clear karo, aur closure mein sirf zaroori data capture karo.</span></div>
+    </div>
+  </div>
+
+  <div class="qa"><h4>Interview Q&amp;A</h4>
+    <details><summary>once() function likho (sirf ek baar chale)</summary><div>
+<pre>function once(fn) {
+  let done = false, result;
+  return function (...args) {
+    if (!done) { done = true; result = fn.apply(this, args); }
+    return result;
+  };
+}</pre></div></details>
+    <details><summary>React mein closure ka stale state problem kya hai?</summary><div>useEffect ya setInterval ka callback purane render ki state capture kar leta hai (stale closure). Fix: dependency array sahi do, ya functional update <code>setCount(c =&gt; c + 1)</code> use karo, ya useRef use karo.</div></details>
+  </div>
+  <div class="next"><a href="#s8">Next: "this?" → 08 this ↓</a></div>
+</section>
+
+<p class="flow">"this?"</p>
+
+<!-- ============ 8. THIS ============ -->
+<section class="section" id="s8">
+  <div class="sec-head"><span class="num">08</span><div><h2>this — Call-site, Method, Arrow, call/apply/bind</h2><p class="bridge">Scope lexical hai, lekin this dynamic hai. Yeh function kaise call hua, us par depend karta hai.</p></div></div>
+  <div class="big"><b>Why aaya:</b> Ek hi function ko alag-alag objects ke saath reuse karne ke liye. Method ko pata hona chahiye ki woh "kis object" par chal raha hai. Isliye <code>this</code> call time par decide hota hai.</div>
+
+  <div class="concept">
+    <h3>8.1 this ke 4 Rules (priority order)</h3>
+    <div class="tbl"><table>
+      <tr><th>#</th><th>Rule</th><th>Example</th><th>this =</th></tr>
+      <tr><td>1</td><td><b>new</b> binding</td><td><code>new User()</code></td><td>Naya bana object</td></tr>
+      <tr><td>2</td><td><b>Explicit</b> (call/apply/bind)</td><td><code>fn.call(obj)</code></td><td><code>obj</code></td></tr>
+      <tr><td>3</td><td><b>Implicit</b> (method)</td><td><code>obj.fn()</code></td><td>Dot ke left wala object</td></tr>
+      <tr><td>4</td><td><b>Default</b></td><td><code>fn()</code></td><td>Non-strict: <code>window</code> · Strict: <code>undefined</code></td></tr>
+      <tr><td>★</td><td><b>Arrow</b></td><td><code>() =&gt; this</code></td><td>Parent scope ka this (koi rule apply nahi hota)</td></tr>
+    </table></div>
+<pre>const user = {
+  name: "Shiva",
+  normal() { return this.name; },
+  arrow: () => this?.name,
+  later() { setTimeout(() => console.log(this.name), 0); }  <span class="c">// arrow → user ka this</span>
+};
+user.normal();           <span class="o">// "Shiva"</span>
+user.arrow();            <span class="o">// undefined (module/global ka this)</span>
+
+const fn = user.normal;
+fn();                    <span class="o">// undefined → "lost this" (default binding)</span></pre>
+    <div class="say">this is baat se decide hota hai ki function kaise call hua, is baat se nahi ki kahan define hua. Priority: new, phir explicit, phir implicit, phir default. Arrow function ka apna this nahi hota, woh lexically parent ka this leta hai.</div>
+    <div class="trap">Method ko variable mein nikaalne par ya callback mein pass karne par (<code>btn.onclick = obj.method</code>) <code>this</code> kho jaata hai. Fix: <code>.bind(obj)</code> ya arrow wrapper.</div>
+  </div>
+
+  <div class="concept">
+    <h3>8.2 call / apply / bind</h3>
+    <div class="tbl"><table>
+      <tr><th></th><th>Kab chalta hai</th><th>Arguments</th><th>Return</th></tr>
+      <tr><td><code>call</code></td><td>Turant</td><td>Alag-alag <code>(obj, a, b)</code></td><td>Function ka result</td></tr>
+      <tr><td><code>apply</code></td><td>Turant</td><td>Array <code>(obj, [a, b])</code></td><td>Function ka result</td></tr>
+      <tr><td><code>bind</code></td><td>Baad mein</td><td>Alag-alag (partially fix bhi kar sakte ho)</td><td><b>Naya function</b></td></tr>
+    </table></div>
+    <div class="wwwh">
+      <div><b class="l why">Why aaya</b><span><code>this</code> ko manually control karne ke liye, aur method borrowing ke liye (ek object ka method doosre object par chalana).</span></div>
+      <div><b class="l when">When</b><span>call/apply: method borrowing. bind: callbacks aur event handlers mein this fix karna, aur partial application.</span></div>
+    </div>
+<pre>function intro(city, age) { return `${this.name} from ${city}, ${age}`; }
+const p = { name: "Aman" };
+intro.call(p, "Delhi", 25);
+intro.apply(p, ["Delhi", 25]);
+const bound = intro.bind(p, "Delhi");   bound(25);
+
+Math.max.apply(null, [1, 5, 3]);        <span class="o">// 5 (ab: Math.max(...arr))</span></pre>
+    <div class="say">call aur apply function ko turant chalate hain, bas arguments dene ka tareeka alag hai (C = comma, A = array). bind ek naya function return karta hai jiska this permanently fix ho jaata hai.</div>
+  </div>
+
+  <div class="qa"><h4>Interview Q&amp;A</h4>
+    <details><summary>bind ka polyfill likho</summary><div>
+<pre>Function.prototype.myBind = function (ctx, ...pre) {
+  const fn = this;
+  return function (...later) { return fn.apply(ctx, [...pre, ...later]); };
+};</pre></div></details>
+    <details><summary>Bound function ko dobara bind karo to kya hoga?</summary><div>Kuch nahi badlega, pehla bind hi rahega. Bound function ka this dobara nahi badalta. Sirf <code>new</code> use override kar sakta hai.</div></details>
+  </div>
+  <div class="next"><a href="#s9">Next: "Data as entity?" → 09 Object Model ↓</a></div>
+</section>
+
+<p class="flow">"Data as entity?"</p>
+
+<!-- ============ 9. OBJECT MODEL ============ -->
+<section class="section" id="s9">
+  <div class="sec-head"><span class="num">09</span><div><h2>Object Model — Properties, Methods, References, Getters/Setters, Descriptors</h2><p class="bridge">Real-world cheezon (user, order) ko data + behaviour ke saath represent karna.</p></div></div>
+
+  <div class="concept">
+    <h3>9.1 Properties &amp; Methods</h3>
+    <div class="wwwh">
+      <div><b class="l what">What</b><span>Object = key-value pairs. Keys hamesha <b>string ya symbol</b> hoti hain (number key bhi string ban jaati hai). Agar value function hai to use <b>method</b> kehte hain.</span></div>
+      <div><b class="l why">Why aaya</b><span>Related data aur us par chalne wale behaviour ko ek jagah group karne ke liye.</span></div>
+      <div><b class="l how">How</b><span>Dot notation <code>obj.key</code> fixed naam ke liye. Bracket notation <code>obj[var]</code> dynamic key ke liye. Optional chaining <code>obj?.a?.b</code> se null par crash nahi hota.</span></div>
+    </div>
+<pre>const key = "age";
+const user = { name: "A", [key]: 25, greet() { return "hi " + this.name; } };
+user[key];               <span class="o">// 25</span>
+"name" in user;          <span class="o">// true (prototype chain bhi check karta hai)</span>
+Object.hasOwn(user, "name");  <span class="o">// true (sirf own property)</span>
+Object.keys(user); Object.values(user); Object.entries(user);</pre>
+  </div>
+
+  <div class="concept">
+    <h3>9.2 Getters / Setters</h3>
+    <div class="wwwh">
+      <div><b class="l what">What</b><span>Aisi properties jo padhne ya likhne par ek function chalati hain.</span></div>
+      <div><b class="l why">Why aaya</b><span>Computed values (jaise fullName) aur validation ke liye, bina API badle. Bahar se yeh normal property jaisi dikhti hai.</span></div>
+      <div><b class="l when">When</b><span>Derived data banana ho, ya assign hone se pehle value validate karni ho.</span></div>
+    </div>
+<pre>const acc = {
+  _bal: 0,
+  get balance() { return `₹${this._bal}`; },
+  set balance(v) { if (v &lt; 0) throw Error("negative"); this._bal = v; }
+};
+acc.balance = 500;  acc.balance;   <span class="o">// "₹500"</span></pre>
+  </div>
+
+  <div class="concept">
+    <h3>9.3 Property Descriptors, freeze / seal</h3>
+    <div class="wwwh">
+      <div><b class="l what">What</b><span>Har property ke hidden flags hote hain: <code>writable</code> (value change ho sakti hai?), <code>enumerable</code> (loop mein dikhegi?), <code>configurable</code> (delete ya reconfigure ho sakti hai?).</span></div>
+      <div><b class="l why">Why aaya</b><span>Library aur framework authors ko fine control chahiye tha, jaise read-only ya hidden properties banana.</span></div>
+      <div><b class="l how">How</b><span><code>Object.defineProperty</code>, <code>Object.getOwnPropertyDescriptor</code>.</span></div>
+    </div>
+    <div class="tbl"><table>
+      <tr><th></th><th>Add</th><th>Delete</th><th>Modify</th></tr>
+      <tr><td><code>Object.freeze</code></td><td>❌</td><td>❌</td><td>❌</td></tr>
+      <tr><td><code>Object.seal</code></td><td>❌</td><td>❌</td><td>✅</td></tr>
+      <tr><td><code>Object.preventExtensions</code></td><td>❌</td><td>✅</td><td>✅</td></tr>
+    </table></div>
+<pre>Object.defineProperty(user, "id", { value: 1, writable: false, enumerable: false });
+user.id = 5;  user.id;   <span class="o">// 1 (strict mode mein TypeError)</span></pre>
+    <div class="trap"><code>Object.freeze</code> <b>shallow</b> hota hai. Nested objects ab bhi mutable rehte hain. Deep freeze ke liye recursion chahiye.</div>
+  </div>
+
+  <div class="qa"><h4>Interview Q&amp;A</h4>
+    <details><summary>Object keys ka order kya hota hai?</summary><div>Pehle integer-like keys ascending order mein, phir string keys insertion order mein, phir symbols (insertion order mein).</div></details>
+    <details><summary>for...in vs Object.keys?</summary><div><code>for...in</code> inherited enumerable properties bhi deta hai. <code>Object.keys</code> sirf own enumerable properties deta hai.</div></details>
+  </div>
+  <div class="next"><a href="#s10">Next: "Object ka relation?" → 10 Prototype &amp; Class ↓</a></div>
+</section>
+
+<p class="flow">"Object ka relation?"</p>
+
+<!-- ============ 10. PROTOTYPE & CLASS ============ -->
+<section class="section" id="s10">
+  <div class="sec-head"><span class="num">10</span><div><h2>Prototype &amp; Class — Inheritance in JS</h2><p class="bridge">Ek object doosre object ki properties kaise use karta hai?</p></div></div>
+  <div class="big"><b>Big picture:</b> JS <b>prototype-based</b> language hai. <code>class</code> ES6 mein sirf <b>syntactic sugar</b> ke roop mein aaya. Andar se sab kuch prototype hi hai.</div>
+
+  <div class="concept">
+    <h3>10.1 [[Prototype]] &amp; Prototype Chain</h3>
+    <div class="wwwh">
+      <div><b class="l what">What</b><span>Har object ka ek hidden link <code>[[Prototype]]</code> hota hai jo kisi doosre object ko point karta hai. Property na mile to JS chain mein upar dhoondhta hai, <code>null</code> tak.</span></div>
+      <div><b class="l why">Why aaya</b><span><b>Memory bachane</b> ke liye. 1000 objects ho to bhi method ek hi baar prototype par store hota hai aur sab use share karte hain.</span></div>
+      <div><b class="l when">When</b><span>Inheritance, polyfills likhna (<code>Array.prototype.myMap</code>), aur yeh samajhna ki <code>[].map</code> kahan se aata hai.</span></div>
+      <div><b class="l how">How</b><span><code>Object.getPrototypeOf(obj)</code> ya <code>obj.__proto__</code> (legacy). <code>Object.create(proto)</code> se naya object bana sakte ho.</span></div>
+    </div>
+<pre>const arr = [];
+// arr → Array.prototype → Object.prototype → null
+arr.__proto__ === Array.prototype;              <span class="o">// true</span>
+Array.prototype.__proto__ === Object.prototype; <span class="o">// true</span>
+
+const animal = { eat() { return "eating"; } };
+const dog = Object.create(animal);
+dog.eat();       <span class="o">// "eating" → chain se mila</span></pre>
+  </div>
+
+  <div class="concept">
+    <h3>10.2 <code>prototype</code> vs <code>__proto__</code>, constructor &amp; new</h3>
+    <div class="wwwh">
+      <div><b class="l what">What</b><span><code>F.prototype</code> sirf <b>functions</b> par hoti hai. Yeh woh object hai jo <code>new F()</code> se bane instances ka <code>__proto__</code> banega. <code>__proto__</code> har <b>object</b> par hota hai.</span></div>
+      <div><b class="l how">new ke 4 steps</b><span>(1) Khaali object banta hai (2) uska <code>__proto__</code> = <code>F.prototype</code> set hota hai (3) <code>F</code> chalta hai with <code>this</code> = naya object (4) agar F koi object return nahi karta to naya object return hota hai.</span></div>
+    </div>
+<pre>function User(name) { this.name = name; }
+User.prototype.hi = function () { return "Hi " + this.name; };
+const u = new User("A");
+u.hi();                                   <span class="o">// "Hi A"</span>
+u.__proto__ === User.prototype;           <span class="o">// true</span>
+User.prototype.constructor === User;      <span class="o">// true</span></pre>
+    <div class="say"><code>prototype</code> constructor function ki property hai. <code>__proto__</code> instance ka link hai. new operator instance ka __proto__ constructor ke prototype se jod deta hai.</div>
+  </div>
+
+  <div class="concept">
+    <h3>10.3 class, extends, super, static, #private, instanceof</h3>
+    <div class="wwwh">
+      <div><b class="l why">Why aaya</b><span>Prototype wala syntax confusing aur verbose tha. Java/C# se aane wale developers ke liye <code>class</code> ne clean syntax diya. Andar mechanism wahi hai.</span></div>
+      <div><b class="l what">extends/super</b><span><code>extends</code> prototype chain jodta hai. <code>super()</code> parent constructor call karta hai, aur child mein <code>this</code> use karne se <b>pehle</b> ise call karna zaroori hai.</span></div>
+      <div><b class="l what">static</b><span>Yeh method class par hota hai, instance par nahi. Utility ke liye use hota hai: <code>User.create()</code>.</span></div>
+      <div><b class="l what">#private</b><span>Yeh sach mein private hai, class ke bahar se access nahi ho sakta (ES2022).</span></div>
+      <div><b class="l what">instanceof</b><span>Check karta hai ki <code>Class.prototype</code> object ki prototype chain mein kahin hai ya nahi.</span></div>
+    </div>
+<pre>class Animal {
+  #secret = 42;
+  constructor(name) { this.name = name; }
+  speak() { return `${this.name} makes sound`; }
+  static create(n) { return new this(n); }
+}
+class Dog extends Animal {
+  constructor(name) { super(name); this.type = "dog"; }
+  speak() { return super.speak() + " (woof)"; }   <span class="c">// method overriding</span>
+}
+const d = Dog.create("Tom");
+d instanceof Animal;   <span class="o">// true</span>
+typeof Animal;         <span class="o">// "function" → class bhi function hi hai</span></pre>
+    <div class="trap">Classes hoist hoti hain par TDZ ke saath. Class ke andar ka code automatically strict mode mein chalta hai.</div>
+  </div>
+
+  <div class="concept">
+    <h3>10.4 Composition over Inheritance</h3>
+    <div class="wwwh">
+      <div><b class="l what">What</b><span>"is-a" (inheritance) ki jagah "has-a" (chhote behaviours ko jodna).</span></div>
+      <div><b class="l why">Why aaya</b><span>Gehri inheritance hierarchy fragile hoti hai (gorilla-banana problem: banana chahiye tha, poora jungle mil gaya). Composition zyada flexible hai.</span></div>
+      <div><b class="l when">When</b><span>Jab behaviours ko mix karna ho. React bhi inheritance ki jagah composition hi recommend karta hai.</span></div>
+    </div>
+<pre>const canFly  = (o) => ({ fly: () => `${o.name} flies` });
+const canSwim = (o) => ({ swim: () => `${o.name} swims` });
+const duck = (name) => { const o = { name }; return { ...o, ...canFly(o), ...canSwim(o) }; };</pre>
+    <div class="say">Main shallow hierarchies ke liye class inheritance use karta hoon aur reusable behaviour ke liye composition prefer karta hoon.</div>
+  </div>
+
+  <div class="qa"><h4>Interview Q&amp;A</h4>
+    <details><summary>Prototypal vs Classical inheritance?</summary><div>Classical inheritance mein class ek blueprint hoti hai aur instance uski copy. Prototypal mein object seedha doosre object se link hota hai (delegation). Kuch copy nahi hota, lookup chain ke through hota hai.</div></details>
+    <details><summary>Prototype pollution kya hai?</summary><div>Jab attacker <code>__proto__</code> key bhej kar <code>Object.prototype</code> modify kar deta hai, to har object affect hota hai. Fix: user input deep-merge karte waqt <code>__proto__/constructor</code> keys block karo, <code>Object.create(null)</code> ya Map use karo.</div></details>
+  </div>
+  <div class="next"><a href="#s11">Next: "Data manipulate?" → 11 Data Manipulation ↓</a></div>
+</section>
+
+<p class="flow">"Data manipulate?"</p>
+
+<!-- ============ 11. DATA MANIPULATION ============ -->
+<section class="section" id="s11">
+  <div class="sec-head"><span class="num">11</span><div><h2>Data Manipulation — Equality, Arrays, Strings, Destructuring, Spread/Rest</h2><p class="bridge">Roz ke kaam ka 60% code yahi hai: API data ko transform karna.</p></div></div>
+
+  <div class="concept">
+    <h3>11.1 Equality: == vs === vs Object.is</h3>
+    <div class="wwwh">
+      <div><b class="l what">What</b><span><code>==</code> type coercion ke baad compare karta hai. <code>===</code> type aur value dono compare karta hai. <code>Object.is</code> <code>===</code> jaisa hi hai, bas NaN aur ±0 ko sahi handle karta hai.</span></div>
+      <div><b class="l why">Why aaya</b><span><code>==</code> ke coercion rules ajeeb results dete the, isliye strict <code>===</code> aaya. <code>Object.is</code> edge cases theek karne ke liye aaya (React state compare karne ke liye yahi use karta hai).</span></div>
+      <div><b class="l when">When</b><span>Hamesha <code>===</code>. Sirf <code>x == null</code> ek accepted shortcut hai, jo null aur undefined dono check kar leta hai.</span></div>
+    </div>
+<pre>0 == ""          <span class="o">// true</span>
+"0" == false     <span class="o">// true</span>
+null == 0        <span class="o">// false (null sirf undefined ke == hai)</span>
+NaN === NaN      <span class="o">// false</span>
+Object.is(NaN, NaN)  <span class="o">// true</span>
+Object.is(0, -0)     <span class="o">// false</span></pre>
+  </div>
+
+  <div class="concept">
+    <h3>11.2 Array Methods — Mutating vs Non-mutating</h3>
+    <div class="tbl"><table>
+      <tr><th>Mutating (original array badalta hai) ⚠️</th><th>Non-mutating (naya array milta hai) ✅</th></tr>
+      <tr><td><code>push, pop, shift, unshift, splice, sort, reverse, fill</code></td><td><code>map, filter, slice, concat, flat, toSorted, toReversed, toSpliced, with</code></td></tr>
+    </table></div>
+    <div class="wwwh">
+      <div><b class="l why">Why matter</b><span>React/Redux mein state ko immutable rakhna hota hai. Mutating method use karoge to re-render nahi hoga, kyunki reference same rehta hai.</span></div>
+    </div>
+    <div class="tbl"><table>
+      <tr><th>Method</th><th>Kya return karta hai</th><th>Kab use</th></tr>
+      <tr><td><code>map</code></td><td>Same length ka naya array</td><td>Har element ko transform karna</td></tr>
+      <tr><td><code>filter</code></td><td>Condition pass karne wale elements</td><td>Hataana ya select karna</td></tr>
+      <tr><td><code>reduce</code></td><td>Ek single value (number, object, array)</td><td>Sum, groupBy, count</td></tr>
+      <tr><td><code>find / findIndex</code></td><td>Pehla match / uska index</td><td>ID se ek item dhoondhna</td></tr>
+      <tr><td><code>some / every</code></td><td>Boolean</td><td>"Koi ek bhi?" / "Sab ke sab?"</td></tr>
+      <tr><td><code>forEach</code></td><td><code>undefined</code></td><td>Sirf side effects ke liye (break nahi hota)</td></tr>
+      <tr><td><code>includes</code></td><td>Boolean (NaN bhi dhoondh leta hai)</td><td>Existence check</td></tr>
+    </table></div>
+<pre>const orders = [{ id: 1, amt: 500, st: "paid" }, { id: 2, amt: 200, st: "pending" }, { id: 3, amt: 300, st: "paid" }];
+
+const paidTotal = orders.filter(o => o.st === "paid").reduce((s, o) => s + o.amt, 0);  <span class="o">// 800</span>
+const byStatus  = orders.reduce((acc, o) => { (acc[o.st] ??= []).push(o); return acc; }, {});
+orders.some(o => o.amt > 400);     <span class="o">// true</span>
+orders.every(o => o.amt > 100);    <span class="o">// true</span>
+
+// slice vs splice
+const a = [1,2,3,4,5];
+a.slice(1, 3);     <span class="o">// [2,3]   original same, end index include nahi hota</span>
+a.splice(1, 2);    <span class="o">// [2,3]   original ab [1,4,5] ho gaya ⚠️</span></pre>
+    <div class="say">map transform karta hai, filter select karta hai, reduce aggregate karta hai. slice non-mutating hai aur splice mutating. React state mein main hamesha non-mutating methods use karta hoon.</div>
+    <div class="trap"><code>[10, 1, 2].sort()</code> ka result <code>[1, 10, 2]</code> aata hai, kyunki default sort string comparison karta hai. Numbers ke liye <code>sort((a,b) =&gt; a-b)</code> likho. <code>reduce</code> mein initial value zaroor do, warna empty array par error aata hai.</div>
+  </div>
+
+  <div class="concept">
+    <h3>11.3 Strings</h3>
+    <div class="wwwh">
+      <div><b class="l what">What</b><span>Strings <b>immutable</b> hoti hain. Har method nayi string return karta hai.</span></div>
+      <div><b class="l how">Must-know</b><span><code>slice, substring, split, join, trim, includes, startsWith, padStart, replaceAll, at(-1)</code>. Template literals: <code>`Hi ${name}`</code>.</span></div>
+    </div>
+<pre>const s = "hello";
+s[0] = "H";  s;                         <span class="o">// "hello" (immutable)</span>
+s.split("").reverse().join("");         <span class="o">// "olleh"</span>
+"a-b-c".replaceAll("-", "_");           <span class="o">// "a_b_c"</span>
+"5".padStart(3, "0");                   <span class="o">// "005"</span></pre>
+  </div>
+
+  <div class="concept">
+    <h3>11.4 Destructuring</h3>
+    <div class="wwwh">
+      <div><b class="l what">What</b><span>Array ya object se values nikaal kar seedha variables mein daalna.</span></div>
+      <div><b class="l why">Why aaya</b><span><code>const name = user.name; const age = user.age;</code> jaisa repetitive code likhna padta tha. Destructuring ise ek line mein kar deta hai, aur function params ko readable banata hai.</span></div>
+      <div><b class="l when">When</b><span>API response se data nikaalne mein, React props mein, aur swapping mein.</span></div>
+    </div>
+<pre>const { name, address: { city } = {}, role = "user", ...rest } = apiUser;  <span class="c">// rename, default, nested, rest</span>
+const [first, , third] = [1, 2, 3];
+let x = 1, y = 2; [x, y] = [y, x];            <span class="c">// swap</span>
+function Card({ title, price = 0 }) { }        <span class="c">// React props</span></pre>
+  </div>
+
+  <div class="concept">
+    <h3>11.5 Spread vs Rest (same <code>...</code>, ulta kaam)</h3>
+    <div class="wwwh">
+      <div><b class="l what">Spread</b><span>Array/object ko <b>kholta</b> hai. <code>[...a, ...b]</code>, <code>{...obj, x: 1}</code>, <code>fn(...args)</code>.</span></div>
+      <div><b class="l what">Rest</b><span>Bache hue items ko <b>ek jagah jodta</b> hai. <code>function f(...args)</code>, <code>const {a, ...rest} = obj</code>.</span></div>
+      <div><b class="l why">Why aaya</b><span>Pehle <code>concat</code>, <code>Object.assign</code>, <code>arguments</code> aur <code>apply</code> use karne padte the. Yeh syntax unse clean hai.</span></div>
+    </div>
+    <div class="say">Spread value ki jagah (right side ya call site) use hota hai aur values expand karta hai. Rest parameter ya destructuring (left side) mein use hota hai aur values collect karta hai. Spread sirf shallow copy karta hai.</div>
+  </div>
+
+  <div class="qa"><h4>Interview Q&amp;A</h4>
+    <details><summary>map vs forEach?</summary><div>map naya array return karta hai aur chain ho sakta hai. forEach undefined return karta hai aur sirf side effects ke liye hai. Dono mein break nahi hota. Beech mein rukna ho to <code>for...of</code> ya <code>some</code> use karo.</div></details>
+    <details><summary>Array se duplicates kaise hataoge?</summary><div><code>[...new Set(arr)]</code>. Objects ke liye: <code>[...new Map(arr.map(o =&gt; [o.id, o])).values()]</code>.</div></details>
+    <details><summary>map polyfill likho</summary><div>
+<pre>Array.prototype.myMap = function (cb, thisArg) {
+  const out = [];
+  for (let i = 0; i &lt; this.length; i++)
+    if (i in this) out[i] = cb.call(thisArg, this[i], i, this);
+  return out;
+};</pre></div></details>
+  </div>
+  <div class="next"><a href="#s12">Next: "Copy?" → 12 Copy &amp; Memory ↓</a></div>
+</section>
+
+<p class="flow">"Copy?"</p>
+
+<!-- ============ 12. COPY ============ -->
+<section class="section" id="s12">
+  <div class="sec-head"><span class="num">12</span><div><h2>Copy &amp; Memory — Value/Reference, Shallow, Deep, Immutability</h2><p class="bridge">Object copy kiya aur original bhi badal gaya? Aisa kyu hua, yahan samjho.</p></div></div>
+
+  <div class="concept">
+    <h3>12.1 Shallow Copy</h3>
+    <div class="wwwh">
+      <div><b class="l what">What</b><span>Sirf pehle level ki properties copy hoti hain. Nested objects ka ab bhi <b>reference</b> hi share hota hai.</span></div>
+      <div><b class="l why">Why</b><span>Yeh fast aur sasta hai. Zyada tar state updates ke liye kaafi hota hai.</span></div>
+      <div><b class="l how">How</b><span><code>{...obj}</code>, <code>[...arr]</code>, <code>Object.assign({}, obj)</code>, <code>arr.slice()</code>, <code>Array.from()</code>.</span></div>
+    </div>
+<pre>const a = { n: 1, addr: { city: "Delhi" } };
+const b = { ...a };
+b.n = 2;               <span class="c">// a.n still 1 ✅</span>
+b.addr.city = "Pune";  <span class="c">// a.addr.city bhi "Pune" ❌ (shared nested ref)</span></pre>
+  </div>
+
+  <div class="concept">
+    <h3>12.2 Deep Copy</h3>
+    <div class="wwwh">
+      <div><b class="l what">What</b><span>Har level par naya object banta hai. Original se koi connection nahi rehta.</span></div>
+      <div><b class="l when">When</b><span>Jab nested data ko modify karna ho aur original ko safe rakhna ho, jaise form ka draft ya undo history.</span></div>
+      <div><b class="l how">How</b><span><b><code>structuredClone(obj)</code></b> modern best option hai: Date, Map, Set aur circular references sab handle karta hai. <code>JSON.parse(JSON.stringify(obj))</code> purana tareeka hai aur isme limitations hain.</span></div>
+    </div>
+    <div class="tbl"><table>
+      <tr><th>JSON method mein kya kho jaata hai</th></tr>
+      <tr><td>Functions, <code>undefined</code> aur Symbol values hat jaati hain · Date string ban jaata hai · Map/Set <code>{}</code> ban jaate hain · NaN/Infinity <code>null</code> ban jaate hain · circular reference par error aata hai</td></tr>
+    </table></div>
+<pre>function deepClone(v, seen = new WeakMap()) {
+  if (v === null || typeof v !== "object") return v;
+  if (seen.has(v)) return seen.get(v);              <span class="c">// circular ref handle</span>
+  const out = Array.isArray(v) ? [] : {};
+  seen.set(v, out);
+  for (const k of Object.keys(v)) out[k] = deepClone(v[k], seen);
+  return out;
+}</pre>
+    <div class="say">Shallow copy sirf top level copy karti hai, nested objects shared rehte hain. Deep copy ke liye main structuredClone use karta hoon. JSON wala tareeka functions, Date aur undefined ko kho deta hai.</div>
+  </div>
+
+  <div class="concept">
+    <h3>12.3 Immutability</h3>
+    <div class="wwwh">
+      <div><b class="l what">What</b><span>Data ko modify karne ki jagah hamesha <b>nayi copy</b> banana.</span></div>
+      <div><b class="l why">Why aaya</b><span>Change detection sasta ho jaata hai: sirf <code>prev !== next</code> reference compare karna padta hai, deep compare nahi. Predictable state, undo/redo, aur time-travel debugging bhi isi se possible hote hain.</span></div>
+      <div><b class="l when">When</b><span>React state, Redux reducers, aur Angular OnPush change detection mein.</span></div>
+    </div>
+<pre>// ❌ state.items.push(item)
+setState(prev => ({ ...prev, items: [...prev.items, item] }));        <span class="c">// ✅</span>
+setState(prev => ({ ...prev, user: { ...prev.user, name: "B" } }));  <span class="c">// nested update</span></pre>
+  </div>
+
+  <div class="qa"><h4>Interview Q&amp;A</h4>
+    <details><summary>JS "pass by value" hai ya "pass by reference"?</summary><div>JS hamesha <b>pass by value</b> hai. Object ke case mein jo value pass hoti hai woh reference hai ("call by sharing"). Isliye function ke andar object mutate karoge to bahar bhi dikhega, lekin parameter ko naya object assign karoge to bahar koi farak nahi padega.</div></details>
+  </div>
+  <div class="next"><a href="#s13">Next: "Special collections?" → 13 Collections ↓</a></div>
+</section>
+
+<p class="flow">"Special collections?"</p>
+
+<!-- ============ 13. COLLECTIONS ============ -->
+<section class="section" id="s13">
+  <div class="sec-head"><span class="num">13</span><div><h2>Collections — Map, Set, WeakMap, WeakSet</h2><p class="bridge">Plain object aur array har kaam ke liye perfect nahi hote.</p></div></div>
+
+  <div class="concept">
+    <h3>13.1 Map</h3>
+    <div class="wwwh">
+      <div><b class="l what">What</b><span>Key-value collection jisme key <b>kisi bhi type</b> ki ho sakti hai (object, function bhi).</span></div>
+      <div><b class="l why">Why aaya</b><span>Object ki problems: keys sirf string ya symbol ho sakti hain, prototype ki keys (jaise <code>toString</code>) clash kar sakti hain, size nikaalne ka direct tareeka nahi hai, aur baar-baar add/delete mein slow hai.</span></div>
+      <div><b class="l when">When</b><span>Cache, frequency count, aur jab keys dynamic hon ya bahut add/delete ho.</span></div>
+    </div>
+<pre>const m = new Map();
+m.set("a", 1).set({ id: 1 }, "obj key");
+m.get("a"); m.has("a"); m.size; m.delete("a");
+for (const [k, v] of m) {}          <span class="c">// insertion order guaranteed</span></pre>
+    <div class="tbl"><table>
+      <tr><th></th><th>Object</th><th>Map</th></tr>
+      <tr><td>Key type</td><td>String/Symbol</td><td>Kuch bhi</td></tr>
+      <tr><td>Size</td><td><code>Object.keys(o).length</code></td><td><code>m.size</code></td></tr>
+      <tr><td>Iteration</td><td>Seedha nahi</td><td>Seedha iterable</td></tr>
+      <tr><td>Frequent add/delete</td><td>Slow</td><td>Optimized</td></tr>
+      <tr><td>JSON</td><td>✅ direct</td><td>❌ pehle convert karna padta hai</td></tr>
+    </table></div>
+  </div>
+
+  <div class="concept">
+    <h3>13.2 Set</h3>
+    <div class="wwwh">
+      <div><b class="l what">What</b><span><b>Unique</b> values ka collection.</span></div>
+      <div><b class="l why">Why aaya</b><span>Array mein <code>includes</code> O(n) hai. Set mein <code>has</code> O(1) hai. Duplicates automatically hat jaate hain.</span></div>
+      <div><b class="l when">When</b><span>Duplicates hataana, "seen" track karna, aur fast lookup.</span></div>
+    </div>
+<pre>const unique = [...new Set([1, 2, 2, 3])];   <span class="o">// [1,2,3]</span>
+const s = new Set(); s.add(1); s.has(1);    <span class="o">// true</span></pre>
+  </div>
+
+  <div class="concept">
+    <h3>13.3 WeakMap / WeakSet</h3>
+    <div class="wwwh">
+      <div><b class="l what">What</b><span>Keys (WeakMap) ya values (WeakSet) <b>sirf objects</b> ho sakte hain, aur unhe <b>weakly</b> hold kiya jaata hai. Agar us object ka koi aur reference nahi bacha to GC use hata deta hai.</span></div>
+      <div><b class="l why">Why aaya</b><span>Kisi object ke saath extra data jodna ho bina memory leak ke. Map object ko zinda rakhta hai, WeakMap nahi rakhta.</span></div>
+      <div><b class="l when">When</b><span>DOM node ka metadata, private data, memoization cache, aur deep clone mein circular references track karna.</span></div>
+      <div><b class="l how">Limit</b><span>Iterate nahi kar sakte aur <code>size</code> nahi hota, kyunki GC kabhi bhi entries hata sakta hai.</span></div>
+    </div>
+<pre>const cache = new WeakMap();
+function getData(obj) {
+  if (!cache.has(obj)) cache.set(obj, heavyCompute(obj));
+  return cache.get(obj);
+}   <span class="c">// obj delete hua → cache entry bhi GC ho jaayegi</span></pre>
+    <div class="say">WeakMap ki keys weakly held hoti hain, isliye object garbage collect ho sakta hai. Yeh metadata aur cache ke liye perfect hai bina memory leak ke. Isi wajah se yeh iterable nahi hai.</div>
+  </div>
+  <div class="next"><a href="#s14">Next: "Code wait karega?" → 14 Async JS ↓</a></div>
+</section>
+
+<p class="flow">"Code wait karega?"</p>
+
+<!-- ============ 14. ASYNC ============ -->
+<section class="section" id="s14">
+  <div class="sec-head"><span class="num">14</span><div><h2>Async JS — Sync/Async, Callback, Promise, async/await</h2><p class="bridge">API call 2 second leti hai. Kya poora page tab tak ruk jaayega?</p></div></div>
+  <div class="big"><b>Big picture:</b> JS single-threaded hai. Agar network call <b>blocking</b> hoti to UI freeze ho jaata. Isliye slow kaam (network, timer, file) runtime ko de diye jaate hain, aur result aane par callback chalta hai. Async handle karne ka tareeka aise evolve hua: <b>Callback → Promise → async/await</b>.</div>
+
+  <div class="concept">
+    <h3>14.1 Sync vs Async</h3>
+    <div class="wwwh">
+      <div><b class="l what">What</b><span><b>Sync</b>: line by line chalta hai, har line pichhli ke khatam hone ka wait karti hai (blocking). <b>Async</b>: kaam shuru karke aage badh jaata hai, result baad mein aata hai (non-blocking).</span></div>
+      <div><b class="l when">When</b><span>Async: API calls, timers, file/DB I/O, aur user events.</span></div>
+    </div>
+<pre>console.log("1");
+setTimeout(() => console.log("2"), 0);
+console.log("3");
+<span class="o">// 1 3 2 → 0ms ka matlab bhi "stack khaali hone ke baad" hai</span></pre>
+  </div>
+
+  <div class="concept">
+    <h3>14.2 Callback &amp; Callback Hell</h3>
+    <div class="wwwh">
+      <div><b class="l what">What</b><span>Async kaam poora hone par jo function call hota hai.</span></div>
+      <div><b class="l why">Problem</b><span>(1) <b>Callback hell</b>: nested pyramid jo padhna mushkil hai. (2) <b>Inversion of control</b>: tum apna callback third-party ko de dete ho, woh use 2 baar ya kabhi nahi bhi chala sakta hai. (3) Har level par error handling alag se likhni padti hai.</span></div>
+    </div>
+<pre>getUser(id, (err, user) => {
+  getOrders(user.id, (err, orders) => {
+    getItems(orders[0].id, (err, items) => {   <span class="c">// pyramid of doom 😵</span>
+    });
+  });
+});</pre>
+  </div>
+
+  <div class="concept">
+    <h3>14.3 Promise</h3>
+    <div class="wwwh">
+      <div><b class="l what">What</b><span>Ek object jo future mein milne wali value ko represent karta hai. Iski 3 states hain: pending, fulfilled, rejected.</span></div>
+      <div><b class="l why">Why aaya</b><span>Callback hell aur inversion of control solve karne ke liye. Promise sirf <b>ek baar</b> settle hota hai. Isme flat chaining hai aur ek hi <code>.catch</code> saare errors pakad leta hai.</span></div>
+      <div><b class="l when">When</b><span>Har async kaam mein: fetch, DB queries, file read.</span></div>
+    </div>
+<pre>getUser(id)
+  .then(user => getOrders(user.id))
+  .then(orders => getItems(orders[0].id))
+  .catch(err => console.error(err));        <span class="c">// flat + single error handler</span></pre>
+  </div>
+
+  <div class="concept">
+    <h3>14.4 async / await</h3>
+    <div class="wwwh">
+      <div><b class="l what">What</b><span>Promises ke upar <b>syntactic sugar</b>. Async code sync code jaisa dikhta hai.</span></div>
+      <div><b class="l why">Why aaya</b><span>Lambi <code>.then</code> chains mein bhi readability kharab hoti thi, aur loops ya conditions ke saath async likhna mushkil tha. <code>try/catch</code> ab async code par bhi kaam karta hai.</span></div>
+      <div><b class="l how">How</b><span><code>async</code> function hamesha Promise return karta hai. <code>await</code> <b>sirf us function</b> ko pause karta hai, poore thread ko nahi. Baaki bacha code microtask ban jaata hai.</span></div>
+    </div>
+<pre>async function loadDashboard(id) {
+  try {
+    const user = await getUser(id);
+    // ❌ sequential (slow): const a = await p1(); const b = await p2();
+    const [orders, notifs] = await Promise.all([getOrders(user.id), getNotifs(user.id)]);  <span class="c">// ✅ parallel</span>
+    return { user, orders, notifs };
+  } catch (e) {
+    console.error(e); throw e;
+  }
+}</pre>
+    <div class="say">async/await promises ke upar syntactic sugar hai. await sirf current async function ko pause karta hai, event loop ko block nahi karta. Independent calls ke liye main Promise.all use karta hoon taaki woh parallel chalein.</div>
+    <div class="trap"><code>forEach</code> ke andar <code>await</code> wait nahi karta. Sequential chalana ho to <code>for...of</code> use karo, parallel ke liye <code>Promise.all(arr.map(...))</code>.</div>
+  </div>
+  <div class="next"><a href="#s15">Next: "Promise ko manage kaise?" → 15 Promise ↓</a></div>
+</section>
+
+<p class="flow">"Promise ko manage kaise?"</p>
+
+<!-- ============ 15. PROMISE ============ -->
+<section class="section" id="s15">
+  <div class="sec-head"><span class="num">15</span><div><h2>Promise — States, then/catch/finally, Combinators</h2><p class="bridge">Promise ko detail mein samjho. Polyfills aur output questions yahin se aate hain.</p></div></div>
+
+  <div class="concept">
+    <h3>15.1 States &amp; Creation</h3>
+    <div class="wwwh">
+      <div><b class="l what">What</b><span><b>Pending</b> se ya to <b>Fulfilled</b> (resolve) ya <b>Rejected</b> (reject). Settle hone ke baad state kabhi nahi badalti.</span></div>
+      <div><b class="l how">How</b><span>Executor function <b>turant (synchronously)</b> chalta hai. <code>.then</code> ke callbacks microtask queue mein jaate hain.</span></div>
+    </div>
+<pre>const p = new Promise((resolve, reject) => {
+  console.log("executor sync");            <span class="c">// turant chalega</span>
+  setTimeout(() => resolve("done"), 1000);
+});
+
+// promisify: callback API → Promise
+const sleep = (ms) => new Promise(r => setTimeout(r, ms));</pre>
+  </div>
+
+  <div class="concept">
+    <h3>15.2 then / catch / finally chaining</h3>
+    <div class="wwwh">
+      <div><b class="l how">Rules</b><span>(1) <code>.then</code> hamesha <b>naya promise</b> return karta hai. (2) then ke andar return ki gayi value agle then ko milti hai. (3) Agar tum promise return karo to agla then uska wait karta hai. (4) Error hone par beech ke saare then skip ho jaate hain aur control seedha catch par jaata hai. (5) <code>finally</code> ko koi value nahi milti aur woh value ko aage pass-through karta hai.</span></div>
+    </div>
+<pre>Promise.resolve(1)
+  .then(x => x + 1)            <span class="c">// 2</span>
+  .then(x => { throw new Error("oops"); })
+  .then(x => console.log("skip"))
+  .catch(e => { console.log(e.message); return 10; })   <span class="c">// catch ke baad chain phir chalti hai</span>
+  .finally(() => console.log("cleanup"))
+  .then(x => console.log(x));  <span class="o">// oops → cleanup → 10</span></pre>
+    <div class="trap">Then ke andar <b>return</b> bhool gaye to agle then ko <code>undefined</code> milega aur woh wait bhi nahi karega. Promise chain ka sabse common bug yahi hai.</div>
+  </div>
+
+  <div class="concept">
+    <h3>15.3 Combinators — all / allSettled / race / any</h3>
+    <div class="tbl"><table>
+      <tr><th>Method</th><th>Kab resolve</th><th>Kab reject</th><th>Real use case</th></tr>
+      <tr><td><code>Promise.all</code></td><td>Sab fulfill hon (result order same rehta hai)</td><td><b>Pehla reject</b> aate hi (fail-fast)</td><td>Dashboard ke liye saare APIs chahiye</td></tr>
+      <tr><td><code>Promise.allSettled</code></td><td>Sab settle hon, kabhi reject nahi hota</td><td>Kabhi nahi</td><td>Bulk email/upload, har item ka status chahiye</td></tr>
+      <tr><td><code>Promise.race</code></td><td>Jo <b>pehla settle</b> ho (success ya fail)</td><td>Pehla settle agar reject hai</td><td>Request timeout</td></tr>
+      <tr><td><code>Promise.any</code></td><td><b>Pehla fulfill</b></td><td>Sab reject hon (AggregateError)</td><td>Multiple mirrors/CDN, jo pehle chale</td></tr>
+    </table></div>
+<pre>// Timeout pattern
+const withTimeout = (p, ms) =>
+  Promise.race([p, new Promise((_, rej) => setTimeout(() => rej(new Error("Timeout")), ms))]);
+
+// Promise.all polyfill (interview favourite)
+function myAll(promises) {
+  return new Promise((resolve, reject) => {
+    const res = []; let done = 0;
+    if (promises.length === 0) return resolve(res);
+    promises.forEach((p, i) => {
+      Promise.resolve(p).then(v => {
+        res[i] = v;                                   <span class="c">// order maintain</span>
+        if (++done === promises.length) resolve(res);
+      }, reject);
+    });
+  });
+}</pre>
+    <div class="say">all fail-fast hai. allSettled har result deta hai. race pehle settle hone wale ka result deta hai. any pehle success ka. Timeout ke liye main race use karta hoon, aur partial failure tolerate karni ho to allSettled.</div>
+  </div>
+
+  <div class="qa"><h4>Interview Q&amp;A</h4>
+    <details><summary>Promise.all mein ek fail ho to baaki requests cancel ho jaati hain?</summary><div>Nahi. Baaki promises chalte rehte hain, bas unka result ignore ho jaata hai. Sach mein cancel karna ho to <code>AbortController</code> use karo.</div></details>
+    <details><summary>Retry with exponential backoff likho</summary><div>
+<pre>async function retry(fn, tries = 3, delay = 500) {
+  try { return await fn(); }
+  catch (e) {
+    if (tries &lt;= 1) throw e;
+    await new Promise(r => setTimeout(r, delay));
+    return retry(fn, tries - 1, delay * 2);
+  }
+}</pre></div></details>
+  </div>
+  <div class="next"><a href="#s16">Next: "Async actually execute kaise?" → 16 Event Loop ↓</a></div>
+</section>
+
+<p class="flow">"Async actually execute kaise?"</p>
+
+<!-- ============ 16. EVENT LOOP ============ -->
+<section class="section" id="s16">
+  <div class="sec-head"><span class="num">16</span><div><h2>Event Loop — Call Stack, Microtask, Task Queue</h2><p class="bridge">Har company mein poocha jaata hai. Output question pakka aayega.</p></div></div>
+
+  <div class="concept">
+    <h3>16.1 Components</h3>
+    <div class="wwwh">
+      <div><b class="l what">Call Stack</b><span>Yahan sync code chalta hai.</span></div>
+      <div><b class="l what">Web APIs</b><span>Browser ya Node (libuv) ka hissa: timers, fetch, DOM events. Yeh kaam JS thread ke bahar hota hai.</span></div>
+      <div><b class="l what">Microtask Q</b><span><code>Promise.then/catch/finally</code>, <code>await</code> ke baad ka code, <code>queueMicrotask</code>, MutationObserver. <b>High priority.</b></span></div>
+      <div><b class="l what">Task Q</b><span>Macrotasks: <code>setTimeout, setInterval</code>, I/O, UI events, <code>MessageChannel</code>.</span></div>
+      <div><b class="l what">Event Loop</b><span>Ek infinite loop jo lagatar check karta hai: stack khaali hai? Agar haan, to pehle <b>saari</b> microtasks chalao, phir render (browser mein), phir <b>ek</b> macrotask, aur phir repeat.</span></div>
+      <div><b class="l why">Why aaya</b><span>Single thread mein non-blocking concurrency dene ke liye. Priority order isliye hai taaki promise ka result jaldi se jaldi process ho.</span></div>
+    </div>
+<pre>console.log("1");                                 <span class="c">// sync</span>
+setTimeout(() => console.log("2"), 0);            <span class="c">// macrotask</span>
+Promise.resolve().then(() => console.log("3"));   <span class="c">// microtask</span>
+(async () => {
+  console.log("4");                               <span class="c">// sync (await se pehle ka hissa)</span>
+  await null;
+  console.log("5");                               <span class="c">// microtask</span>
+})();
+queueMicrotask(() => console.log("6"));           <span class="c">// microtask</span>
+console.log("7");
+<span class="o">// Output: 1 4 7 3 5 6 2</span></pre>
+    <div class="say">Event loop call stack aur queues ko monitor karta hai. Stack khaali hote hi woh pehle poori microtask queue drain karta hai (promises), phir ek macrotask uthata hai (timers, I/O). Isliye promise ka callback setTimeout(0) se pehle chalta hai.</div>
+    <div class="trap">Agar microtask khud naye microtasks banata rahe (recursive <code>.then</code>), to macrotasks aur rendering kabhi nahi chalenge. Isse <b>starvation</b> hota hai aur UI freeze ho jaata hai. <code>setTimeout(fn, 0)</code> ka matlab "kam se kam 0ms" hai, "exactly 0ms" nahi. Nested timers mein browser minimum ~4ms laga deta hai.</div>
+  </div>
+
+  <div class="concept">
+    <h3>16.2 Node.js Event Loop (bonus)</h3>
+    <div class="wwwh">
+      <div><b class="l what">Phases</b><span>timers → pending callbacks → poll (I/O) → check (<code>setImmediate</code>) → close callbacks.</span></div>
+      <div><b class="l how">Priority</b><span><code>process.nextTick</code> sabse pehle chalta hai, promise microtasks se bhi pehle. Har phase ke baad nextTick aur microtasks drain hote hain.</span></div>
+    </div>
+<pre>setTimeout(() => console.log("timeout"));
+setImmediate(() => console.log("immediate"));
+Promise.resolve().then(() => console.log("promise"));
+process.nextTick(() => console.log("nextTick"));
+<span class="o">// nextTick → promise → timeout/immediate (main module mein order guaranteed nahi hai; I/O callback ke andar immediate pehle chalta hai)</span></pre>
+  </div>
+  <div class="next"><a href="#s17">Next: "Browser interaction?" → 17 Browser JS ↓</a></div>
+</section>
+
+<p class="flow">"Browser interaction?"</p>
+
+<!-- ============ 17. BROWSER ============ -->
+<section class="section" id="s17">
+  <div class="sec-head"><span class="num">17</span><div><h2>Browser JS — Event Flow, Delegation, Debounce, Throttle</h2><p class="bridge">User click, scroll aur type karta hai. JS ko in events par react karna hota hai.</p></div></div>
+
+  <div class="concept">
+    <h3>17.1 Event Flow: Capturing → Target → Bubbling</h3>
+    <div class="wwwh">
+      <div><b class="l what">What</b><span>Event pehle <code>window</code> se target tak <b>neeche aata</b> hai (capture phase). Phir target par pahunchta hai. Phir target se <code>window</code> tak <b>upar jaata</b> hai (bubble phase).</span></div>
+      <div><b class="l why">Why aaya</b><span>Parent elements ko bhi child par hue events ke baare mein pata chal sake. Delegation isi par based hai.</span></div>
+      <div><b class="l how">How</b><span>Listeners by default bubble phase mein chalte hain. Capture phase ke liye <code>addEventListener(type, fn, { capture: true })</code> likho.</span></div>
+    </div>
+<pre>e.stopPropagation();   <span class="c">// event aage/upar nahi jaayega</span>
+e.preventDefault();    <span class="c">// browser ka default action rukega (form submit, link navigation)</span>
+e.target               <span class="c">// jis element par actually click hua</span>
+e.currentTarget        <span class="c">// jis element par listener laga hai</span></pre>
+    <div class="trap">stopPropagation aur preventDefault alag kaam karte hain. Pehla event ka propagation rokta hai, doosra browser ka default behaviour. Kuch events bubble nahi karte, jaise <code>focus/blur</code> (inki jagah <code>focusin/focusout</code> use karo).</div>
+  </div>
+
+  <div class="concept">
+    <h3>17.2 Event Delegation</h3>
+    <div class="wwwh">
+      <div><b class="l what">What</b><span>Har child par alag listener lagaane ki jagah <b>parent par ek listener</b> lagao aur <code>e.target</code> se pata karo ki kis child par event hua.</span></div>
+      <div><b class="l why">Why aaya</b><span>1000 items par 1000 listeners lagaane se memory waste hoti hai. Dynamically add hone wale items par listener lagana bhi yaad rakhna padta hai. Delegation dono problems solve karta hai.</span></div>
+      <div><b class="l when">When</b><span>Lists, tables, menus, aur dynamic content.</span></div>
+    </div>
+<pre>document.querySelector("#list").addEventListener("click", (e) => {
+  const li = e.target.closest("li[data-id]");
+  if (!li) return;
+  console.log("clicked", li.dataset.id);
+});</pre>
+    <div class="say">Event delegation bubbling ka use karke parent par ek listener se saare children handle karta hai. Isse memory bachti hai aur dynamically add hone wale elements bhi automatically cover ho jaate hain.</div>
+  </div>
+
+  <div class="concept">
+    <h3>17.3 Debounce vs Throttle</h3>
+    <div class="tbl"><table>
+      <tr><th></th><th>Debounce</th><th>Throttle</th></tr>
+      <tr><td>What</td><td>User ke <b>rukne</b> ke X ms baad sirf ek baar chalta hai</td><td>Har X ms mein <b>zyada se zyada ek baar</b> chalta hai</td></tr>
+      <tr><td>Analogy</td><td>Lift ka darwaza: koi aata rahe to timer reset ho jaata hai</td><td>Machine gun ka fire rate: fixed speed</td></tr>
+      <tr><td>Use case</td><td>Search input, autosave, window resize end</td><td>Scroll, mousemove, infinite scroll, button spam rokna</td></tr>
+    </table></div>
+    <div class="wwwh">
+      <div><b class="l why">Why aaya</b><span>High-frequency events ek second mein 100+ baar fire hote hain. Har baar API call ya heavy kaam karna performance aur server dono ke liye bura hai.</span></div>
+    </div>
+<pre>function debounce(fn, delay) {
+  let t;
+  return function (...args) {
+    clearTimeout(t);
+    t = setTimeout(() => fn.apply(this, args), delay);
+  };
+}
+
+function throttle(fn, limit) {
+  let last = 0;
+  return function (...args) {
+    const now = Date.now();
+    if (now - last >= limit) { last = now; fn.apply(this, args); }
+  };
+}
+input.addEventListener("input", debounce(e => search(e.target.value), 300));</pre>
+    <div class="say">Debounce tab chalta hai jab events ruk jaayein, jaise search box. Throttle ek fixed rate par chalta hai, jaise scroll. Dono closure se timer ya timestamp yaad rakhte hain.</div>
+  </div>
+  <div class="next"><a href="#s18">Next: "Memory safe?" → 18 Memory ↓</a></div>
+</section>
+
+<p class="flow">"Memory safe?"</p>
+
+<!-- ============ 18. MEMORY ============ -->
+<section class="section" id="s18">
+  <div class="sec-head"><span class="num">18</span><div><h2>Memory — Allocation, Reachability, GC, Leaks</h2><p class="bridge">JS memory khud manage karta hai. Phir bhi leak ho sakta hai.</p></div></div>
+
+  <div class="concept">
+    <h3>18.1 Allocation &amp; Garbage Collection</h3>
+    <div class="wwwh">
+      <div><b class="l what">What</b><span>Value banne par memory allocate hoti hai (stack par primitives aur references, heap par objects). Jab kaam khatam ho jaata hai, <b>Garbage Collector</b> woh memory free kar deta hai.</span></div>
+      <div><b class="l why">Why aaya</b><span>C jaisi languages mein manual <code>free()</code> karna padta tha, jisse bugs aate the. JS ne automatic memory management diya.</span></div>
+      <div><b class="l how">How</b><span><b>Reachability</b>: roots (global, current stack) se jo object kisi bhi path se pahunch mein hai, woh zinda hai. Baaki garbage hai. Algorithm: <b>Mark &amp; Sweep</b>. Roots se reachable objects ko mark karo, unmarked ko sweep kar do. V8 <b>generational GC</b> use karta hai (young generation / old generation).</span></div>
+    </div>
+    <div class="say">JS mark-and-sweep GC use karta hai jo reachability par based hai. Jo object roots se reachable nahi hai, woh collect ho jaata hai. Circular references problem nahi hain, jab tak woh unreachable hain.</div>
+  </div>
+
+  <div class="concept">
+    <h3>18.2 Memory Leaks — Common Causes</h3>
+    <div class="tbl"><table>
+      <tr><th>Cause</th><th>Fix</th></tr>
+      <tr><td>Galti se bane global variables (declaration bhool gaye)</td><td>Strict mode, let/const</td></tr>
+      <tr><td><code>setInterval</code> jo kabhi clear nahi hua</td><td><code>clearInterval</code> in cleanup</td></tr>
+      <tr><td>Event listeners jo remove nahi hue</td><td><code>removeEventListener</code> ya <code>AbortController</code> signal</td></tr>
+      <tr><td>Closure jo bada data pakde hue hai</td><td>Sirf zaroori data capture karo</td></tr>
+      <tr><td>Detached DOM nodes jo JS variable mein reference ho rahe hain</td><td>Reference null karo</td></tr>
+      <tr><td>Kabhi na bhi saaf hone wala cache (Map)</td><td>WeakMap ya LRU with limit</td></tr>
+      <tr><td>Unsubscribed observables (RxJS/Angular)</td><td><code>unsubscribe</code>, takeUntilDestroyed</td></tr>
+    </table></div>
+<pre>// React: cleanup se leak rokna
+useEffect(() => {
+  const id = setInterval(tick, 1000);
+  const ctrl = new AbortController();
+  window.addEventListener("resize", onResize, { signal: ctrl.signal });
+  return () => { clearInterval(id); ctrl.abort(); };   <span class="c">// unmount par saaf</span>
+}, []);</pre>
+    <div class="say">Leak detect karne ke liye main Chrome DevTools ke Memory tab mein heap snapshots compare karta hoon aur detached DOM nodes dekhta hoon. Common fixes: listeners aur timers cleanup karna, aur cache ke liye WeakMap.</div>
+  </div>
+  <div class="next"><a href="#s19">Next: "Code split?" → 19 Modules ↓</a></div>
+</section>
+
+<p class="flow">"Code split?"</p>
+
+<!-- ============ 19. MODULES ============ -->
+<section class="section" id="s19">
+  <div class="sec-head"><span class="num">19</span><div><h2>Modules — CommonJS vs ESM, import/export</h2><p class="bridge">10,000 lines ek file mein nahi rakh sakte.</p></div></div>
+
+  <div class="concept">
+    <h3>19.1 Why Modules</h3>
+    <div class="wwwh">
+      <div><b class="l what">What</b><span>Code ko alag files mein todna, jahan har file ka apna scope ho, aur sirf zaroori cheezein export ho.</span></div>
+      <div><b class="l why">Why aaya</b><span>Pehle global scope pollution hota tha, <code>&lt;script&gt;</code> tags ka order manually maintain karna padta tha, aur dependencies clear nahi thi. Node ne CommonJS banaya, phir ES6 ne official standard ESM diya.</span></div>
+    </div>
+  </div>
+
+  <div class="concept">
+    <h3>19.2 CommonJS vs ESM</h3>
+    <div class="tbl"><table>
+      <tr><th></th><th>CommonJS</th><th>ES Modules</th></tr>
+      <tr><td>Syntax</td><td><code>require / module.exports</code></td><td><code>import / export</code></td></tr>
+      <tr><td>Loading</td><td>Sync, runtime par</td><td>Async, static (parse time par)</td></tr>
+      <tr><td>Tree shaking</td><td>❌ mushkil</td><td>✅ (static analysis possible hai)</td></tr>
+      <tr><td>Binding</td><td>Value ki <b>copy</b></td><td><b>Live binding</b> (read-only reference)</td></tr>
+      <tr><td>Top-level await</td><td>❌</td><td>✅</td></tr>
+      <tr><td><code>this</code> at top</td><td><code>module.exports</code></td><td><code>undefined</code></td></tr>
+      <tr><td>Kahan</td><td>Purana Node code</td><td>Browsers, modern Node (<code>"type": "module"</code>), bundlers</td></tr>
+    </table></div>
+<pre>// ESM
+export const PI = 3.14;              <span class="c">// named (bahut saare ho sakte hain)</span>
+export default function sum() {}     <span class="c">// default (sirf ek)</span>
+import sum, { PI as pi } from "./math.js";
+import * as math from "./math.js";
+
+// Dynamic import → code splitting / lazy loading
+const { Chart } = await import("./chart.js");
+
+// CommonJS
+module.exports = { sum };
+const { sum } = require("./math");</pre>
+    <div class="say">CommonJS synchronous hai aur runtime par load hota hai. ESM static hai, jisse tree-shaking aur live bindings possible hote hain. Dynamic import() se lazy loading hoti hai. Modules singleton hote hain: pehli baar import par execute hote hain aur phir cache ho jaate hain.</div>
+  </div>
+  <div class="next"><a href="#s20">Next: "Failure handle?" → 20 Error Handling ↓</a></div>
+</section>
+
+<p class="flow">"Failure handle?"</p>
+
+<!-- ============ 20. ERRORS ============ -->
+<section class="section" id="s20">
+  <div class="sec-head"><span class="num">20</span><div><h2>Error Handling — Error Types, throw, try/catch/finally</h2><p class="bridge">Production mein errors aayenge hi. App ko crash hone se bachana hai.</p></div></div>
+
+  <div class="concept">
+    <h3>20.1 Error Types</h3>
+    <div class="tbl"><table>
+      <tr><th>Type</th><th>Kab aata hai</th><th>Example</th></tr>
+      <tr><td><code>ReferenceError</code></td><td>Variable exist nahi karta, ya TDZ mein hai</td><td><code>console.log(x)</code> jahan x declared nahi</td></tr>
+      <tr><td><code>TypeError</code></td><td>Galat type par operation</td><td><code>undefined.name</code>, <code>null()</code>, const re-assign</td></tr>
+      <tr><td><code>SyntaxError</code></td><td>Code ya JSON parse nahi ho paaya</td><td><code>JSON.parse("{bad}")</code></td></tr>
+      <tr><td><code>RangeError</code></td><td>Value allowed range se bahar</td><td>Stack overflow, <code>new Array(-1)</code></td></tr>
+    </table></div>
+  </div>
+
+  <div class="concept">
+    <h3>20.2 throw, try/catch/finally, Custom Error</h3>
+    <div class="wwwh">
+      <div><b class="l what">What</b><span><code>throw</code> error raise karta hai. <code>try/catch</code> use pakadta hai. <code>finally</code> hamesha chalta hai (cleanup ke liye).</span></div>
+      <div><b class="l why">Why aaya</b><span>Normal flow aur error flow ko alag rakhne ke liye, taaki ek error poori app crash na kare aur user ko achha message dikhe.</span></div>
+      <div><b class="l when">When</b><span>JSON parse, API calls, user input validation, aur DB operations mein.</span></div>
+      <div><b class="l how">How</b><span>Hamesha <code>Error</code> object throw karo, string nahi, taaki stack trace mile. Custom error class se error ka type pehchaan sakte ho.</span></div>
+    </div>
+<pre>class ValidationError extends Error {
+  constructor(msg, field) { super(msg); this.name = "ValidationError"; this.field = field; }
+}
+
+try {
+  if (!email) throw new ValidationError("Email required", "email");
+} catch (e) {
+  if (e instanceof ValidationError) showFieldError(e.field, e.message);
+  else throw e;                     <span class="c">// jo handle nahi kar sakte, use aage bhejo</span>
+} finally {
+  setLoading(false);                <span class="c">// hamesha chalega</span>
+}</pre>
+  </div>
+
+  <div class="concept">
+    <h3>20.3 Async Errors &amp; Global Handlers</h3>
+    <div class="wwwh">
+      <div><b class="l what">What</b><span>try/catch sirf sync code aur <code>await</code> kiye gaye promises ke errors pakadta hai. setTimeout ke andar ka error bahar ka try/catch nahi pakad sakta.</span></div>
+      <div><b class="l how">Global</b><span>Browser: <code>window.onerror</code>, <code>unhandledrejection</code> event. Node: <code>process.on("uncaughtException")</code> aur <code>"unhandledRejection"</code>. Inhe logging (Sentry) ke liye use karo, recovery ke liye nahi.</span></div>
+    </div>
+<pre>try { setTimeout(() => { throw new Error("x"); }); } catch (e) { }  <span class="o">// ❌ nahi pakdega</span>
+
+// Express: async errors ko next() tak pahunchao
+app.get("/u/:id", async (req, res, next) => {
+  try { res.json(await User.findById(req.params.id)); }
+  catch (e) { next(e); }            <span class="c">// central error middleware</span>
+});</pre>
+    <div class="trap"><code>finally</code> ke andar <code>return</code> likha to woh try ka return aur thrown error dono override kar dega.</div>
+    <div class="say">Main custom Error classes banata hoon, sirf wahi errors catch karta hoon jinhe handle kar sakta hoon, aur baaki ko rethrow karta hoon. Unhandled rejections ko global handler se log karta hoon. Backend mein ek centralized error middleware rakhta hoon.</div>
+  </div>
+  <div class="next"><a href="#s21">Next: "Advanced?" → 21 Advanced JS ↓</a></div>
+</section>
+
+<p class="flow">"Advanced?"</p>
+
+<!-- ============ 21. ADVANCED ============ -->
+<section class="section" id="s21">
+  <div class="sec-head"><span class="num">21</span><div><h2>Advanced JS — Iterator, Generator, Symbol, Proxy</h2><p class="bridge">Senior-level questions aur framework internals yahan se aate hain.</p></div></div>
+
+  <div class="concept">
+    <h3>21.1 Iterator / Iterable</h3>
+    <div class="wwwh">
+      <div><b class="l what">What</b><span><b>Iterable</b>: jiske paas <code>[Symbol.iterator]()</code> method ho (Array, String, Map, Set). <b>Iterator</b>: woh object jiske <code>next()</code> method se <code>{ value, done }</code> milta hai.</span></div>
+      <div><b class="l why">Why aaya</b><span>Har data structure ko loop karne ka ek common protocol chahiye tha. Isi protocol se <code>for...of</code>, spread aur destructuring sab par kaam karte hain.</span></div>
+      <div><b class="l when">When</b><span>Apne custom objects ko loop karne layak banana ho (range, linked list).</span></div>
+    </div>
+<pre>const range = {
+  from: 1, to: 3,
+  [Symbol.iterator]() {
+    let cur = this.from, last = this.to;
+    return { next: () => cur &lt;= last ? { value: cur++, done: false } : { value: undefined, done: true } };
+  }
+};
+[...range];   <span class="o">// [1,2,3]</span>
+// Plain object iterable nahi hota → for...of {} error dega</pre>
+  </div>
+
+  <div class="concept">
+    <h3>21.2 Generator</h3>
+    <div class="wwwh">
+      <div><b class="l what">What</b><span><code>function*</code> ek aisa function hai jo <code>yield</code> par <b>pause</b> hota hai aur <code>next()</code> call hone par wahi se <b>resume</b> hota hai. Yeh automatically ek iterator return karta hai.</span></div>
+      <div><b class="l why">Why aaya</b><span>Iterator ko easily likhne ke liye, aur <b>lazy</b> values banane ke liye (infinite sequence bhi, bina memory bhare). async/await ka idea bhi generators se hi aaya tha (redux-saga aaj bhi generators use karta hai).</span></div>
+      <div><b class="l when">When</b><span>Lazy sequences, pagination, ID generators, aur streaming data.</span></div>
+    </div>
+<pre>function* idGen() { let id = 1; while (true) yield id++; }
+const g = idGen();
+g.next().value; g.next().value;   <span class="o">// 1, 2 → infinite but lazy</span>
+
+async function* pages(url) {       <span class="c">// async generator: pagination</span>
+  while (url) { const r = await fetch(url).then(r => r.json()); yield r.data; url = r.next; }
+}
+for await (const batch of pages("/api/items")) process(batch);</pre>
+  </div>
+
+  <div class="concept">
+    <h3>21.3 Symbol</h3>
+    <div class="wwwh">
+      <div><b class="l what">What</b><span>Ek primitive jo hamesha <b>unique</b> hota hai. <code>Symbol("id") !== Symbol("id")</code>.</span></div>
+      <div><b class="l why">Why aaya</b><span>Objects mein aisi keys add karni thi jo kabhi clash na hon aur normal loops ya <code>JSON.stringify</code> mein na dikhein. Built-in hooks bhi symbols se hi define hote hain (<code>Symbol.iterator</code>, <code>Symbol.toPrimitive</code>).</span></div>
+      <div><b class="l when">When</b><span>Library ka hidden metadata, aur custom iteration ya coercion behaviour.</span></div>
+    </div>
+  </div>
+
+  <div class="concept">
+    <h3>21.4 Proxy &amp; Reflect</h3>
+    <div class="wwwh">
+      <div><b class="l what">What</b><span><b>Proxy</b> object ke operations (get, set, delete, has...) ko <b>intercept</b> karta hai. <b>Reflect</b> in operations ka default behaviour call karne ke clean methods deta hai.</span></div>
+      <div><b class="l why">Why aaya</b><span>Meta-programming ke liye: validation, logging, default values, aur reactivity. <b>Vue 3 ki reactivity Proxy par hi based hai</b> (Vue 2 <code>defineProperty</code> use karta tha, jo naye add hue properties detect nahi kar paata tha).</span></div>
+      <div><b class="l when">When</b><span>Validation layer, observable state, negative array index, aur API mocking.</span></div>
+    </div>
+<pre>const user = new Proxy({}, {
+  set(target, key, val) {
+    if (key === "age" && typeof val !== "number") throw new TypeError("age must be number");
+    console.log(`set ${key}`);
+    return Reflect.set(target, key, val);
+  },
+  get: (t, k) => (k in t ? Reflect.get(t, k) : `No ${String(k)}`)
+});</pre>
+    <div class="say">Proxy object operations ko intercept karta hai aur Reflect unke default behaviour ko forward karta hai. Vue 3 ki reactivity, validation layers aur logging isi pattern par bante hain.</div>
+  </div>
+  <div class="next"><a href="#s22">Next: "Functional power?" → 22 Functional JS ↓</a></div>
+</section>
+
+<p class="flow">"Functional power?"</p>
+
+<!-- ============ 22. FUNCTIONAL ============ -->
+<section class="section" id="s22">
+  <div class="sec-head"><span class="num">22</span><div><h2>Functional JS — Currying, Composition, Memoization</h2><p class="bridge">Closure + HOF + pure functions ka power combo.</p></div></div>
+
+  <div class="concept">
+    <h3>22.1 Currying</h3>
+    <div class="wwwh">
+      <div><b class="l what">What</b><span><code>f(a, b, c)</code> ko <code>f(a)(b)(c)</code> mein badalna, yaani ek baar mein ek argument.</span></div>
+      <div><b class="l why">Why aaya</b><span>Arguments ko thoda-thoda fix karke specialized functions banane ke liye (partial application). Aise functions reusable aur composable hote hain.</span></div>
+      <div><b class="l when">When</b><span>Configurable helpers banane mein, jaise <code>log("error")("DB down")</code>, event handlers mein extra data pass karne mein, aur middleware factories mein.</span></div>
+    </div>
+<pre>function curry(fn) {
+  return function curried(...args) {
+    return args.length >= fn.length
+      ? fn.apply(this, args)
+      : (...next) => curried.apply(this, [...args, ...next]);
+  };
+}
+const add = curry((a, b, c) => a + b + c);
+add(1)(2)(3); add(1, 2)(3);   <span class="o">// 6, 6</span>
+
+// Infinite currying: sum(1)(2)(3)() → 6
+const sum = a => b => b === undefined ? a : sum(a + b);</pre>
+  </div>
+
+  <div class="concept">
+    <h3>22.2 Composition (compose / pipe)</h3>
+    <div class="wwwh">
+      <div><b class="l what">What</b><span>Chhote functions jod kar ek bada function banana. <b>pipe</b> left se right chalta hai, <b>compose</b> right se left.</span></div>
+      <div><b class="l why">Why aaya</b><span>Nested calls <code>c(b(a(x)))</code> padhne mein mushkil hote hain. Pipeline zyada readable hai aur har step alag se test ho sakta hai.</span></div>
+    </div>
+<pre>const pipe    = (...fns) => (x) => fns.reduce((v, f) => f(v), x);
+const compose = (...fns) => (x) => fns.reduceRight((v, f) => f(v), x);
+const slugify = pipe(s => s.trim(), s => s.toLowerCase(), s => s.replace(/\s+/g, "-"));
+slugify("  Hello World ");   <span class="o">// "hello-world"</span></pre>
+  </div>
+
+  <div class="concept">
+    <h3>22.3 Memoization</h3>
+    <div class="wwwh">
+      <div><b class="l what">What</b><span>Function ke result ko input ke hisaab se <b>cache</b> karna. Same input dobara aaye to calculate kiye bina cached result de do.</span></div>
+      <div><b class="l why">Why aaya</b><span>Expensive calculations ko baar-baar karna waste hai. Time ke badle memory kharch karte hain.</span></div>
+      <div><b class="l when">When</b><span>Sirf <b>pure</b> functions par. Examples: recursive fibonacci, heavy derived data, React <code>useMemo</code>/<code>React.memo</code>, reselect.</span></div>
+    </div>
+<pre>function memoize(fn) {
+  const cache = new Map();
+  return function (...args) {
+    const key = JSON.stringify(args);
+    if (cache.has(key)) return cache.get(key);
+    const res = fn.apply(this, args);
+    cache.set(key, res);
+    return res;
+  };
+}
+const fib = memoize(n => n &lt; 2 ? n : fib(n - 1) + fib(n - 2));   <span class="c">// O(2^n) → O(n)</span></pre>
+    <div class="say">Memoization closure ke andar ek cache rakhta hai. Yeh sirf pure functions ke liye safe hai. Cache unbounded ho sakta hai, isliye production mein main LRU ya size limit lagata hoon.</div>
+  </div>
+  <div class="next"><a href="#s23">Next: "Production?" → 23 Performance ↓</a></div>
+</section>
+
+<p class="flow">"Production?"</p>
+
+<!-- ============ 23. PERFORMANCE ============ -->
+<section class="section" id="s23">
+  <div class="sec-head"><span class="num">23</span><div><h2>Performance — Big-O, Caching, Lazy Loading, Optimization</h2><p class="bridge">Code chal raha hai, par kya woh fast bhi hai?</p></div></div>
+
+  <div class="concept">
+    <h3>23.1 Big-O of Common JS Operations</h3>
+    <div class="tbl"><table>
+      <tr><th>Operation</th><th>Complexity</th></tr>
+      <tr><td><code>arr[i]</code>, <code>push/pop</code>, <code>map.get/set</code>, <code>set.has</code>, <code>obj[key]</code></td><td>O(1)</td></tr>
+      <tr><td><code>shift/unshift</code>, <code>includes/indexOf/find</code>, <code>splice</code>, spread copy</td><td>O(n)</td></tr>
+      <tr><td><code>sort</code></td><td>O(n log n)</td></tr>
+      <tr><td><code>filter</code> ke andar <code>includes</code> (nested loop)</td><td>O(n²) → Set use karke O(n) ho jaata hai</td></tr>
+    </table></div>
+<pre>// ❌ O(n*m)
+const common = a.filter(x => b.includes(x));
+// ✅ O(n+m)
+const bs = new Set(b); const common2 = a.filter(x => bs.has(x));</pre>
+  </div>
+
+  <div class="concept">
+    <h3>23.2 Caching &amp; Lazy Loading</h3>
+    <div class="wwwh">
+      <div><b class="l what">Caching</b><span>Result ko store karke reuse karna. Levels: memoization (function level), HTTP cache/CDN, Service Worker, Redis (server).</span></div>
+      <div><b class="l what">Lazy Load</b><span>Cheez tabhi load karo jab uski zaroorat ho: <code>import()</code>, <code>React.lazy</code>, Angular lazy routes, <code>&lt;img loading="lazy"&gt;</code>, IntersectionObserver.</span></div>
+      <div><b class="l why">Why aaya</b><span>Initial bundle chhota rakhne ke liye, taaki page jaldi load ho (FCP/LCP better ho). Zyada JS matlab zyada parse aur execute time.</span></div>
+    </div>
+  </div>
+
+  <div class="concept">
+    <h3>23.3 Optimization Checklist</h3>
+    <ul class="pts">
+      <li><b>Reflow/Layout thrashing</b> se bacho: DOM reads aur writes ek ke baad ek mix mat karo. Pehle saare reads karo, phir saare writes. Animation ke liye <code>transform/opacity</code> use karo.</li>
+      <li><b>DOM updates batch karo</b>: <code>DocumentFragment</code> ya ek hi baar <code>innerHTML</code>. Lambi lists ke liye virtualization use karo.</li>
+      <li><b>Debounce/throttle</b> high-frequency events par (section 17).</li>
+      <li><b>Heavy computation</b> ko Web Worker mein bhejo taaki main thread free rahe.</li>
+      <li>Animations ke liye <code>requestAnimationFrame</code>, low-priority kaam ke liye <code>requestIdleCallback</code>.</li>
+      <li><b>Bundle</b>: tree-shaking, code splitting, minify, compression (gzip/brotli).</li>
+      <li><b>Pehle measure karo</b>: DevTools Performance tab, Lighthouse, <code>performance.now()</code>.</li>
+    </ul>
+    <div class="say">Main pehle Lighthouse aur Performance tab se measure karta hoon, phir bottleneck fix karta hoon: code splitting, lazy loading, memoization, list virtualization, aur heavy kaam Web Worker mein. Premature optimization nahi karta.</div>
+  </div>
+  <div class="next"><a href="#s24">Next: "Real world mein kahan?" → 24 Real-World JS ↓</a></div>
+</section>
+
+<p class="flow">"Real world mein kahan?"</p>
+
+<!-- ============ 24. REAL WORLD ============ -->
+<section class="section" id="s24">
+  <div class="sec-head"><span class="num">24</span><div><h2>Real-World JS — Browser, React, Node.js, Express/NestJS, API → DB</h2><p class="bridge">Upar ke saare concepts real projects mein kahan use hote hain. Interview mein yahi connection dikhana hai.</p></div></div>
+
+  <div class="concept">
+    <h3>24.1 Concept → Kahan use hota hai (Map)</h3>
+    <div class="tbl"><table>
+      <tr><th>Concept</th><th>Real use</th></tr>
+      <tr><td>Closure</td><td>React hooks (useState, useEffect), debounce, Express middleware factories</td></tr>
+      <tr><td>Immutability / Reference</td><td>React/Redux state updates, Angular OnPush</td></tr>
+      <tr><td>this / bind</td><td>Class components, event handlers, NestJS services</td></tr>
+      <tr><td>Prototype / Class</td><td>NestJS controllers/services, Error classes, Mongoose models</td></tr>
+      <tr><td>Promise / async</td><td>fetch/axios, DB queries, <code>Promise.all</code> for parallel APIs</td></tr>
+      <tr><td>Event Loop</td><td>Node non-blocking server; CPU-heavy kaam se server block ho jaata hai</td></tr>
+      <tr><td>Event delegation</td><td>React ka synthetic event system (root par ek listener)</td></tr>
+      <tr><td>Modules</td><td>Har project; lazy routes</td></tr>
+      <tr><td>Proxy</td><td>Vue 3 reactivity, MobX, Immer</td></tr>
+      <tr><td>Generators</td><td>redux-saga, streaming/pagination</td></tr>
+    </table></div>
+  </div>
+
+  <div class="concept">
+    <h3>24.2 Browser</h3>
+    <div class="wwwh">
+      <div><b class="l what">What</b><span>JS engine (V8) + Web APIs (DOM, fetch, storage, timers) + event loop + rendering pipeline (DOM → CSSOM → Render tree → Layout → Paint).</span></div>
+      <div><b class="l how">Tip</b><span><code>&lt;script defer&gt;</code> HTML parse hone ke baad order mein chalta hai. <code>async</code> download hote hi chal jaata hai, order ki guarantee nahi. Storage: localStorage (permanent, ~5MB), sessionStorage (sirf tab tak), cookies (server ko jaati hain, HttpOnly set kar sakte ho).</span></div>
+    </div>
+  </div>
+
+  <div class="concept">
+    <h3>24.3 React</h3>
+    <div class="wwwh">
+      <div><b class="l what">What</b><span>Declarative UI library jisme state change hone par re-render hota hai.</span></div>
+      <div><b class="l how">JS link</b><span>Hooks closures par chalte hain (stale closure ka dhyaan rakho). State hamesha immutable update karo. <code>Object.is</code> se change detect hota hai. <code>useMemo/useCallback</code> memoization hain. Lists mein keys dena reconciliation ke liye zaroori hai.</span></div>
+    </div>
+  </div>
+
+  <div class="concept">
+    <h3>24.4 Node.js</h3>
+    <div class="wwwh">
+      <div><b class="l what">What</b><span>V8 + libuv, jisse JS server par chalta hai. Event-driven aur non-blocking I/O.</span></div>
+      <div><b class="l why">Why aaya</b><span>Ek hi language frontend aur backend dono par. I/O-heavy apps (APIs, chat, streaming) ko kam threads mein zyada connections handle karne ke liye.</span></div>
+      <div><b class="l how">Tip</b><span>CPU-heavy kaam (image processing, bade loops) event loop ko block kar deta hai. Iske liye <code>worker_threads</code>, queue, ya alag service use karo. Scale karne ke liye cluster ya PM2.</span></div>
+    </div>
+  </div>
+
+  <div class="concept">
+    <h3>24.5 Express / NestJS &amp; API → Database Flow</h3>
+    <div class="wwwh">
+      <div><b class="l what">Express</b><span>Minimal framework. <b>Middleware chain</b> <code>(req, res, next)</code> hoti hai, jo HOF aur closures ka practical use hai.</span></div>
+      <div><b class="l what">NestJS</b><span>Structured framework: TypeScript, classes, decorators, dependency injection. Modules, Controllers, Services, Guards, Pipes, Interceptors.</span></div>
+    </div>
+<pre>Client ──HTTP──▶ [CORS / Helmet] ─▶ [Auth middleware (JWT)] ─▶ [Validation]
+        ─▶ Controller/Route ─▶ Service (business logic) ─▶ Repository/ORM ─▶ Database
+        ◀── JSON response ◀── Error middleware (agar kuch fail hua)
+
+// Express mini example
+app.use(express.json());
+app.use(authMiddleware);
+app.get("/orders", async (req, res, next) => {
+  try { res.json(await orderService.list(req.user.id)); } catch (e) { next(e); }
+});
+app.use((err, req, res, next) => res.status(err.status || 500).json({ msg: err.message }));</pre>
+    <div class="say">Request middleware chain se guzarti hai (auth, validation), controller se service tak jaati hai, service ORM ke through DB se baat karti hai, aur response wapas aata hai. Errors ek centralized error handler mein jaate hain. Main I/O ke liye async/await use karta hoon aur independent queries ke liye Promise.all.</div>
+  </div>
+  <div class="next"><a href="#s25">Next: Final round → 25 Interview Scenarios ↓</a></div>
+</section>
+
+<p class="flow">"Final round"</p>
+
+<!-- ============ 25. SCENARIOS ============ -->
+<section class="section" id="s25">
+  <div class="sec-head"><span class="num">25</span><div><h2>Interview Scenarios — Output, Debugging, Async, Performance, Memory, Security</h2><p class="bridge">Pehle khud answer socho, phir answer kholo.</p></div></div>
+
+  <div class="qa"><h4>🧩 Output Questions</h4>
+    <details><summary>Q1. var/let + setTimeout</summary><div>
+<pre>for (var i = 0; i &lt; 3; i++) setTimeout(() => console.log(i), 0);</pre>
+<b>3 3 3</b>. var ka ek hi shared binding hota hai. <code>let</code> use karo to 0 1 2 aayega. (Section 7.3)</div></details>
+    <details><summary>Q2. Hoisting mix</summary><div>
+<pre>console.log(a); console.log(b); console.log(c);
+var a = 1; let b = 2; function c() {}</pre>
+<b>undefined</b>, phir <b>ReferenceError</b> (TDZ). Error ki wajah se c tak execution pahunchta hi nahi. Agar b wali line hata do to c ke liye function print hoga.</div></details>
+    <details><summary>Q3. this in object</summary><div>
+<pre>const o = { n: 1, a() { return this.n; }, b: () => this?.n };
+const f = o.a;
+console.log(o.a(), o.b(), f());</pre>
+<b>1, undefined, undefined</b>. Arrow function mein lexical this hai. <code>f()</code> mein default binding lagti hai aur this lost ho jaata hai.</div></details>
+    <details><summary>Q4. Event loop order</summary><div>
+<pre>setTimeout(() => console.log("A"));
+Promise.resolve().then(() => { console.log("B"); setTimeout(() => console.log("C")); });
+Promise.resolve().then(() => console.log("D"));
+console.log("E");</pre>
+<b>E B D A C</b>. Pehle sync, phir saare microtasks (B, D), phir macrotasks: A pehle queue hua tha, C baad mein.</div></details>
+    <details><summary>Q5. Coercion</summary><div>
+<pre>console.log([] == false, [] == ![], "b" + "a" + +"a" + "a", [1,2] + [3]);</pre>
+<b>true, true, "baNaNa", "1,23"</b>. <code>[]</code> pehle "" banta hai phir 0. <code>+"a"</code> NaN hai. Arrays string ban kar concat hote hain.</div></details>
+    <details><summary>Q6. Reference</summary><div>
+<pre>function change(obj) { obj.x = 2; obj = { x: 3 }; }
+const o = { x: 1 }; change(o); console.log(o.x);</pre>
+<b>2</b>. Mutation bahar dikhta hai, lekin parameter ko re-assign karne se original par koi asar nahi padta (call by sharing).</div></details>
+    <details><summary>Q7. async return</summary><div>
+<pre>async function f() { return 1; }
+console.log(f());</pre>
+<b>Promise {&lt;fulfilled&gt;: 1}</b>. async function hamesha Promise return karta hai.</div></details>
+  </div>
+
+  <div class="qa"><h4>🐞 Debugging Scenarios</h4>
+    <details><summary>"Cannot read properties of undefined (reading 'map')" — kya karoge?</summary><div>API data abhi aaya nahi hai aur component pehle hi render ho gaya. Fix: initial state <code>[]</code> rakho, <code>data?.items ?? []</code> use karo, aur loading state dikhao. Root cause: async data ke aane se pehle render.</div></details>
+    <details><summary>Button click handler mein this undefined aa raha hai</summary><div>Method pass karte waqt this lost ho gaya. Fix: constructor mein bind karo, arrow class field use karo, ya <code>onClick={() =&gt; this.handle()}</code>.</div></details>
+    <details><summary>State update kiya par UI update nahi hua</summary><div>State ko mutate kiya (<code>push</code>), isliye reference same raha aur React ko change nahi dikha. Fix: nayi copy banao, jaise <code>[...arr, x]</code>.</div></details>
+  </div>
+
+  <div class="qa"><h4>⏳ Async Scenarios</h4>
+    <details><summary>Search box mein har keystroke par API call ho rahi hai aur purane responses naye results ko overwrite kar dete hain (race condition)</summary><div>(1) Debounce lagao, 300ms. (2) Nayi request bhejne se pehle purani ko <code>AbortController</code> se abort karo, ya response ke saath request ID compare karo aur sirf latest wala accept karo.</div></details>
+    <details><summary>5 independent APIs sequential await se call ho rahi hain, page slow hai</summary><div>Unhe <code>Promise.all</code> se parallel chalao. Agar kuch APIs fail ho sakti hain aur baaki ka data phir bhi dikhana hai to <code>allSettled</code> use karo. Har call par timeout lagao.</div></details>
+    <details><summary>1000 URLs fetch karne hain, par ek time par max 5 requests</summary><div>Concurrency limiter banao: 5 workers ek shared queue se URL uthaate rahein.
+<pre>async function limit(urls, n = 5) {
+  const results = []; let i = 0;
+  const worker = async () => { while (i &lt; urls.length) { const idx = i++; results[idx] = await fetch(urls[idx]); } };
+  await Promise.all(Array.from({ length: n }, worker));
+  return results;
+}</pre></div></details>
+  </div>
+
+  <div class="qa"><h4>🚀 Performance &amp; 🧠 Memory Scenarios</h4>
+    <details><summary>10,000 rows ki list render karne se page hang ho raha hai</summary><div>Virtualization use karo (sirf visible rows render karo: react-window, CDK virtual scroll). Pagination ya infinite scroll bhi option hai. Row components ko memo karo, aur har row mein inline heavy calculation mat karo.</div></details>
+    <details><summary>SPA ki memory time ke saath badhti jaa rahi hai</summary><div>DevTools Memory tab mein heap snapshots compare karo. Detached DOM nodes, bina remove kiye listeners, bina clear kiye intervals, bina unsubscribe kiye observables, aur global caches check karo. Component unmount par cleanup karo.</div></details>
+    <details><summary>Node API ek endpoint par poora server slow kar rahi hai</summary><div>Wahan shayad sync CPU-heavy kaam hai (bade JSON par loop, sync crypto, <code>fs.readFileSync</code>) jo event loop ko block kar raha hai. Fix: async APIs use karo, worker_threads ya job queue use karo, streaming use karo, aur DB mein pagination/indexes lagao.</div></details>
+  </div>
+
+  <div class="qa"><h4>🔐 Security Scenarios</h4>
+    <details><summary>XSS kya hai aur kaise rokoge?</summary><div>Attacker ki script tumhare page mein chal jaati hai. Aksar user input ko <code>innerHTML</code> mein daalne se hota hai. Fix: <code>textContent</code> use karo, input sanitize karo (DOMPurify), CSP header lagao, aur tokens ke liye HttpOnly cookies use karo. React by default escape karta hai, lekin <code>dangerouslySetInnerHTML</code> se bacho.</div></details>
+    <details><summary>CSRF kya hai?</summary><div>Doosri site user ki logged-in cookie ka use karke unki taraf se request bhej deti hai. Fix: <code>SameSite</code> cookies, CSRF tokens, aur Origin header check karna.</div></details>
+    <details><summary>eval / prototype pollution / JWT storage</summary><div><code>eval</code> aur <code>new Function</code> user input par kabhi mat chalao. Deep merge karte waqt <code>__proto__</code> keys block karo. JWT ko localStorage mein rakhoge to XSS se chori ho sakta hai. HttpOnly cookie zyada safe hai. Secrets kabhi frontend bundle mein mat rakho.</div></details>
+  </div>
+
+  <div class="qa"><h4>🏗️ Real Project Scenarios</h4>
+    <details><summary>"Apne project mein closure / Promise.all / debounce kahan use kiya?" — answer kaise do?</summary><div>STAR format use karo: <b>Situation</b> (search page slow tha), <b>Task</b> (API calls kam karni thi), <b>Action</b> (300ms debounce aur AbortController lagaya), <b>Result</b> (API calls ~80% kam hui aur stale results wala bug khatam). Concept ka naam, wajah aur measurable result, teeno batao.</div></details>
+    <details><summary>Payment button par double click se 2 orders ban gaye</summary><div>Frontend: click hote hi button disable karo, ya throttle/once lagao. Backend (asli fix): <b>idempotency key</b> use karo, taaki same key wali request dobara process na ho. DB par unique constraint bhi lagao.</div></details>
+    <details><summary>Token expire ho gaya aur 5 parallel requests 401 de rahi hain</summary><div>Ek hi refresh call chalao. Saari failed requests ek shared refresh promise ka wait karein (axios interceptor mein), phir naye token ke saath retry karein. Refresh bhi fail ho to user ko logout karo.</div></details>
+  </div>
+
+  <div class="big" style="margin-top:22px"><b>Final tip:</b> Har answer is flow mein do: <b>What</b> (1 line definition) → <b>Why</b> (kaunsi problem solve karta hai) → <b>How</b> (chhota example ya internal kaam) → <b>Where</b> (apne project mein kahan use kiya) → <b>Trap</b> (ek edge case). Isse interviewer ko lagta hai ki concept sach mein samajh aaya hai, sirf yaad nahi kiya.</div>
+  <div class="next"><a href="#top">↑ Back to top</a></div>
+</section>
+
+</div>
+<a class="totop" href="#top" title="Top">↑</a>
+
+<script>
+  // Code comments ko grey karo (sirf un lines par jahan pehle se span nahi hai)
+  document.querySelectorAll("pre").forEach(pre => {
+    pre.innerHTML = pre.innerHTML.split("\n").map(line => {
+      if (line.includes('class="c"') || line.includes('class="o"')) return line;
+      return line.replace(/(^|\s)(\/\/.*)$/, '$1<span class="c">$2</span>');
+    }).join("\n");
+  });
+
+  const revBtn = document.getElementById("revBtn");
+  const qaBtn = document.getElementById("qaBtn");
+  const setRev = (on) => {
+    document.body.classList.toggle("rev", on);
+    revBtn.classList.toggle("on", on);
+    try { localStorage.setItem("jsRoadmapRev", on ? "1" : "0"); } catch (e) {}
+  };
+  revBtn.onclick = () => setRev(!document.body.classList.contains("rev"));
+  try { if (localStorage.getItem("jsRoadmapRev") === "1") setRev(true); } catch (e) {}
+
+  let allOpen = false;
+  qaBtn.onclick = () => {
+    allOpen = !allOpen;
+    document.querySelectorAll("details").forEach(d => d.open = allOpen);
+    qaBtn.textContent = allOpen ? "📕 Saare Q&A band karo" : "📖 Saare Q&A kholo";
+  };
+</script>
+</body>
+</html>
