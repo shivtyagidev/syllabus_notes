@@ -1,0 +1,3043 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>React Ultimate Interview Mastery - Scenarios, Slides & GFG Guide</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,500;8..60,600;8..60,700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/javascript.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/xml.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"></script>
+<style>
+:root{
+  --bg:#f4f6f5;
+  --surface:#ffffff;
+  --surface-alt:#eaf0ed;
+  --surface-hover:#dfe8e4;
+  --text:#1c2624;
+  --text-secondary:#54625d;
+  --accent:#2f7d64;
+  --accent-strong:#1f5b47;
+  --accent-tint:#e2efe9;
+  --accent-border:#99cfbe;
+  --warn:#a9691a;
+  --warn-tint:#faecd7;
+  --warn-text:#704200;
+  --border:#dbe3df;
+  --border-light:#c8d5cf;
+  --code-bg:#eef2f0;
+  --code-text:#28352f;
+  --shadow: 0 1px 2px rgba(20,30,26,0.05), 0 6px 20px rgba(20,30,26,0.06);
+  --shadow-lg: 0 10px 30px rgba(18, 30, 25, 0.12);
+  --radius-s:6px;
+  --radius-m:10px;
+  --radius-l:16px;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#101513;
+    --surface:#161f1c;
+    --surface-alt:#1d2925;
+    --surface-hover:#24332e;
+    --text:#e6ece9;
+    --text-secondary:#96a49e;
+    --accent:#5cc19d;
+    --accent-strong:#8adcbc;
+    --accent-tint:#19362a;
+    --accent-border:#2a5946;
+    --warn:#e3a548;
+    --warn-tint:#332714;
+    --warn-text:#ffd38a;
+    --border:#283631;
+    --border-light:#34453f;
+    --code-bg:#121a17;
+    --code-text:#d9e4de;
+    --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px rgba(0,0,0,0.35);
+    --shadow-lg: 0 10px 30px rgba(0,0,0,0.6);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#101513;
+  --surface:#161f1c;
+  --surface-alt:#1d2925;
+  --surface-hover:#24332e;
+  --text:#e6ece9;
+  --text-secondary:#96a49e;
+  --accent:#5cc19d;
+  --accent-strong:#8adcbc;
+  --accent-tint:#19362a;
+  --accent-border:#2a5946;
+  --warn:#e3a548;
+  --warn-tint:#332714;
+  --warn-text:#ffd38a;
+  --border:#283631;
+  --border-light:#34453f;
+  --code-bg:#121a17;
+  --code-text:#d9e4de;
+  --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px rgba(0,0,0,0.35);
+  --shadow-lg: 0 10px 30px rgba(0,0,0,0.6);
+}
+
+*{box-sizing:border-box;}
+html{color-scheme:light dark; scroll-behavior:smooth;}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:'IBM Plex Sans', system-ui, -apple-system, sans-serif;
+  font-size:15px;
+  line-height:1.6;
+}
+h1,h2,h3,h4{
+  font-family:'Source Serif 4', Georgia, serif;
+  text-wrap:balance;
+  color:var(--text);
+  margin:0;
+}
+code, pre, .mono, .chapter-num, .slide-badge, .kbd{
+  font-family:'IBM Plex Mono', 'Consolas', monospace;
+}
+a{color:var(--accent-strong); text-decoration:none;}
+a:hover{text-decoration:underline;}
+
+/* App Shell */
+.app{
+  display:grid;
+  grid-template-columns: 320px minmax(0,1fr);
+  min-height:100vh;
+  max-width:1580px;
+  margin:0 auto;
+}
+@media (max-width: 980px){
+  .app{grid-template-columns:1fr;}
+  .sidebar{position:relative; height:auto; top:0;}
+}
+
+/* Sidebar */
+.sidebar{
+  border-right:1px solid var(--border);
+  padding:24px 18px 24px 22px;
+  position:sticky;
+  top:0;
+  align-self:start;
+  height:100vh;
+  overflow-y:auto;
+  display:flex;
+  flex-direction:column;
+  gap:16px;
+}
+.brand{
+  display:flex;
+  flex-direction:column;
+  gap:4px;
+}
+.brand .eyebrow{
+  font-family:'IBM Plex Mono', monospace;
+  font-size:11px;
+  letter-spacing:0.09em;
+  text-transform:uppercase;
+  color:var(--accent-strong);
+  font-weight:700;
+}
+.brand h1{
+  font-size:20px;
+  font-weight:700;
+  line-height:1.2;
+}
+.brand .sub{
+  font-size:12px;
+  color:var(--text-secondary);
+}
+
+.search-box{
+  position:relative;
+}
+.search-box input{
+  width:100%;
+  padding:8px 12px 8px 32px;
+  border-radius:var(--radius-s);
+  border:1px solid var(--border);
+  background:var(--surface);
+  color:var(--text);
+  font-size:13px;
+  font-family:inherit;
+}
+.search-box input:focus{
+  outline:2px solid var(--accent);
+  outline-offset:1px;
+}
+.search-box svg{
+  position:absolute;
+  left:9px;
+  top:50%;
+  transform:translateY(-50%);
+  width:14px;
+  height:14px;
+  color:var(--text-secondary);
+  pointer-events:none;
+}
+
+.stats-card{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--radius-m);
+  padding:12px 14px;
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+}
+.stats-card .row{
+  display:flex;
+  justify-content:space-between;
+  align-items:baseline;
+  font-size:12px;
+  color:var(--text-secondary);
+}
+.stats-card .row strong{
+  color:var(--text);
+  font-family:'IBM Plex Mono', monospace;
+  font-variant-numeric: tabular-nums;
+  font-size:13px;
+}
+.progress-bar{
+  height:5px;
+  border-radius:3px;
+  background:var(--surface-alt);
+  overflow:hidden;
+}
+.progress-bar-fill{
+  height:100%;
+  background:var(--accent);
+  width:100%;
+}
+
+.nav-section-title{
+  font-family:'IBM Plex Mono', monospace;
+  font-size:11px;
+  text-transform:uppercase;
+  letter-spacing:0.06em;
+  color:var(--accent-strong);
+  margin:10px 0 4px;
+  font-weight:700;
+}
+
+nav.chapters{
+  display:flex;
+  flex-direction:column;
+  gap:2px;
+  overflow-y:auto;
+  flex:1;
+}
+nav.chapters a{
+  display:flex;
+  justify-content:space-between;
+  gap:8px;
+  align-items:baseline;
+  text-decoration:none;
+  color:var(--text-secondary);
+  padding:5px 8px;
+  border-radius:var(--radius-s);
+  font-size:12px;
+  transition:all 0.15s;
+}
+nav.chapters a:hover{background:var(--surface-alt); color:var(--text); text-decoration:none;}
+nav.chapters a.active{background:var(--accent-tint); color:var(--accent-strong); font-weight:600;}
+nav.chapters a .n{
+  font-family:'IBM Plex Mono', monospace;
+  font-size:11px;
+  color:var(--accent-strong);
+  min-width:18px;
+}
+nav.chapters a .title{flex:1;}
+nav.chapters a .badge{
+  font-family:'IBM Plex Mono', monospace;
+  font-size:10px;
+  background:var(--surface);
+  border:1px solid var(--border);
+  padding:1px 5px;
+  border-radius:10px;
+}
+
+/* Main Content */
+main{
+  padding:24px 36px 120px;
+  min-width:0;
+}
+@media (max-width: 620px){
+  main{padding:20px 16px 100px;}
+}
+
+/* Top Toolbar & Tab Switcher */
+.top-bar{
+  position:sticky;
+  top:0;
+  z-index:20;
+  background:var(--bg);
+  padding:10px 0 14px;
+  margin-bottom:14px;
+  border-bottom:1px solid var(--border);
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  align-items:center;
+}
+.tab-switchers{
+  display:flex;
+  background:var(--surface-alt);
+  border:1px solid var(--border);
+  border-radius:var(--radius-s);
+  padding:3px;
+  gap:3px;
+}
+.tab-btn{
+  background:transparent;
+  border:none;
+  padding:6px 14px;
+  font-size:12.5px;
+  font-weight:600;
+  color:var(--text-secondary);
+  cursor:pointer;
+  border-radius:4px;
+  transition:all 0.2s;
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+}
+.tab-btn:hover{color:var(--text);}
+.tab-btn.active{
+  background:var(--surface);
+  color:var(--accent);
+  box-shadow:0 1px 3px rgba(0,0,0,0.15);
+}
+
+.top-bar .btn{
+  font-family:'IBM Plex Mono', monospace;
+  font-size:12px;
+  border:1px solid var(--border);
+  background:var(--surface);
+  color:var(--text);
+  padding:6px 12px;
+  border-radius:var(--radius-s);
+  cursor:pointer;
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  text-decoration:none;
+}
+.top-bar .btn:hover{border-color:var(--accent); color:var(--accent-strong); text-decoration:none;}
+.top-bar .spacer{flex:1;}
+
+/* Scenarios Table Styles */
+.table-wrap{
+  overflow-x:auto;
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--radius-m);
+  box-shadow:var(--shadow);
+  margin-bottom:28px;
+}
+table{border-collapse:collapse; width:100%; min-width:1100px;}
+th,td{padding:12px 14px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border);}
+th{background:var(--surface-alt); font-size:12px; text-transform:uppercase; letter-spacing:.05em; color:var(--text-secondary); position:sticky; top:60px; z-index:5;}
+tr:last-child td{border-bottom:none;}
+td.num{font-family:'IBM Plex Mono',monospace; color:var(--accent); font-weight:600;}
+td.q{font-weight:600; min-width:200px;}
+td.cause{color:var(--text-secondary);}
+td.why{background:var(--warn-tint); font-size:14px; color:var(--warn-text);}
+td.ans{font-style:italic; font-size:14px;}
+tr.group td{background:var(--surface-alt); font-weight:700; font-family:'Source Serif 4',Georgia,serif; font-size:16px; color:var(--accent-strong);}
+
+.mnemonic{
+  background:var(--accent-tint);
+  border:1px solid var(--border);
+  border-radius:var(--radius-m);
+  padding:14px 18px;
+  margin-bottom:24px;
+}
+.mnemonic h2{font-size:17px; margin-bottom:8px; color:var(--accent-strong);}
+.mnemonic ol{margin:0; padding-left:20px;}
+.mnemonic li{margin-bottom:4px; font-size:13.5px;}
+.mnemonic b{color:var(--accent-strong);}
+
+.cards{display:grid; grid-template-columns:repeat(auto-fit,minmax(320px,1fr)); gap:16px; margin-bottom:28px;}
+.card{background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-m); padding:16px; box-shadow:var(--shadow);}
+.card h3{margin:0 0 8px; font-size:14.5px; color:var(--accent);}
+
+/* Slide Card Styles */
+.slide-card{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--radius-m);
+  overflow:hidden;
+  margin-bottom:28px;
+  box-shadow:var(--shadow);
+  transition:border-color 0.2s;
+}
+.slide-card:hover{border-color:var(--accent-border);}
+.slide-card-header{
+  padding:14px 18px;
+  background:var(--surface-alt);
+  border-bottom:1px solid var(--border);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  flex-wrap:wrap;
+  gap:10px;
+}
+.slide-card-title{display:flex; align-items:center; gap:10px;}
+.slide-badge{
+  background:var(--accent-tint);
+  color:var(--accent-strong);
+  border:1px solid var(--accent-border);
+  font-size:11px;
+  font-weight:700;
+  padding:2px 8px;
+  border-radius:4px;
+}
+.tag-pill{
+  font-family:'IBM Plex Mono', monospace;
+  font-size:10.5px;
+  text-transform:uppercase;
+  padding:2px 8px;
+  border-radius:20px;
+  letter-spacing:0.05em;
+}
+.tag-pill.vimp{background:var(--warn-tint); color:var(--warn); border:1px solid var(--warn);}
+.tag-pill.core{background:var(--accent-tint); color:var(--accent-strong); border:1px solid var(--accent-border);}
+.tag-pill.gfg{background:#005a36; color:#a3f0c4; border:1px solid #13a452;}
+
+.slide-card-body{padding:20px;}
+.slide-media-wrap{
+  background:#000;
+  border:1px solid var(--border);
+  border-radius:var(--radius-s);
+  overflow:hidden;
+  margin-bottom:18px;
+  max-width:850px;
+}
+.slide-media-wrap img{width:100%; height:auto; display:block;}
+
+.concept-content{font-size:14.5px; line-height:1.65;}
+.concept-content p{margin:0 0 12px;}
+.concept-content ul, .concept-content ol{margin:0 0 12px; padding-left:22px;}
+.concept-content li{margin-bottom:6px;}
+.concept-content strong{color:var(--text); font-weight:600;}
+
+.callout{margin:14px 0; padding:12px 16px; border-radius:0 var(--radius-s) var(--radius-s) 0; font-size:13.5px;}
+.callout.diagram{border-left:3px solid var(--accent); background:var(--accent-tint); color:var(--text);}
+.callout.diagram .callout-label{
+  font-family:'IBM Plex Mono', monospace;
+  font-size:11px;
+  text-transform:uppercase;
+  letter-spacing:0.08em;
+  color:var(--accent-strong);
+  display:block;
+  margin-bottom:4px;
+  font-weight:700;
+}
+.interview-pitch-box{
+  margin:14px 0;
+  padding:12px 16px;
+  border-left:3px solid var(--accent);
+  background:var(--surface-alt);
+  border-radius:0 var(--radius-s) var(--radius-s) 0;
+  font-style:italic;
+  font-size:13.5px;
+}
+.interview-pitch-box span{
+  font-style:normal;
+  font-weight:700;
+  color:var(--accent);
+  display:block;
+  margin-bottom:4px;
+  font-family:'IBM Plex Mono', monospace;
+  font-size:11px;
+  text-transform:uppercase;
+}
+
+.code-wrap{position:relative; margin:14px 0;}
+pre{background:var(--code-bg); border:1px solid var(--border); border-radius:var(--radius-s); padding:12px 14px; overflow-x:auto; margin:0;}
+pre code{font-size:12.5px; line-height:1.55; color:var(--code-text); background:none;}
+.copy-btn{
+  position:absolute;
+  top:8px;
+  right:8px;
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:4px;
+  color:var(--text-secondary);
+  font-size:11px;
+  font-family:'IBM Plex Mono', monospace;
+  padding:3px 7px;
+  cursor:pointer;
+  transition:all .15s;
+}
+.copy-btn:hover{background:var(--accent-tint); color:var(--accent-strong); border-color:var(--accent);}
+
+/* Deck Viewer */
+.deck-viewer{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--radius-m);
+  padding:20px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:16px;
+}
+.deck-screen{
+  background:#000;
+  border-radius:var(--radius-s);
+  width:100%;
+  max-width:1000px;
+  aspect-ratio:16 / 9;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
+}
+.deck-screen img{width:100%; height:100%; object-fit:contain;}
+.deck-controls{display:flex; align-items:center; gap:10px; flex-wrap:wrap; justify-content:center;}
+
+/* Print */
+@media print{
+  aside.sidebar, .top-bar, .tab-switchers, .copy-btn, .deck-controls { display:none !important; }
+  body, .app, main { padding:0 !important; background:#fff !important; color:#000 !important; }
+  table { border:1px solid #ccc !important; }
+  th, td { color:#000 !important; border-bottom:1px solid #ddd !important; }
+}
+</style>
+</head>
+<body>
+
+<div class="app">
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="brand">
+      <span class="eyebrow">React · Master Revision</span>
+      <h1>React Master Guide</h1>
+      <span class="sub">Scenarios + 128 Slides + GFG Synergy</span>
+    </div>
+
+    <div class="search-box">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+      <input type="text" id="searchInput" placeholder="Search scenarios, causes, hooks..." oninput="handleSearch()">
+    </div>
+
+    <div class="stats-card">
+      <div class="row">
+        <span>Curriculum Coverage</span>
+        <strong>80+ Scenarios · 128 Slides</strong>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-bar-fill"></div>
+      </div>
+    </div>
+
+    <!-- Scenarios Navigation -->
+    <div class="nav-section-title">📋 Scenario Master Priorities</div>
+    <nav class="chapters" id="navScenarios">
+      <a href="#p1" onclick="switchTab('scenarios')"><span class="n">P1</span><span class="title">Rendering + API</span><span class="badge">1–10</span></a>
+      <a href="#p2" onclick="switchTab('scenarios')"><span class="n">P2</span><span class="title">State + Props</span><span class="badge">11–20</span></a>
+      <a href="#p3" onclick="switchTab('scenarios')"><span class="n">P3</span><span class="title">Hooks Scenarios</span><span class="badge">21–30</span></a>
+      <a href="#p4" onclick="switchTab('scenarios')"><span class="n">P4</span><span class="title">Production & APIs</span><span class="badge">31–40</span></a>
+      <a href="#p5" onclick="switchTab('scenarios')"><span class="n">P5</span><span class="title">Performance Scenarios</span><span class="badge">41–50</span></a>
+      <a href="#p6" onclick="switchTab('scenarios')"><span class="n">P6</span><span class="title">Forms & Validation</span><span class="badge">51–60</span></a>
+      <a href="#p7" onclick="switchTab('scenarios')"><span class="n">P7</span><span class="title">Routing & Auth</span><span class="badge">61–70</span></a>
+      <a href="#p8" onclick="switchTab('scenarios')"><span class="n">P8</span><span class="title">Redux Scenarios</span><span class="badge">71–80</span></a>
+      <a href="#sec" onclick="switchTab('scenarios')"><span class="n">SEC</span><span class="title">🔐 Security Scenarios</span><span class="badge">S1–30</span></a>
+    </nav>
+
+    <!-- Slide Modules Navigation -->
+    <div class="nav-section-title">📖 Slide-Wise & GFG Deep Dive</div>
+    <nav class="chapters" id="navSlides">
+      <a href="#mod1" onclick="switchTab('slides')"><span class="n">01</span><span class="title">Architecture & VDOM</span><span class="badge">S1–14</span></a>
+      <a href="#mod2" onclick="switchTab('slides')"><span class="n">02</span><span class="title">Declarative JSX & Frag</span><span class="badge">S15–25</span></a>
+      <a href="#mod3" onclick="switchTab('slides')"><span class="n">03</span><span class="title">Pure vs Functional</span><span class="badge">GFG</span></a>
+      <a href="#mod4" onclick="switchTab('slides')"><span class="n">04</span><span class="title">Props, State & Batching</span><span class="badge">S26–40</span></a>
+      <a href="#mod5" onclick="switchTab('slides')"><span class="n">05</span><span class="title">Synthetic Events</span><span class="badge">GFG</span></a>
+      <a href="#mod6" onclick="switchTab('slides')"><span class="n">06</span><span class="title">useState & useEffect</span><span class="badge">S41–55</span></a>
+      <a href="#mod7" onclick="switchTab('slides')"><span class="n">07</span><span class="title">useRef vs createRef</span><span class="badge">S71–85</span></a>
+      <a href="#mod8" onclick="switchTab('slides')"><span class="n">08</span><span class="title">React Router v6 Nav</span><span class="badge">S56–70</span></a>
+      <a href="#mod9" onclick="switchTab('slides')"><span class="n">09</span><span class="title">Class Lifecycle & Errors</span><span class="badge">S86–100</span></a>
+      <a href="#mod10" onclick="switchTab('slides')"><span class="n">10</span><span class="title">Forms & Multi-input</span><span class="badge">S101–110</span></a>
+      <a href="#mod11" onclick="switchTab('slides')"><span class="n">11</span><span class="title">Performance & Windowing</span><span class="badge">S111–119</span></a>
+      <a href="#mod12" onclick="switchTab('slides')"><span class="n">12</span><span class="title">Redux Toolkit & Thunk</span><span class="badge">GFG</span></a>
+      <a href="#mod13" onclick="switchTab('slides')"><span class="n">13</span><span class="title">Auth, JWT & Axios</span><span class="badge">S120–128</span></a>
+      <a href="#mod14" onclick="switchTab('slides')"><span class="n">14</span><span class="title">HOCs & StrictMode</span><span class="badge">GFG</span></a>
+    </nav>
+  </aside>
+
+  <!-- MAIN -->
+  <main>
+    <div class="top-bar">
+      <div class="tab-switchers">
+        <button class="tab-btn active" id="tabBtnScenarios" onclick="switchTab('scenarios')">
+          <span>📋</span> Real-World Scenarios (P1–P8 + Sec)
+        </button>
+        <button class="tab-btn" id="tabBtnSlides" onclick="switchTab('slides')">
+          <span>📖</span> Slide-Wise & GFG Guide (S1–128)
+        </button>
+        <button class="tab-btn" id="tabBtnDeck" onclick="switchTab('deck')">
+          <span>🎬</span> 128 Visual Slides Player
+        </button>
+      </div>
+
+      <div class="spacer"></div>
+      <button class="btn" onclick="toggleTheme()" id="themeBtn">🌓 Theme</button>
+      <button class="btn" onclick="window.print()">🖨 Print</button>
+    </div>
+
+    <!-- VIEW 1: SCENARIOS (From React_Interview_Prep.html) -->
+    <div id="viewScenarios">
+      <div class="mnemonic" style="margin-bottom:20px;">
+        <h2>🧠 Master Scenario Cheat Sheet (Quick Jumps)</h2>
+        <p style="font-size:13.5px; color:var(--text); margin:0 0 8px;">Har row mein: <b>Problem ➔ Root Cause ➔ Fix ➔ Yaad Rakhne Ki Trick ➔ Quick Interview Answer</b>.</p>
+        <div style="display:flex; flex-wrap:wrap; gap:8px;">
+          <a href="#p1" class="btn" style="padding:4px 8px; font-size:11px;">P1: Rendering + API</a>
+          <a href="#p2" class="btn" style="padding:4px 8px; font-size:11px;">P2: State + Props</a>
+          <a href="#p3" class="btn" style="padding:4px 8px; font-size:11px;">P3: Hooks</a>
+          <a href="#p4" class="btn" style="padding:4px 8px; font-size:11px;">P4: API / Production</a>
+          <a href="#p5" class="btn" style="padding:4px 8px; font-size:11px;">P5: Performance</a>
+          <a href="#p6" class="btn" style="padding:4px 8px; font-size:11px;">P6: Forms</a>
+          <a href="#p7" class="btn" style="padding:4px 8px; font-size:11px;">P7: Routing + Auth</a>
+          <a href="#p8" class="btn" style="padding:4px 8px; font-size:11px;">P8: Redux</a>
+          <a href="#sec" class="btn" style="padding:4px 8px; font-size:11px;">🔐 Security (S1–S30)</a>
+        </div>
+      </div>
+
+      <!-- INJECTED SCENARIO CONTENT -->
+      <h2 class="sec" id="p1" style="margin-top:8px">Priority 1: Rendering + API</h2>
+
+  <div class="mnemonic">
+    <h2>🧠 Ek line mein pura table yaad karo</h2>
+    <ol>
+      <li><b>Rendering (1–4):</b> "Pehle <b>measure</b> (Profiler), phir <b>fix</b>". Memo tabhi, jab reference stable ho. Bada data? Kam render karo (pagination/virtualization).</li>
+      <li><b>API (5–10):</b> "<b>Wait</b> (debounce) → <b>When</b> (dependency array) → <b>Loop</b> mat banao → <b>Latest</b> hi jeete (abort) → <b>Order</b> (sequential await)".</li>
+    </ol>
+  </div>
+
+  <div class="table-wrap">
+  <table>
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Scenario Question</th>
+        <th>Main Cause</th>
+        <th>Fix / Approach</th>
+        <th>Easy Explain (yaad trick)</th>
+        <th>Quick Interview Answer</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="group"><td colspan="6">🎨 Rendering Performance</td></tr>
+      <tr>
+        <td class="num">1</td>
+        <td class="q">Component baar-baar re-render ho raha hai. Kya karoge?</td>
+        <td class="cause">State / props / context / parent change</td>
+        <td>Profiler → root cause → state placement, <code>memo</code>, <code>useMemo</code>, <code>useCallback</code> jahan zaroori ho</td>
+        <td class="why">Doctor pehle test karta hai, phir dawai deta hai. <b>Profiler = test</b>. Bina reason ke har jagah memo lagana = bina test ke dawai.</td>
+        <td class="ans">"First I identify the unnecessary render using React Profiler, then optimize the actual cause instead of blindly using memoization."</td>
+      </tr>
+      <tr>
+        <td class="num">2</td>
+        <td class="q">Parent re-render hone par child bhi re-render ho raha hai.</td>
+        <td class="cause">Parent render + har render par naya object/function reference</td>
+        <td><code>React.memo</code> + <code>useCallback</code> / <code>useMemo</code> se stable references</td>
+        <td class="why"><code>{}</code> !== <code>{}</code>. Har render par naya object = React ko lagta hai prop badal gaya. <b>memo + stable ref = jodi</b>, akela memo bekaar.</td>
+        <td class="ans">"I use React.memo when the child's props haven't changed, and check for new object/function references."</td>
+      </tr>
+      <tr>
+        <td class="num">3</td>
+        <td class="q">API ke baad UI slow ho gayi.</td>
+        <td class="cause">Bada data, heavy JS, zyada renders, slow API</td>
+        <td>Network tab + Profiler → bottleneck pakdo → wahi fix karo</td>
+        <td class="why">4 suspects: <b>API · Network · JS · Render</b>. Network tab se pata chalega API slow hai ya nahi. Profiler se pata chalega render slow hai ya nahi.</td>
+        <td class="ans">"I first separate API, network, JavaScript and rendering bottlenecks, then optimize the actual bottleneck."</td>
+      </tr>
+      <tr>
+        <td class="num">4</td>
+        <td class="q">10,000 records ki table slow hai.</td>
+        <td class="cause">Bahut saare DOM elements</td>
+        <td>Pagination / virtualization (<code>react-window</code>) / server-side filtering</td>
+        <td class="why">Screen par ek baar mein ~20 rows hi dikhti hain, to 10,000 kyun banani? <b>Jo dikhe, wahi render karo.</b></td>
+        <td class="ans">"For large lists I avoid rendering everything at once and use pagination or virtualization."</td>
+      </tr>
+
+      <tr class="group"><td colspan="6">🌐 API + useEffect</td></tr>
+      <tr>
+        <td class="num">5</td>
+        <td class="q">Search mein har keystroke par API call ho rahi hai.</td>
+        <td class="cause">Debounce nahi hai</td>
+        <td>Debounce 300–500ms</td>
+        <td class="why">Lift ka darwaza: har aane wale ke liye band-khula nahi hota, <b>sab aa jayein phir chalti hai</b>. User typing ruke, tab API call.</td>
+        <td class="ans">"I use debouncing so the API is called after the user stops typing."</td>
+      </tr>
+      <tr>
+        <td class="num">6</td>
+        <td class="q">Search API debounce kaise karoge?</td>
+        <td class="cause">Har input par request trigger hoti hai</td>
+        <td><code>useEffect</code> + <code>setTimeout</code> + cleanup (<code>clearTimeout</code>)</td>
+        <td class="why">3 steps: <b>Timer lagao → naya letter aaya → purana timer cancel</b>. Cleanup function hi purana timer hatata hai. (Code neeche 👇)</td>
+        <td class="ans">"I start a timer on search change and clear the previous timer when the user types again."</td>
+      </tr>
+      <tr>
+        <td class="num">7</td>
+        <td class="q">Mount par API aur dependency change par bhi API chahiye.</td>
+        <td class="cause">Galat useEffect dependency</td>
+        <td><code>useEffect(fn, [dependency])</code></td>
+        <td class="why"><code>[]</code> = sirf ek baar · <code>[id]</code> = pehli baar + jab id badle · koi array nahi = har render. <b>Array = "kab chalana hai" ki list.</b></td>
+        <td class="ans">"I use useEffect with the required dependency; it runs initially and when that dependency changes."</td>
+      </tr>
+      <tr>
+        <td class="num">8</td>
+        <td class="q">useEffect infinite loop mein hai.</td>
+        <td class="cause">Effect apni hi dependency update kar raha hai / har render par naya object-function</td>
+        <td>Dependency cycle todo, references stable karo, effect restructure karo</td>
+        <td class="why">Effect → setState → re-render → dependency badli → effect phir... 🔁 <b>Kutta apni poonch ke peeche.</b> Ya to dependency hatao, ya reference stable karo.</td>
+        <td class="ans">"I check whether the effect updates a dependency or receives a new reference on every render."</td>
+      </tr>
+      <tr>
+        <td class="num">9</td>
+        <td class="q">Old API response latest data ko overwrite kar raha hai.</td>
+        <td class="cause">Race condition</td>
+        <td><code>AbortController</code> / stale-response ignore flag</td>
+        <td class="why">"ab" search kiya, phir "abc". "ab" ka response late aaya aur "abc" ko overwrite kar diya. <b>Purani request cancel karo, sirf latest jeete.</b></td>
+        <td class="ans">"I cancel obsolete requests or ignore stale responses so older data cannot overwrite newer data."</td>
+      </tr>
+      <tr>
+        <td class="num">10</td>
+        <td class="q">API-2 ko API-1 ka response chahiye.</td>
+        <td class="cause">Requests ek doosre par depend hain</td>
+        <td>Sequential <code>await</code>. Independent APIs ke liye <code>Promise.all</code></td>
+        <td class="why">Pehle user ki ID lao, tab uske orders. <b>Chai se pehle paani ubaalna padta hai.</b> Depend nahi karte? To <code>Promise.all</code> se saath mein chalao.</td>
+        <td class="ans">"I await the first API, then use its response to call the second. If the calls are independent, I run them in parallel with Promise.all."</td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h2 class="sec">Code Snippets (interview mein likhne pad sakte hain)</h2>
+  <div class="cards">
+    <div class="card">
+      <h3>#5–6 · Debounce search</h3>
+<pre>useEffect(() => {
+  const timer = setTimeout(() => {
+    fetchResults(search);
+  }, 400);
+  return () => clearTimeout(timer); // purana timer cancel
+}, [search]);</pre>
+    </div>
+    <div class="card">
+      <h3>#9 · Race condition (AbortController)</h3>
+<pre>useEffect(() => {
+  const controller = new AbortController();
+  fetch(`/api?q=${query}`, { signal: controller.signal })
+    .then(res => res.json())
+    .then(setData)
+    .catch(err => {
+      if (err.name !== 'AbortError') console.error(err);
+    });
+  return () => controller.abort(); // purani request cancel
+}, [query]);</pre>
+    </div>
+    <div class="card">
+      <h3>#10 · Sequential vs parallel</h3>
+<pre>// Dependent: pehle 1, phir 2
+const user = await getUser();
+const orders = await getOrders(user.id);
+
+// Independent: saath mein
+const [a, b] = await Promise.all([getA(), getB()]);</pre>
+    </div>
+    <div class="card">
+      <h3>#2 · memo + stable reference</h3>
+<pre>const Child = React.memo(({ onClick }) => ...);
+
+// Parent
+const handleClick = useCallback(() => {
+  ...
+}, []); // har render par same function
+&lt;Child onClick={handleClick} /&gt;</pre>
+    </div>
+  </div>
+
+  <!-- ============ PRIORITY 2 ============ -->
+  <h2 class="sec" id="p2" style="margin-top:56px">Priority 2: State + Props</h2>
+
+  <div class="mnemonic">
+    <h2>🧠 Ek line mein pura table yaad karo</h2>
+    <ol>
+      <li><b>Data flow (11–15):</b> "Data <b>neeche</b> jaata hai (props), request <b>upar</b> jaati hai (callback)". Share karna hai? <b>Common parent</b> mein rakho. Bahut door jaana hai? Context/Redux.</li>
+      <li><b>setState (16–18):</b> "setState = <b>order dena, turant delivery nahi</b>". Purani value par depend? Hamesha <code>prev =&gt;</code>.</li>
+      <li><b>Form + objects (19–20):</b> "State wahi rakho jahan use ho". Object ko <b>kabhi mutate mat karo, copy banao</b> (<code>...</code>).</li>
+    </ol>
+  </div>
+
+  <div class="table-wrap">
+  <table>
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Scenario Question</th>
+        <th>Main Cause</th>
+        <th>Fix / Approach</th>
+        <th>Easy Explain (yaad trick)</th>
+        <th>Quick Interview Answer</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="group"><td colspan="6">🔄 Data Flow: Parent ↔ Child ↔ Sibling</td></tr>
+      <tr>
+        <td class="num">11</td>
+        <td class="q">Child ko parent ki state update karni hai.</td>
+        <td class="cause">Parent ki state child ki nahi hai, wo directly change nahi kar sakta</td>
+        <td>Parent callback / setter ko prop bana ke bhejo</td>
+        <td class="why">Bachcha papa ka wallet khud nahi kholta, <b>papa ko bolta hai "paise do"</b>. Callback = papa ko request. State jiski, update bhi wahi karega.</td>
+        <td class="ans">"I pass a callback from parent to child, and the child calls it to request the state update."</td>
+      </tr>
+      <tr>
+        <td class="num">12</td>
+        <td class="q">Sibling components ko same data chahiye.</td>
+        <td class="cause">State ek sibling ke andar band hai</td>
+        <td>Lift state up: nearest common parent mein le jao</td>
+        <td class="why">Do bhai ek TV remote ke liye lad rahe hain. <b>Remote mummy (parent) ke paas rakho</b>, dono ko wahi se milega.</td>
+        <td class="ans">"I move the shared state to their nearest common parent and pass data/callbacks as props."</td>
+      </tr>
+      <tr>
+        <td class="num">13</td>
+        <td class="q">Prop drilling bahut zyada hai.</td>
+        <td class="cause">Data aise components se pass ho raha jinko uski zaroorat hi nahi</td>
+        <td>Composition (<code>children</code>) → Context → Redux, zaroorat ke hisaab se</td>
+        <td class="why">Parcel 5 padosiyon ke haath se ghar pahunch raha hai. <b>Direct courier (Context) bhejo.</b> Pehle check karo: kya <code>children</code> pass karke hi kaam ho jayega?</td>
+        <td class="ans">"I first check whether the state can be moved or composed; for genuinely shared state I can use Context or Redux."</td>
+      </tr>
+      <tr>
+        <td class="num">14</td>
+        <td class="q">Context ke baad unnecessary re-renders.</td>
+        <td class="cause">Ek bada context / provider value har render par naya object</td>
+        <td>Contexts split karo + <code>useMemo</code> se stable value + provider ko sirf zaroori tree par lagao</td>
+        <td class="why">Ek WhatsApp group mein sab kuch post hoga to <b>sabko notification</b> jayegi. Alag groups banao (ThemeContext, UserContext). Value <code>{}</code> har baar naya = sabko ping.</td>
+        <td class="ans">"I split unrelated context values and stabilize provider values where appropriate."</td>
+      </tr>
+      <tr>
+        <td class="num">15</td>
+        <td class="q">Local State vs Context vs Redux?</td>
+        <td class="cause">Galat state-management tool choose kiya</td>
+        <td>Local → simple shared (Context) → complex global (Redux)</td>
+        <td class="why"><b>Ghar ka fridge → society ka notice board → bank.</b> Ek component = <code>useState</code>. Kam badalne wala shared data (theme, user) = Context. Bada, baar-baar badalne wala app data = Redux.</td>
+        <td class="ans">"I prefer local state first, Context for simple shared data, and Redux for large complex application-wide state."</td>
+      </tr>
+
+      <tr class="group"><td colspan="6">⏳ setState ka behaviour</td></tr>
+      <tr>
+        <td class="num">16</td>
+        <td class="q">setState() ke baad immediately old value mil rahi hai.</td>
+        <td class="cause">Update schedule hota hai, current render ki value same rehti hai</td>
+        <td>Nayi value next render mein padho / functional updater use karo</td>
+        <td class="why">Zomato par order kiya, <b>khana abhi plate mein nahi aaya</b>. <code>setCount(5)</code> ke turant baad <code>count</code> purana hi rahega, next render mein 5 hoga.</td>
+        <td class="ans">"State setters schedule an update; they don't immediately change the current render's value."</td>
+      </tr>
+      <tr>
+        <td class="num">17</td>
+        <td class="q">Multiple state updates karne hain.</td>
+        <td class="cause">Updates previous state par depend hain, par sab same purani value dekh rahe hain</td>
+        <td>Functional updater: <code>setCount(prev =&gt; prev + 1)</code></td>
+        <td class="why"><code>setCount(count+1)</code> 3 baar = <b>+1 hi hoga</b> (teeno ne 0 dekha). <code>prev =&gt;</code> 3 baar = <b>+3</b>, kyunki har update line mein khade hoke pichla result leta hai.</td>
+        <td class="ans">"setCount(prev =&gt; prev + 1) ensures each update uses the latest previous state."</td>
+      </tr>
+      <tr>
+        <td class="num">18</td>
+        <td class="q">Previous state ke basis par update karna hai.</td>
+        <td class="cause">Nayi value purani value par depend karti hai</td>
+        <td>Functional updater</td>
+        <td class="why">Simple rule: <b>"purani value chahiye? → <code>prev =&gt;</code>"</b>. Toggle (<code>prev =&gt; !prev</code>), counter, list mein add, sab isi se.</td>
+        <td class="ans">"Whenever the new state depends on previous state, I use the functional updater."</td>
+      </tr>
+
+      <tr class="group"><td colspan="6">📝 Forms + Immutability</td></tr>
+      <tr>
+        <td class="num">19</td>
+        <td class="q">Form ka ek field change → poora form re-render.</td>
+        <td class="cause">Saari state ek bade component mein, tree mein bahut upar</td>
+        <td>Form ko chhote components mein todo, state local rakho, heavy fields memoize karo (ya React Hook Form)</td>
+        <td class="why">Ek bulb ke liye <b>poore ghar ka main switch</b> mat dabao. Har field ka apna switch ho. State jitni neeche, re-render utna chhota.</td>
+        <td class="ans">"I split the form, keep state close to where it is used, and optimize expensive fields."</td>
+      </tr>
+      <tr>
+        <td class="num">20</td>
+        <td class="q">Nested state update without mutation?</td>
+        <td class="cause">Object ko directly mutate kiya, reference same raha, React ko change dikha hi nahi</td>
+        <td>Spread se har level ki copy banao (ya Immer)</td>
+        <td class="why">React sirf <b>naya dabba</b> dekh ke samajhta hai ki kuch badla. Purane dabbe ke andar saaman badla = same dabba = no re-render. <b>Jis level ko badlo, us tak har level spread karo.</b></td>
+        <td class="ans">"I never mutate state directly; I create a new object using the spread operator at every nested level I change, so React detects the new reference."</td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h2 class="sec">Code Snippets (Priority 2)</h2>
+  <div class="cards">
+    <div class="card">
+      <h3>#11 · Child → Parent (callback)</h3>
+<pre>function Parent() {
+  const [name, setName] = useState('');
+  return &lt;Child onChange={setName} /&gt;;
+}
+function Child({ onChange }) {
+  return &lt;input onChange={e =&gt; onChange(e.target.value)} /&gt;;
+}</pre>
+    </div>
+    <div class="card">
+      <h3>#12 · Lift state up</h3>
+<pre>function Parent() {
+  const [city, setCity] = useState('Delhi');
+  return (
+    &lt;&gt;
+      &lt;CityPicker city={city} onSelect={setCity} /&gt;
+      &lt;Weather city={city} /&gt;
+    &lt;/&gt;
+  );
+}</pre>
+    </div>
+    <div class="card">
+      <h3>#14 · Stable context value</h3>
+<pre>const value = useMemo(
+  () =&gt; ({ user, setUser }),
+  [user]
+); // har render par naya object nahi
+&lt;UserContext.Provider value={value}&gt;</pre>
+    </div>
+    <div class="card">
+      <h3>#16 · Old value after setState</h3>
+<pre>const [count, setCount] = useState(0);
+const handle = () =&gt; {
+  setCount(5);
+  console.log(count); // 0 ❗ (next render mein 5)
+};</pre>
+    </div>
+    <div class="card">
+      <h3>#17–18 · Functional updater</h3>
+<pre>// ❌ result: 1
+setCount(count + 1);
+setCount(count + 1);
+setCount(count + 1);
+
+// ✅ result: 3
+setCount(prev =&gt; prev + 1);
+setCount(prev =&gt; prev + 1);
+setCount(prev =&gt; prev + 1);</pre>
+    </div>
+    <div class="card">
+      <h3>#20 · Nested update without mutation</h3>
+<pre>// ❌ mutation: React ko change nahi dikhega
+user.address.city = 'Pune';
+setUser(user);
+
+// ✅ har level ki copy
+setUser(prev =&gt; ({
+  ...prev,
+  address: { ...prev.address, city: 'Pune' }
+}));</pre>
+    </div>
+  </div>
+
+  <!-- ============ PRIORITY 3 ============ -->
+  <h2 class="sec" id="p3" style="margin-top:56px">Priority 3: Hooks Scenarios</h2>
+
+  <div class="mnemonic">
+    <h2>🧠 Ek line mein pura table yaad karo</h2>
+    <ol>
+      <li><b>Memo (21–23):</b> "use<b>Memo</b> = <b>M</b>aal (value) yaad rakho · use<b>Callback</b> = <b>C</b>all karne wala function yaad rakho". Dono tabhi jab zaroorat ho.</li>
+      <li><b>Custom hook (24–25, 30):</b> "Logic <b>2 baar copy</b> kiya? → hook bana do". Naam hamesha <code>use</code> se shuru.</li>
+      <li><b>useRef (26–27):</b> "<b>Chupke se yaad rakho</b>". Value bachi rahegi, par screen update nahi hogi.</li>
+      <li><b>Rules (28–29):</b> "useEffect = paint ke <b>baad</b>, useLayoutEffect = paint se <b>pehle</b>". Hooks hamesha <b>top par, bina if ke</b>.</li>
+    </ol>
+  </div>
+
+  <div class="table-wrap">
+  <table>
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Scenario Question</th>
+        <th>Cause / Problem</th>
+        <th>Fix / Approach</th>
+        <th>Easy Explain (yaad trick)</th>
+        <th>Quick Interview Answer</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="group"><td colspan="6">🧮 useMemo vs useCallback</td></tr>
+      <tr>
+        <td class="num">21</td>
+        <td class="q">useMemo kab use karoge?</td>
+        <td class="cause">Expensive calculation har render par dobara chal rahi hai</td>
+        <td>Expensive result ko <code>useMemo</code> se memoize karo</td>
+        <td class="why">Maths ka bada sawaal ek baar solve karke <b>answer copy mein likh lo</b>. Jab tak numbers (dependencies) na badlein, dobara solve mat karo. Chhoti calculation par mat lagao, uska bhi cost hota hai.</td>
+        <td class="ans">"I use useMemo when an expensive calculation doesn't need to run on every render."</td>
+      </tr>
+      <tr>
+        <td class="num">22</td>
+        <td class="q">useCallback kab use karoge?</td>
+        <td class="cause">Har render par function ka naya reference ban raha hai</td>
+        <td>Function ko <code>useCallback</code> se memoize karo</td>
+        <td class="why">Akela useCallback koi fayda nahi deta. Iski <b>jodi <code>React.memo</code> child ke saath</b> hai (P1 #2 yaad karo). Ya jab function kisi <code>useEffect</code> ki dependency ho.</td>
+        <td class="ans">"I use useCallback when function reference stability matters, especially when passing callbacks to memoized children."</td>
+      </tr>
+      <tr>
+        <td class="num">23</td>
+        <td class="q">useMemo vs useCallback?</td>
+        <td class="cause">Dono ka purpose confuse hota hai</td>
+        <td><code>useMemo</code> → value · <code>useCallback</code> → function</td>
+        <td class="why"><b>Memo = Maal (result), Callback = Call karne wala function.</b> Asal mein <code>useCallback(fn, deps)</code> = <code>useMemo(() =&gt; fn, deps)</code>.</td>
+        <td class="ans">"useMemo memoizes a calculated value, while useCallback memoizes a function reference."</td>
+      </tr>
+
+      <tr class="group"><td colspan="6">♻️ Custom Hooks</td></tr>
+      <tr>
+        <td class="num">24</td>
+        <td class="q">Custom Hook kab banaoge?</td>
+        <td class="cause">Same stateful logic kai components mein duplicate hai</td>
+        <td>Reusable custom hook (<code>useSomething</code>)</td>
+        <td class="why">Roz ki chai ki <b>recipe ek baar likh lo</b>, sab log follow karein. Normal function mein hooks nahi chal sakte, custom hook mein chal sakte hain. Isliye naam <code>use...</code> se.</td>
+        <td class="ans">"I create a custom hook when the same stateful or side-effect logic is reused across components."</td>
+      </tr>
+      <tr>
+        <td class="num">25</td>
+        <td class="q">Multiple components mein same API/loading/error logic hai.</td>
+        <td class="cause">Duplicate logic</td>
+        <td><code>useFetch</code> jaisa custom hook / shared data layer (React Query)</td>
+        <td class="why">Har component mein wahi 3 cheezein: <b>data, loading, error</b>. Isko ek <code>useFetch(url)</code> mein daalo, component bas ek line likhe. (Code neeche 👇)</td>
+        <td class="ans">"I extract the common API and state-management logic into a custom hook so components can reuse it."</td>
+      </tr>
+
+      <tr class="group"><td colspan="6">📌 useRef</td></tr>
+      <tr>
+        <td class="num">26</td>
+        <td class="q">useRef ka real-project use kya hai?</td>
+        <td class="cause">Aisi value chahiye jo renders ke beech bachi rahe, par re-render na karaye</td>
+        <td>DOM reference (focus/scroll) · timer ID · previous value · mutable flag</td>
+        <td class="why">Ref = <b>jeb mein rakhi parchi</b>. Parchi par kuch bhi likho, kisi ko pata nahi chalega (no re-render), par parchi gum nahi hogi. Use: <code>inputRef.current.focus()</code>, <code>timerRef.current = setInterval(...)</code>.</td>
+        <td class="ans">"useRef is useful for DOM references and mutable values that should persist across renders without causing a re-render."</td>
+      </tr>
+      <tr>
+        <td class="num">27</td>
+        <td class="q">useRef change hone par re-render kyun nahi hota?</td>
+        <td class="cause">Ref update state update nahi hai</td>
+        <td><code>ref.current</code> badalna render trigger nahi karta</td>
+        <td class="why"><b>State = notice board</b> (badla to sab dekhte hain, re-render). <b>Ref = personal diary</b> (badla to kisi ko khabar nahi). React sirf setState par dhyan deta hai.</td>
+        <td class="ans">"Changing ref.current doesn't trigger a render because React doesn't treat it as state."</td>
+      </tr>
+
+      <tr class="group"><td colspan="6">⚖️ Hook Rules + Timing</td></tr>
+      <tr>
+        <td class="num">28</td>
+        <td class="q">useEffect vs useLayoutEffect?</td>
+        <td class="cause">Dono ki timing alag hai</td>
+        <td><code>useEffect</code> → paint ke baad · <code>useLayoutEffect</code> → browser paint se pehle</td>
+        <td class="why">Diwar paint karni hai. <b>useLayoutEffect</b> = paint se pehle naap-tol karo (tooltip position, element size). <b>useEffect</b> = paint ke baad baaki kaam (API, subscriptions). 95% cases mein useEffect. Layout wala blocking hai, paint ko rok deta hai.</td>
+        <td class="ans">"I normally use useEffect for side effects. useLayoutEffect is for cases where I need to measure or synchronously adjust the DOM before the browser paints."</td>
+      </tr>
+      <tr>
+        <td class="num">29</td>
+        <td class="q">Hook ko condition ke andar call kar sakte hain?</td>
+        <td class="cause">Hook order change ho sakta hai</td>
+        <td>Hooks hamesha top level par. Condition hook ke <b>andar</b> lagao</td>
+        <td class="why">React hooks ko <b>roll number</b> se pehchanta hai (1st useState, 2nd useEffect...). Kisi din ek student absent (if false) = sabke roll number khisak gaye = galat state mili. <b>No if, no loop, no early return se pehle.</b></td>
+        <td class="ans">"Hooks must be called at the top level so React can preserve the same hook order between renders."</td>
+      </tr>
+      <tr>
+        <td class="num">30</td>
+        <td class="q">Custom hook mein API call + cleanup kaise karoge?</td>
+        <td class="cause">Request ko component ke lifecycle ke saath manage karna hai</td>
+        <td><code>useEffect</code> + cleanup return / <code>AbortController</code></td>
+        <td class="why">Ghar se niklo to <b>light-pankha band karke niklo</b>. Component unmount ho ya URL badle, to purani request abort, timer clear, subscription hatao. = P1 #9 + #24 ka combo.</td>
+        <td class="ans">"I put the API side effect inside useEffect and clean up subscriptions, timers or in-flight requests when necessary."</td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h2 class="sec">Code Snippets (Priority 3)</h2>
+  <div class="cards">
+    <div class="card">
+      <h3>#21–23 · useMemo vs useCallback</h3>
+<pre>// value yaad rakho
+const total = useMemo(
+  () =&gt; items.reduce((s, i) =&gt; s + i.price, 0),
+  [items]
+);
+
+// function yaad rakho
+const handleDelete = useCallback(
+  (id) =&gt; setItems(prev =&gt; prev.filter(i =&gt; i.id !== id)),
+  []
+);</pre>
+    </div>
+    <div class="card">
+      <h3>#25 + #30 · useFetch custom hook (with cleanup)</h3>
+<pre>function useFetch(url) {
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() =&gt; {
+    const controller = new AbortController();
+    setLoading(true);
+    fetch(url, { signal: controller.signal })
+      .then(res =&gt; res.json())
+      .then(setData)
+      .catch(err =&gt; {
+        if (err.name !== 'AbortError') setError(err);
+      })
+      .finally(() =&gt; setLoading(false));
+    return () =&gt; controller.abort(); // cleanup
+  }, [url]);
+
+  return { data, loading, error };
+}
+
+// Use: ek line!
+const { data, loading, error } = useFetch('/api/users');</pre>
+    </div>
+    <div class="card">
+      <h3>#26–27 · useRef uses</h3>
+<pre>// 1. DOM reference
+const inputRef = useRef(null);
+&lt;input ref={inputRef} /&gt;
+inputRef.current.focus();
+
+// 2. Timer ID (re-render nahi chahiye)
+const timerRef = useRef();
+timerRef.current = setInterval(tick, 1000);
+clearInterval(timerRef.current);
+
+// 3. Render count: change hoga, re-render nahi
+const renders = useRef(0);
+renders.current++;</pre>
+    </div>
+    <div class="card">
+      <h3>#28 · useLayoutEffect (measure before paint)</h3>
+<pre>useLayoutEffect(() =&gt; {
+  const { height } = boxRef.current.getBoundingClientRect();
+  setTooltipTop(height + 8); // flicker nahi hoga
+}, []);</pre>
+    </div>
+    <div class="card">
+      <h3>#29 · Hooks rule</h3>
+<pre>// ❌ condition ke andar hook
+if (isLoggedIn) {
+  const [user, setUser] = useState(null);
+}
+
+// ✅ hook top par, condition andar
+const [user, setUser] = useState(null);
+useEffect(() =&gt; {
+  if (isLoggedIn) fetchUser().then(setUser);
+}, [isLoggedIn]);</pre>
+    </div>
+  </div>
+
+  <!-- ============ PRIORITY 4 ============ -->
+  <h2 class="sec" id="p4" style="margin-top:56px">Priority 4: API / Production Scenarios</h2>
+
+  <div class="mnemonic">
+    <h2>🧠 Ek line mein pura table yaad karo</h2>
+    <ol>
+      <li><b>API states (31–32):</b> "Har API ke <b>3 chehre</b>: Loading · Success · Error". Error par <b>Retry</b> button + Fallback UI.</li>
+      <li><b>Request control (33–35, 40):</b> "<b>Ek kaam, ek request</b>". Duplicate mat bhejo (cache/disable), purani cancel karo (abort).</li>
+      <li><b>Bada data (36–38):</b> "<b>Server chhaante, browser dikhaye</b>". Pagination, infinite scroll, virtualization.</li>
+      <li><b>Optimistic (39):</b> "<b>Pehle haan bolo, fail ho to maafi maango</b>" (rollback).</li>
+    </ol>
+  </div>
+
+  <div class="table-wrap">
+  <table>
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Scenario Question</th>
+        <th>Main Cause / Problem</th>
+        <th>Fix / Approach</th>
+        <th>Easy Explain (yaad trick)</th>
+        <th>Quick Interview Answer</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="group"><td colspan="6">⏳ Slow / Failed API</td></tr>
+      <tr>
+        <td class="num">31</td>
+        <td class="q">API slow hai, UI ko user-friendly kaise rakhoge?</td>
+        <td class="cause">Slow network / server</td>
+        <td>Loading state, skeleton, timeout, retry, cached data</td>
+        <td class="why">Restaurant mein khana late ho to waiter <b>pehle starter / paani</b> de deta hai. Skeleton = starter. User ko lage ki kuch ho raha hai. Cached data = kal ka bacha khana, turant dikhao, phir fresh laao.</td>
+        <td class="ans">"I show proper loading feedback, handle timeout/error states, and optimize or cache the API response where appropriate."</td>
+      </tr>
+      <tr>
+        <td class="num">32</td>
+        <td class="q">API fail ho gayi. Retry/error/fallback kaise?</td>
+        <td class="cause">Network / server error</td>
+        <td>Error state + controlled retry + fallback UI (Error Boundary)</td>
+        <td class="why">ATM se paise nahi nikle to screen <b>blank nahi hoti</b>, "Try again" dikhata hai. Retry <b>controlled</b> ho (2–3 baar, gap badhate hue = exponential backoff), warna server par hamla ho jayega.</td>
+        <td class="ans">"I handle loading, success and error states separately and provide retry or fallback behavior where appropriate."</td>
+      </tr>
+
+      <tr class="group"><td colspan="6">🚦 Request Control</td></tr>
+      <tr>
+        <td class="num">33</td>
+        <td class="q">Multiple components same API call kar rahe hain.</td>
+        <td class="cause">Duplicate requests</td>
+        <td>Shared data layer / cache (React Query, RTK Query) / custom hook</td>
+        <td class="why">Ghar ke 4 log alag-alag <b>same akhbaar</b> mangwa rahe hain. Ek mangao, sab padho. React Query same key wali requests ko <b>ek kar deta hai</b> (dedupe) aur cache rakhta hai.</td>
+        <td class="ans">"I avoid duplicate requests by centralizing the data fetching or using a caching/data-fetching layer."</td>
+      </tr>
+      <tr>
+        <td class="num">34</td>
+        <td class="q">Old API response newer response ko overwrite kar raha hai.</td>
+        <td class="cause">Race condition</td>
+        <td>Old request abort / stale response ignore</td>
+        <td class="why"><b>= P1 #9.</b> "ab" ka late response "abc" ko overwrite kar deta hai. <b>Sirf latest request ko UI chhoone do.</b></td>
+        <td class="ans">"I cancel obsolete requests or ignore stale responses so only the latest request updates the UI."</td>
+      </tr>
+      <tr>
+        <td class="num">35</td>
+        <td class="q">Component unmount hone ke baad API response aa raha hai.</td>
+        <td class="cause">Request abhi bhi chal rahi hai</td>
+        <td>useEffect cleanup + <code>AbortController</code></td>
+        <td class="why">Page chhod diya, par courier purane pate par aa gaya. <b>Nikalte waqt order cancel karo</b> (cleanup mein <code>abort()</code>). = P3 #30.</td>
+        <td class="ans">"I cancel the request during cleanup so an obsolete request doesn't update the component."</td>
+      </tr>
+      <tr>
+        <td class="num">40</td>
+        <td class="q">User button multiple times click kar raha hai, duplicate API requests.</td>
+        <td class="cause">Request control nahi hai</td>
+        <td>Loading flag → button disable / guard (<code>if (loading) return</code>)</td>
+        <td class="why">Lift ka button 10 baar dabao, lift ek hi aayegi. <b>Request chal rahi hai? Button band.</b> Payment jaise cases mein backend par idempotency key bhi.</td>
+        <td class="ans">"I prevent duplicate submissions by tracking the request state and disabling or guarding the action while the request is in progress."</td>
+      </tr>
+
+      <tr class="group"><td colspan="6">📚 Bada Data</td></tr>
+      <tr>
+        <td class="num">36</td>
+        <td class="q">1 lakh records hain. Pagination kaise?</td>
+        <td class="cause">Huge data</td>
+        <td>Server-side pagination (<code>?page=2&amp;limit=20</code>)</td>
+        <td class="why">Library se <b>poori library ghar nahi laate</b>, ek baar mein 20 kitaabein. Browser sirf current page ka data maange. Total count server batayega.</td>
+        <td class="ans">"I would use server-side pagination instead of loading the complete dataset into the browser."</td>
+      </tr>
+      <tr>
+        <td class="num">37</td>
+        <td class="q">Infinite scroll implement karni hai.</td>
+        <td class="cause">Large dataset</td>
+        <td><code>IntersectionObserver</code> + page / cursor based API</td>
+        <td class="why">Instagram feed. List ke end par ek <b>invisible "chowkidar" div</b> rakho. Jaise hi wo screen par dikhe → next page mangao. Cursor = "is post ke baad wale do".</td>
+        <td class="ans">"I would load data incrementally using pagination or cursor-based APIs and trigger the next request near the end of the list."</td>
+      </tr>
+      <tr>
+        <td class="num">38</td>
+        <td class="q">API 10,000 records return kar rahi hai.</td>
+        <td class="cause">Huge response + memory / rendering cost</td>
+        <td>Backend filtering / pagination + virtualization</td>
+        <td class="why">2 problem = 2 fix: <b>network bhaari → backend kam bheje</b> (filter/paginate). <b>DOM bhaari → sirf dikhne wali rows render</b> (virtualization, P1 #4).</td>
+        <td class="ans">"I would avoid sending all records to the client and use server-side filtering, pagination and virtualization where needed."</td>
+      </tr>
+
+      <tr class="group"><td colspan="6">⚡ Optimistic UI</td></tr>
+      <tr>
+        <td class="num">39</td>
+        <td class="q">Optimistic UI update kab use karoge?</td>
+        <td class="cause">User ko response ka wait karna pad raha hai</td>
+        <td>UI turant update → API call → fail ho to rollback</td>
+        <td class="why">Instagram <b>❤️ like</b>: dil turant laal ho jaata hai, API baad mein. Fail hua to wapas safed. Sirf wahan use karo jahan <b>fail hona rare</b> ho aur galti sasti ho (like, todo). Payment par nahi.</td>
+        <td class="ans">"I use optimistic updates when the operation is expected to succeed and immediate UI feedback improves UX; on failure I rollback the change."</td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h2 class="sec">Code Snippets (Priority 4)</h2>
+  <div class="cards">
+    <div class="card">
+      <h3>#31–32 · Loading / Error / Retry</h3>
+<pre>const { data, loading, error, refetch } = useFetch('/api/users');
+
+if (loading) return &lt;Skeleton /&gt;;
+if (error) return (
+  &lt;div&gt;
+    Kuch galat hua 😕
+    &lt;button onClick={refetch}&gt;Retry&lt;/button&gt;
+  &lt;/div&gt;
+);
+return &lt;UserList users={data} /&gt;;</pre>
+    </div>
+    <div class="card">
+      <h3>#33 · React Query (dedupe + cache)</h3>
+<pre>// 3 components use karein, request 1 hi jayegi
+const { data, isLoading, isError } = useQuery({
+  queryKey: ['users'],
+  queryFn: () =&gt; fetch('/api/users').then(r =&gt; r.json()),
+  staleTime: 60_000,  // 1 min tak cache fresh
+  retry: 2,           // controlled retry
+});</pre>
+    </div>
+    <div class="card">
+      <h3>#36 · Server-side pagination</h3>
+<pre>const [page, setPage] = useState(1);
+const { data } = useFetch(`/api/users?page=${page}&amp;limit=20`);
+
+&lt;button disabled={page === 1}
+  onClick={() =&gt; setPage(p =&gt; p - 1)}&gt;Prev&lt;/button&gt;
+&lt;button onClick={() =&gt; setPage(p =&gt; p + 1)}&gt;Next&lt;/button&gt;</pre>
+    </div>
+    <div class="card">
+      <h3>#37 · Infinite scroll (IntersectionObserver)</h3>
+<pre>const loaderRef = useRef(null);
+
+useEffect(() =&gt; {
+  const observer = new IntersectionObserver(([entry]) =&gt; {
+    if (entry.isIntersecting &amp;&amp; hasMore &amp;&amp; !loading) {
+      loadNextPage();
+    }
+  });
+  if (loaderRef.current) observer.observe(loaderRef.current);
+  return () =&gt; observer.disconnect(); // cleanup
+}, [hasMore, loading]);
+
+// list ke end mein chowkidar
+&lt;div ref={loaderRef} /&gt;</pre>
+    </div>
+    <div class="card">
+      <h3>#39 · Optimistic update + rollback</h3>
+<pre>const toggleLike = async () =&gt; {
+  const prev = liked;
+  setLiked(!prev);               // 1. turant UI
+  try {
+    await api.like(postId);      // 2. API
+  } catch {
+    setLiked(prev);              // 3. fail? rollback
+    toast.error('Like nahi hua');
+  }
+};</pre>
+    </div>
+    <div class="card">
+      <h3>#40 · Double-click / duplicate submit rokna</h3>
+<pre>const [submitting, setSubmitting] = useState(false);
+
+const handleSubmit = async () =&gt; {
+  if (submitting) return;        // guard
+  setSubmitting(true);
+  try {
+    await api.placeOrder(form);
+  } finally {
+    setSubmitting(false);
+  }
+};
+
+&lt;button disabled={submitting}&gt;
+  {submitting ? 'Placing...' : 'Place Order'}
+&lt;/button&gt;</pre>
+    </div>
+  </div>
+
+  <!-- ============ PRIORITY 5 ============ -->
+  <h2 class="sec" id="p5" style="margin-top:56px">Priority 5: React Performance Scenarios</h2>
+
+  <div class="mnemonic">
+    <h2>🧠 Ek line mein pura table yaad karo</h2>
+    <ol>
+      <li><b>Debug (41, 50):</b> "<b>Andaaza nahi, naap-tol</b>". 4 jagah dekho: Network · JS · Render · Bundle. Prod bug? Prod jaisi build banao.</li>
+      <li><b>Bundle (42–44):</b> "<b>Jo abhi chahiye wahi bhejo</b>". Baaki lazy load (<code>React.lazy</code> + <code>Suspense</code>).</li>
+      <li><b>Render (45–49):</b> "memo = child bachao · stable ref = memo ko zinda rakho · useMemo = calculation bachao · virtualization = DOM bachao".</li>
+    </ol>
+  </div>
+
+  <div class="table-wrap">
+  <table>
+    <thead>
+      <tr><th>#</th><th>Scenario</th><th>Cause / Problem</th><th>Fix / Approach</th><th>Easy Explain (yaad trick)</th><th>Quick Interview Answer</th></tr>
+    </thead>
+    <tbody>
+      <tr class="group"><td colspan="6">🔍 Debugging</td></tr>
+      <tr>
+        <td class="num">41</td>
+        <td class="q">Production React app slow hai. Kaise debug karoge?</td>
+        <td class="cause">Bottleneck pata nahi</td>
+        <td>Chrome Performance tab + Network tab + React Profiler + bundle analyzer (Lighthouse bhi)</td>
+        <td class="why">Gaadi slow hai to pehle dekho <b>tyre, engine, petrol ya brake</b>? Seedha engine mat kholo. App ke 4 suspect: <b>Network · JS execution · Rendering · Bundle size</b>.</td>
+        <td class="ans">"I first measure the bottleneck instead of assuming the problem is React. I check network, rendering, JavaScript execution and bundle size."</td>
+      </tr>
+      <tr>
+        <td class="num">50</td>
+        <td class="q">Production build different behave kar rahi.</td>
+        <td class="cause">Environment / config / build differences</td>
+        <td>Env variables, build config, source maps, API URL compare karo</td>
+        <td class="why">Ghar par gaana acha, stage par kharab? <b>Stage jaisa setup ghar par banao</b>: <code>npm run build</code> + <code>preview</code>. Aam culprit: galat <code>.env</code>, API URL, minification, StrictMode (dev mein double effect).</td>
+        <td class="ans">"I reproduce the issue in a production-like build and verify environment variables, API configuration, build optimizations and browser behavior."</td>
+      </tr>
+
+      <tr class="group"><td colspan="6">📦 Bundle + Code Splitting</td></tr>
+      <tr>
+        <td class="num">42</td>
+        <td class="q">Bundle size bahut large hai.</td>
+        <td class="cause">Bahut dependencies / unused code</td>
+        <td>Bundle analyze → code splitting, tree shaking, lazy loading, dependency audit</td>
+        <td class="why">Trip ke bag mein <b>poori almari</b> bhar di. Pehle dekho kya bhaari hai (analyzer), phir faltu nikalo. Example: poora <code>lodash</code> ki jagah <code>lodash/debounce</code>, <code>moment</code> ki jagah <code>dayjs</code>.</td>
+        <td class="ans">"I analyze the bundle, remove unnecessary dependencies and use code splitting and lazy loading for non-critical features."</td>
+      </tr>
+      <tr>
+        <td class="num">43</td>
+        <td class="q">Code splitting kya hai?</td>
+        <td class="cause">Poori app pehli baar mein hi load ho rahi</td>
+        <td>Bundle ko chhote chunks mein todo</td>
+        <td class="why">Web series ke <b>saare episodes ek saath download nahi</b> karte, jo dekh rahe ho wahi. Har route / heavy feature = alag chunk.</td>
+        <td class="ans">"Code splitting divides the application into smaller chunks that can be loaded when required."</td>
+      </tr>
+      <tr>
+        <td class="num">44</td>
+        <td class="q">Heavy component ko lazy load karna hai.</td>
+        <td class="cause">Component initial bundle mein shamil hai</td>
+        <td><code>React.lazy</code> + <code>Suspense</code></td>
+        <td class="why"><code>lazy</code> = "jab bulaun tab aana". <code>Suspense</code> = "jab tak nahi aata, loader dikhao". <b>Hamesha jodi mein.</b> (Code neeche 👇)</td>
+        <td class="ans">"I lazy-load non-critical components so their code is downloaded only when required."</td>
+      </tr>
+
+      <tr class="group"><td colspan="6">🎨 Rendering Optimisation</td></tr>
+      <tr>
+        <td class="num">45</td>
+        <td class="q">Dashboard mein multiple charts hain aur page lag karta hai.</td>
+        <td class="cause">Heavy rendering / calculation</td>
+        <td>Profile → lazy load charts, memoize, data kam karo, virtualization</td>
+        <td class="why">Sab charts ek saath mat banao. <b>Upar wale pehle, neeche wale scroll par</b> (lazy). 10,000 points ki jagah aggregated 100 points bhejo. Chart component ko <code>memo</code> karo.</td>
+        <td class="ans">"I profile the dashboard, reduce unnecessary renders and data processing, and lazy-load non-critical charts."</td>
+      </tr>
+      <tr>
+        <td class="num">46</td>
+        <td class="q">React.memo kab use karoge?</td>
+        <td class="cause">Child bina zaroorat re-render ho raha</td>
+        <td>Pure, heavy components par <code>React.memo</code></td>
+        <td class="why">3 sawaal: <b>Same props baar-baar? Render mehenga? Profiler mein fayda dikha?</b> Teeno haan → memo. Warna memo khud ek extra comparison ka kharcha hai.</td>
+        <td class="ans">"I use React.memo when a component receives the same props frequently and avoiding its re-render provides a measurable benefit."</td>
+      </tr>
+      <tr>
+        <td class="num">47</td>
+        <td class="q">React.memo ke baad bhi re-render ho raha hai.</td>
+        <td class="cause">Object / array / function prop ka reference har baar naya</td>
+        <td>Stable references (<code>useMemo</code>/<code>useCallback</code>) / state architecture sahi karo</td>
+        <td class="why"><b>= P1 #2.</b> Memo shallow compare karta hai: <code>{}</code> !== <code>{}</code>. Inline <code>style={{...}}</code> ya <code>onClick={() =&gt; ...}</code> memo ko har baar tod dete hain.</td>
+        <td class="ans">"I check whether props are receiving new object, array or function references on every render."</td>
+      </tr>
+      <tr>
+        <td class="num">48</td>
+        <td class="q">Expensive calculation repeatedly run ho rahi.</td>
+        <td class="cause">Har render par calculation</td>
+        <td><code>useMemo</code> jahan fayda ho</td>
+        <td class="why"><b>= P3 #21.</b> Answer copy mein likh lo. Key word interview mein: "<b>profile first</b>, then useMemo".</td>
+        <td class="ans">"I profile the calculation and use useMemo when caching the result provides a real performance benefit."</td>
+      </tr>
+      <tr>
+        <td class="num">49</td>
+        <td class="q">Huge table scrolling slow hai.</td>
+        <td class="cause">Hazaron DOM rows</td>
+        <td>Virtualization (<code>react-window</code> / <code>TanStack Virtual</code>)</td>
+        <td class="why"><b>= P1 #4.</b> Train ki khidki: bahar ka nazara badalta hai, khidki wahi rehti hai. Sirf ~20 rows DOM mein, scroll par unka content badalta hai.</td>
+        <td class="ans">"I would use virtualization so only visible rows are rendered instead of the complete dataset."</td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h2 class="sec">Code Snippets (Priority 5)</h2>
+  <div class="cards">
+    <div class="card">
+      <h3>#43–44 · React.lazy + Suspense (route-level splitting)</h3>
+<pre>const Dashboard = lazy(() =&gt; import('./Dashboard'));
+const Reports   = lazy(() =&gt; import('./Reports'));
+
+&lt;Suspense fallback={&lt;Spinner /&gt;}&gt;
+  &lt;Routes&gt;
+    &lt;Route path="/dashboard" element={&lt;Dashboard /&gt;} /&gt;
+    &lt;Route path="/reports"   element={&lt;Reports /&gt;} /&gt;
+  &lt;/Routes&gt;
+&lt;/Suspense&gt;</pre>
+    </div>
+    <div class="card">
+      <h3>#47 · memo kyun toot raha hai</h3>
+<pre>// ❌ har render par naya object + function
+&lt;Chart options={{ color: 'red' }} onClick={() =&gt; go()} /&gt;
+
+// ✅ stable
+const options = useMemo(() =&gt; ({ color: 'red' }), []);
+const onClick = useCallback(() =&gt; go(), []);
+&lt;Chart options={options} onClick={onClick} /&gt;</pre>
+    </div>
+    <div class="card">
+      <h3>#49 · Virtualization (react-window)</h3>
+<pre>import { FixedSizeList } from 'react-window';
+
+&lt;FixedSizeList
+  height={500} itemCount={rows.length} itemSize={40} width="100%"&gt;
+  {({ index, style }) =&gt; (
+    &lt;div style={style}&gt;{rows[index].name}&lt;/div&gt;
+  )}
+&lt;/FixedSizeList&gt;</pre>
+    </div>
+    <div class="card">
+      <h3>#41–42 · Tools yaad rakho</h3>
+<pre># Bundle analyze (Vite)
+npx vite-bundle-visualizer
+
+# CRA / webpack
+npx source-map-explorer build/static/js/*.js
+
+# Prod jaisi build locally (#50)
+npm run build &amp;&amp; npm run preview
+
+DevTools → Performance · Network · Lighthouse
+React DevTools → Profiler</pre>
+    </div>
+  </div>
+
+  <!-- ============ PRIORITY 6 ============ -->
+  <h2 class="sec" id="p6" style="margin-top:56px">Priority 6: Forms &amp; Validation</h2>
+
+  <div class="mnemonic">
+    <h2>🧠 Ek line mein pura table yaad karo</h2>
+    <ol>
+      <li><b>Form structure (51–53):</b> "Controlled = <b>React ke haath mein</b>, Uncontrolled = <b>DOM ke haath mein</b>". Bada form → tukde karo. Dynamic fields → <b>array</b>.</li>
+      <li><b>Submit (54–56):</b> "<b>Ek click, ek request, poori khabar</b>" (guard + loading + progress + error).</li>
+      <li><b>Validation (57):</b> "Frontend = <b>suvidha</b>, Backend = <b>suraksha</b>".</li>
+    </ol>
+  </div>
+
+  <div class="table-wrap">
+  <table>
+    <thead>
+      <tr><th>#</th><th>Scenario</th><th>Cause / Problem</th><th>Fix / Approach</th><th>Easy Explain (yaad trick)</th><th>Quick Interview Answer</th></tr>
+    </thead>
+    <tbody>
+      <tr class="group"><td colspan="6">🧱 Form Structure</td></tr>
+      <tr>
+        <td class="num">51</td>
+        <td class="q">Large form efficiently manage karna hai.</td>
+        <td class="cause">Bahut state / re-render / validation</td>
+        <td>Sections mein todo + form library (React Hook Form + Zod/Yup)</td>
+        <td class="why"><b>= P2 #19.</b> 50 fields ka form = 5 sections × 10 fields. React Hook Form uncontrolled inputs use karta hai, isliye <b>har keystroke par poora form re-render nahi</b> hota.</td>
+        <td class="ans">"I split large forms into logical sections and optimize state and validation so unrelated fields don't cause unnecessary work."</td>
+      </tr>
+      <tr>
+        <td class="num">52</td>
+        <td class="q">Controlled vs uncontrolled?</td>
+        <td class="cause">Alag forms ki alag zaroorat</td>
+        <td>Controlled → React state · Uncontrolled → DOM / ref</td>
+        <td class="why"><b>Controlled = remote wali car</b> (har move React control karta hai: <code>value</code> + <code>onChange</code>). <b>Uncontrolled = khud chalne wali car</b> (value DOM mein, zaroorat par <code>ref</code> se pooch lo). Live validation chahiye → controlled.</td>
+        <td class="ans">"Controlled inputs are managed by React state, while uncontrolled inputs keep their value in the DOM and can be accessed through refs."</td>
+      </tr>
+      <tr>
+        <td class="num">53</td>
+        <td class="q">Dynamic fields add/remove karne hain.</td>
+        <td class="cause">Form ka structure runtime par badal raha</td>
+        <td>Array state (immutable update) / <code>useFieldArray</code></td>
+        <td class="why">"Add phone number" button = <b>array mein push</b>, ❌ = <b>filter</b>. Key mein <b>unique id</b> do, index nahi, warna delete par galat field ki value dikhegi.</td>
+        <td class="ans">"I represent dynamic fields as an array and update them immutably, or use a suitable form library for complex forms."</td>
+      </tr>
+
+      <tr class="group"><td colspan="6">📤 Submit + Upload</td></tr>
+      <tr>
+        <td class="num">54</td>
+        <td class="q">Form submit ke baad multiple dependent APIs.</td>
+        <td class="cause">APIs ek doosre par depend</td>
+        <td>Sequential <code>await</code> + har step ka loading / error</td>
+        <td class="why"><b>= P1 #10.</b> Pehle user banao → uski ID se profile → phir photo. Beech mein fail? <b>Partial failure</b> handle karo: user ko batao kya hua, kya nahi.</td>
+        <td class="ans">"If the calls are dependent, I execute them sequentially and handle partial or failure states explicitly."</td>
+      </tr>
+      <tr>
+        <td class="num">55</td>
+        <td class="q">User double-submit kar raha.</td>
+        <td class="cause">Submission guard nahi</td>
+        <td>Button disable + in-flight flag + backend idempotency</td>
+        <td class="why"><b>= P4 #40.</b> Frontend guard = darwaze par taala. Backend idempotency key = <b>bank ki double-entry check</b>. Payment/order par dono zaroori.</td>
+        <td class="ans">"I disable or guard submission while the request is in progress and use backend duplicate protection for critical operations."</td>
+      </tr>
+      <tr>
+        <td class="num">56</td>
+        <td class="q">File upload with progress bar.</td>
+        <td class="cause">Badi file + user ko feedback chahiye</td>
+        <td><code>FormData</code> + axios <code>onUploadProgress</code> + type/size validation + cancel</td>
+        <td class="why">4 steps yaad: <b>Check (type/size) → Pack (FormData) → Track (progress %) → Cancel (AbortController)</b>. <code>fetch</code> upload progress nahi deta, isliye axios/XHR.</td>
+        <td class="ans">"I upload using multipart FormData, track upload progress, validate file type and size, and support cancellation when required."</td>
+      </tr>
+
+      <tr class="group"><td colspan="6">🛡️ Validation</td></tr>
+      <tr>
+        <td class="num">57</td>
+        <td class="q">Frontend + backend validation kyun?</td>
+        <td class="cause">Frontend bypass ho sakta hai</td>
+        <td>Frontend = UX · Backend = security / data integrity</td>
+        <td class="why">Frontend validation = <b>building ke gate par board</b> "ID dikhao". Koi Postman se seedha diwar kood ke aa sakta hai. Backend = <b>andar ka guard</b>, jo bypass nahi hota. <b>Client pe kabhi bharosa mat karo.</b></td>
+        <td class="ans">"Frontend validation improves user experience, but backend validation is mandatory because the client cannot be trusted."</td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h2 class="sec">Code Snippets (Priority 6)</h2>
+  <div class="cards">
+    <div class="card">
+      <h3>#52 · Controlled vs Uncontrolled</h3>
+<pre>// Controlled: React ke haath mein
+const [email, setEmail] = useState('');
+&lt;input value={email} onChange={e =&gt; setEmail(e.target.value)} /&gt;
+
+// Uncontrolled: DOM ke haath mein
+const emailRef = useRef();
+&lt;input defaultValue="" ref={emailRef} /&gt;
+const submit = () =&gt; console.log(emailRef.current.value);</pre>
+    </div>
+    <div class="card">
+      <h3>#53 · Dynamic fields (array)</h3>
+<pre>const [phones, setPhones] = useState([{ id: 1, value: '' }]);
+
+const add = () =&gt;
+  setPhones(p =&gt; [...p, { id: Date.now(), value: '' }]);
+const remove = (id) =&gt;
+  setPhones(p =&gt; p.filter(x =&gt; x.id !== id));
+const update = (id, value) =&gt;
+  setPhones(p =&gt; p.map(x =&gt; x.id === id ? { ...x, value } : x));
+
+{phones.map(ph =&gt; (
+  &lt;input key={ph.id} value={ph.value}   // key = id, index nahi
+    onChange={e =&gt; update(ph.id, e.target.value)} /&gt;
+))}</pre>
+    </div>
+    <div class="card">
+      <h3>#56 · File upload + progress + cancel</h3>
+<pre>const controller = new AbortController();
+
+const upload = async (file) =&gt; {
+  if (file.size &gt; 5 * 1024 * 1024) return alert('Max 5MB'); // check
+  const form = new FormData();                                // pack
+  form.append('file', file);
+
+  await axios.post('/api/upload', form, {
+    signal: controller.signal,                                // cancel
+    onUploadProgress: (e) =&gt;                                  // track
+      setProgress(Math.round((e.loaded * 100) / e.total)),
+  });
+};
+
+&lt;progress value={progress} max="100" /&gt;
+&lt;button onClick={() =&gt; controller.abort()}&gt;Cancel&lt;/button&gt;</pre>
+    </div>
+    <div class="card">
+      <h3>#51 · React Hook Form + Zod</h3>
+<pre>const schema = z.object({
+  email: z.string().email(),
+  age: z.number().min(18),
+});
+
+const { register, handleSubmit, formState: { errors } } =
+  useForm({ resolver: zodResolver(schema) });
+
+&lt;form onSubmit={handleSubmit(onSubmit)}&gt;
+  &lt;input {...register('email')} /&gt;
+  {errors.email &amp;&amp; &lt;p&gt;{errors.email.message}&lt;/p&gt;}
+&lt;/form&gt;</pre>
+    </div>
+  </div>
+
+  <!-- ============ PRIORITY 7 ============ -->
+  <h2 class="sec" id="p7" style="margin-top:56px">Priority 7: Routing &amp; Authentication</h2>
+
+  <div class="mnemonic">
+    <h2>🧠 Ek line mein pura table yaad karo</h2>
+    <ol>
+      <li><b>Golden rule (61–62):</b> "Frontend guard = <b>parda</b>, Backend authorization = <b>taala</b>". Security hamesha backend par.</li>
+      <li><b>Routes (58, 63):</b> "Har protected route par <b>ID check</b>" (ProtectedRoute wrapper). Logout = data bhi saaf.</li>
+      <li><b>Token (59, 60, 64):</b> "401 aaya → <b>ek baar</b> refresh → sabki retry → refresh bhi fail → logout". Page refresh par startup mein auth restore.</li>
+    </ol>
+  </div>
+
+  <div class="table-wrap">
+  <table>
+    <thead>
+      <tr><th>#</th><th>Scenario</th><th>Cause / Problem</th><th>Fix / Approach</th><th>Easy Explain (yaad trick)</th><th>Quick Interview Answer</th></tr>
+    </thead>
+    <tbody>
+      <tr class="group"><td colspan="6">🚪 Protected Routes</td></tr>
+      <tr>
+        <td class="num">58</td>
+        <td class="q">Login ke baad protected routes kaise?</td>
+        <td class="cause">Bina login user access kar sakta hai</td>
+        <td>Auth state (context/store) + <code>ProtectedRoute</code> wrapper</td>
+        <td class="why">Club ka <b>bouncer</b>: band (token) hai to andar, warna <code>&lt;Navigate to="/login" /&gt;</code>. Login ke baad wapas usi page par bhejo jahan jaana tha (<code>state.from</code>).</td>
+        <td class="ans">"I maintain authentication state and render protected routes only when the user is authenticated."</td>
+      </tr>
+      <tr>
+        <td class="num">61</td>
+        <td class="q">Admin/User/Manager different routes.</td>
+        <td class="cause">Role-based access</td>
+        <td>RBAC: <code>allowedRoles</code> wala route guard + backend authorization</td>
+        <td class="why">Office ke <b>ID card par floor likha</b> hai: Admin har floor, User sirf 1st floor. Frontend sirf <b>button/menu chhupata</b> hai (UX). Asli rok backend lagata hai.</td>
+        <td class="ans">"I use role-based route protection on the frontend for UX, but enforce authorization on the backend because frontend checks are not security boundaries."</td>
+      </tr>
+      <tr>
+        <td class="num">62</td>
+        <td class="q">User directly restricted URL enter karta hai.</td>
+        <td class="cause">URL chhupane se protection nahi hoti</td>
+        <td>Route guard + backend authorization</td>
+        <td class="why">Menu se link hata diya, par <b>URL type karna to koi bhi kar sakta hai</b>. Guard page rokega, aur page ki API backend rokega (403). <b>Parda + taala.</b></td>
+        <td class="ans">"The frontend route guard prevents unauthorized UI access, while the backend must independently enforce authorization."</td>
+      </tr>
+      <tr>
+        <td class="num">63</td>
+        <td class="q">Logout ke baad Back button se protected page.</td>
+        <td class="cause">Browser history / cache</td>
+        <td>Guard har render par check kare + logout par state/cache clear + <code>navigate(..., { replace: true })</code></td>
+        <td class="why">Ghar chhoda to <b>chaabi bhi lo aur saaman bhi</b>. Logout = token hatao + Redux/React Query cache clear. <code>replace</code> se history mein protected page bachta hi nahi.</td>
+        <td class="ans">"I ensure protected routes verify current authentication and avoid exposing sensitive cached data after logout."</td>
+      </tr>
+
+      <tr class="group"><td colspan="6">🔑 Tokens + Session</td></tr>
+      <tr>
+        <td class="num">59</td>
+        <td class="q">Token expire → API 401.</td>
+        <td class="cause">Access token expire ho gaya</td>
+        <td>Axios interceptor: 401 → refresh token → original request retry → fail to logout</td>
+        <td class="why">Metro card ka balance khatam (401) → <b>recharge karo</b> (refresh) → <b>wapas gate par tap</b> (retry). Recharge bhi fail = ghar jao (logout). Retry sirf <b>ek baar</b>, warna infinite loop.</td>
+        <td class="ans">"I intercept the 401 response, refresh the token when supported, retry the original request safely, and log the user out if refresh fails."</td>
+      </tr>
+      <tr>
+        <td class="num">64</td>
+        <td class="q">10 APIs simultaneously 401.</td>
+        <td class="cause">Token sabke liye expire</td>
+        <td>Centralized refresh (ek hi promise) + pending requests ki queue → retry</td>
+        <td class="why">10 log ek saath locked darwaze par. <b>10 log chaabi lene nahi jaate</b>, ek jaata hai, baaki line mein wait. Chaabi aayi → sab andar. (Code neeche 👇)</td>
+        <td class="ans">"I centralize token refresh so concurrent requests don't each refresh independently; pending requests wait for the refresh result and then retry safely."</td>
+      </tr>
+      <tr>
+        <td class="num">60</td>
+        <td class="q">Refresh karne par login state disappear.</td>
+        <td class="cause">Auth state sirf memory mein</td>
+        <td>App startup par auth restore (httpOnly cookie → <code>/me</code> API, ya refresh call)</td>
+        <td class="why">Page refresh = <b>React ki yaaddasht saaf</b>. App start par pehle poocho "main kaun hoon?" (<code>/me</code>). Tab tak loader dikhao, warna login page flash hoga. Secure option: <b>httpOnly cookie</b> (JS nahi padh sakta, XSS se safe).</td>
+        <td class="ans">"I restore the authentication state during application startup using the application's secure token/session strategy."</td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h2 class="sec">Code Snippets (Priority 7)</h2>
+  <div class="cards">
+    <div class="card">
+      <h3>#58 + #61 · ProtectedRoute with roles</h3>
+<pre>function ProtectedRoute({ allowedRoles, children }) {
+  const { user, loading } = useAuth();
+  const location = useLocation();
+
+  if (loading) return &lt;Spinner /&gt;;           // #60: restore ho raha
+  if (!user)
+    return &lt;Navigate to="/login" state={{ from: location }} replace /&gt;;
+  if (allowedRoles &amp;&amp; !allowedRoles.includes(user.role))
+    return &lt;Navigate to="/unauthorized" replace /&gt;;
+  return children;
+}
+
+&lt;Route path="/admin" element={
+  &lt;ProtectedRoute allowedRoles={['admin']}&gt;&lt;Admin /&gt;&lt;/ProtectedRoute&gt;
+} /&gt;</pre>
+    </div>
+    <div class="card">
+      <h3>#59 + #64 · 401 interceptor + single refresh queue</h3>
+<pre>let refreshPromise = null;   // sab isi ek promise ka wait karenge
+
+api.interceptors.response.use(null, async (error) =&gt; {
+  const original = error.config;
+  if (error.response?.status !== 401 || original._retry)
+    return Promise.reject(error);
+  original._retry = true;             // sirf ek baar retry
+
+  try {
+    refreshPromise ??= api.post('/auth/refresh')
+      .finally(() =&gt; { refreshPromise = null; });
+    await refreshPromise;             // 10 requests, 1 refresh
+    return api(original);             // original request retry
+  } catch {
+    logout();                         // refresh fail
+    return Promise.reject(error);
+  }
+});</pre>
+    </div>
+    <div class="card">
+      <h3>#60 · Startup par auth restore</h3>
+<pre>function AuthProvider({ children }) {
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() =&gt; {
+    api.get('/auth/me')              // httpOnly cookie apne aap jayegi
+      .then(res =&gt; setUser(res.data))
+      .catch(() =&gt; setUser(null))
+      .finally(() =&gt; setLoading(false));
+  }, []);
+
+  return (
+    &lt;AuthContext.Provider value={{ user, setUser, loading }}&gt;
+      {children}
+    &lt;/AuthContext.Provider&gt;
+  );
+}</pre>
+    </div>
+    <div class="card">
+      <h3>#63 · Logout properly</h3>
+<pre>const logout = async () =&gt; {
+  await api.post('/auth/logout');     // server session/cookie khatam
+  setUser(null);
+  queryClient.clear();                // cached data saaf
+  dispatch(resetStore());             // redux saaf
+  navigate('/login', { replace: true }); // history mein nahi bachega
+};</pre>
+    </div>
+  </div>
+
+  <!-- ============ PRIORITY 8 ============ -->
+  <h2 class="sec" id="p8" style="margin-top:56px">Priority 8: Redux / State Management</h2>
+
+  <div class="mnemonic">
+    <h2>🧠 Ek line mein pura table yaad karo</h2>
+    <ol>
+      <li><b>Kya rakhein (65, 66, 72):</b> "<b>Server ka data → React Query, poori app ka data → Redux, ek component ka → useState</b>".</li>
+      <li><b>Kaise rakhein (68, 69, 73):</b> "<b>Domain-wise slice</b> + status (<code>idle / loading / succeeded / failed</code>) + RTK".</li>
+      <li><b>Performance (67, 70, 71):</b> "<b>Chhota select karo, kam store karo, zaroori hi persist karo</b>".</li>
+    </ol>
+  </div>
+
+  <div class="table-wrap">
+  <table>
+    <thead>
+      <tr><th>#</th><th>Scenario</th><th>Cause / Problem</th><th>Fix / Approach</th><th>Easy Explain (yaad trick)</th><th>Quick Interview Answer</th></tr>
+    </thead>
+    <tbody>
+      <tr class="group"><td colspan="6">🤔 Kya rakhein, kahan rakhein</td></tr>
+      <tr>
+        <td class="num">65</td>
+        <td class="q">Redux vs Context?</td>
+        <td class="cause">Galat state tool chuna</td>
+        <td>Complexity, update frequency aur use case dekh ke decide</td>
+        <td class="why"><b>= P2 #15.</b> Context = <b>pipe</b> (data pahunchata hai, manage nahi karta, value badli to sab consumers re-render). Redux = <b>poora godown system</b> (selectors, DevTools, middleware, predictable updates).</td>
+        <td class="ans">"Context is useful for relatively simple shared values, while Redux is more suitable when application state becomes large, complex and needs predictable centralized updates."</td>
+      </tr>
+      <tr>
+        <td class="num">66</td>
+        <td class="q">Redux store mein kya rakhna chahiye?</td>
+        <td class="cause">Sab kuch global bana diya</td>
+        <td>Sirf genuinely shared app state</td>
+        <td class="why">Redux = <b>ghar ka common fridge</b>. Sabki cheez wahan, par apna toothbrush nahi. Modal open/close, input ki typing, hover = <b>local</b>. Logged-in user, cart, permissions = <b>Redux</b>.</td>
+        <td class="ans">"I keep state that genuinely needs to be shared across multiple parts of the application; local UI state should generally remain local."</td>
+      </tr>
+      <tr>
+        <td class="num">72</td>
+        <td class="q">Server state vs client state?</td>
+        <td class="cause">Dono ka lifecycle / owner alag</td>
+        <td>Server data → React Query / RTK Query · UI state → useState / Redux</td>
+        <td class="why"><b>Server state = kiraye ka ghar</b> (malik backend hai, purana ho sakta hai, refetch/cache/sync chahiye). <b>Client state = apna ghar</b> (tum malik: theme, modal, form step).</td>
+        <td class="ans">"Server state is owned by the backend and needs fetching, caching and synchronization; client state is owned by the frontend, such as UI state or local workflow state."</td>
+      </tr>
+
+      <tr class="group"><td colspan="6">🏗️ Store ka structure</td></tr>
+      <tr>
+        <td class="num">68</td>
+        <td class="q">Multiple modules same global data use karte hain.</td>
+        <td class="cause">Shared state idhar-udhar bikhra hua</td>
+        <td>Domain-wise slice + actions + selectors</td>
+        <td class="why">Supermarket ke <b>aisle</b>: <code>authSlice</code>, <code>cartSlice</code>, <code>productsSlice</code>. Har module <b>selector se padhe, action se badle</b>. Seedha state mat chhedo.</td>
+        <td class="ans">"I organize shared state by domain and expose predictable actions and selectors for the consuming modules."</td>
+      </tr>
+      <tr>
+        <td class="num">69</td>
+        <td class="q">API loading/success/error Redux mein.</td>
+        <td class="cause">Async state ko consistent handle karna</td>
+        <td><code>createAsyncThunk</code> + <code>status</code> field</td>
+        <td class="why"><b>= P4 #31 ka Redux version.</b> Thunk ke 3 actions apne aap banenge: <b>pending → fulfilled / rejected</b>. State mein rakho: <code>{ data, status, error }</code>. (Code neeche 👇)</td>
+        <td class="ans">"I maintain a clear request status such as idle, loading, succeeded or failed, along with the relevant data and error."</td>
+      </tr>
+      <tr>
+        <td class="num">73</td>
+        <td class="q">Redux Toolkit kyun?</td>
+        <td class="cause">Traditional Redux mein bahut boilerplate</td>
+        <td><code>createSlice</code>, <code>configureStore</code>, Immer, <code>createAsyncThunk</code>, RTK Query</td>
+        <td class="why">Purana Redux = <b>4 files</b> (action types, action creators, reducer, store). RTK = <b>1 slice</b>. Immer se <code>state.count++</code> likh sakte ho, andar se immutable hi rehta hai. DevTools + thunk pehle se setup.</td>
+        <td class="ans">"Redux Toolkit reduces Redux boilerplate and provides recommended patterns for slices, immutable updates and store configuration, with built-in support for async logic and DevTools."</td>
+      </tr>
+
+      <tr class="group"><td colspan="6">⚡ Performance + Persistence</td></tr>
+      <tr>
+        <td class="num">67</td>
+        <td class="q">Redux update → unnecessary renders.</td>
+        <td class="cause">Broad subscription / selector har baar naya object return karta hai</td>
+        <td>Granular selectors + normalized state + <code>createSelector</code></td>
+        <td class="why">Poora akhbaar mat mangao, <b>sirf sports page</b>. <code>useSelector(s =&gt; s)</code> = har update par re-render. <code>useSelector(s =&gt; s.cart.count)</code> = sirf count badle tab. Filter/map wala selector → <code>createSelector</code>.</td>
+        <td class="ans">"I optimize selectors so components subscribe only to the state they actually need."</td>
+      </tr>
+      <tr>
+        <td class="num">71</td>
+        <td class="q">Redux mein huge data store karne se performance issue.</td>
+        <td class="cause">Bahut zyada data / subscriptions</td>
+        <td>Normalize (<code>createEntityAdapter</code>), paginate, narrow selectors, server data React Query mein</td>
+        <td class="why">Normalize = <b>phone ki contact list</b>: <code>{ ids: [1,2], entities: { 1: {...} } }</code>. ID se seedha dhoondho, array mein loop nahi. Aur 10,000 records store mein bharne hi kyun? Paginate karo.</td>
+        <td class="ans">"I avoid storing unnecessarily large datasets, normalize shared data where useful, paginate server data and use granular selectors."</td>
+      </tr>
+      <tr>
+        <td class="num">70</td>
+        <td class="q">Refresh ke baad Redux state disappear.</td>
+        <td class="cause">Redux store sirf memory mein hota hai</td>
+        <td>Sirf zaroori, non-sensitive state persist (<code>redux-persist</code> whitelist)</td>
+        <td class="why">Refresh = RAM saaf. <b>Sirf zaroori saaman bag mein</b>: cart, theme, language. ❌ Token / password localStorage mein nahi (XSS). Server data persist mat karo, dobara fetch karo.</td>
+        <td class="ans">"If persistence is actually required, I persist selected non-sensitive state and rehydrate it on startup rather than persisting everything."</td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h2 class="sec">Code Snippets (Priority 8)</h2>
+  <div class="cards">
+    <div class="card">
+      <h3>#69 + #73 · RTK slice + createAsyncThunk</h3>
+<pre>export const fetchUsers = createAsyncThunk('users/fetch', async () =&gt; {
+  const res = await api.get('/users');
+  return res.data;
+});
+
+const usersSlice = createSlice({
+  name: 'users',
+  initialState: { data: [], status: 'idle', error: null },
+  reducers: {
+    clearUsers: (state) =&gt; { state.data = []; }, // Immer: mutate jaisa
+  },
+  extraReducers: (builder) =&gt; {
+    builder
+      .addCase(fetchUsers.pending,   (s) =&gt; { s.status = 'loading'; })
+      .addCase(fetchUsers.fulfilled, (s, a) =&gt; {
+        s.status = 'succeeded'; s.data = a.payload;
+      })
+      .addCase(fetchUsers.rejected,  (s, a) =&gt; {
+        s.status = 'failed'; s.error = a.error.message;
+      });
+  },
+});</pre>
+    </div>
+    <div class="card">
+      <h3>#67 · Granular selectors + createSelector</h3>
+<pre>// ❌ poora store: har update par re-render
+const state = useSelector(s =&gt; s);
+
+// ✅ sirf jo chahiye
+const count = useSelector(s =&gt; s.cart.items.length);
+
+// ✅ derived data memoized
+const selectTotal = createSelector(
+  [s =&gt; s.cart.items],
+  (items) =&gt; items.reduce((sum, i) =&gt; sum + i.price, 0)
+);
+const total = useSelector(selectTotal);</pre>
+    </div>
+    <div class="card">
+      <h3>#70 · redux-persist (sirf zaroori)</h3>
+<pre>const persistConfig = {
+  key: 'root',
+  storage,
+  whitelist: ['cart', 'theme'],  // sirf ye bachenge
+  // auth token yahan NAHI
+};
+const persisted = persistReducer(persistConfig, rootReducer);</pre>
+    </div>
+    <div class="card">
+      <h3>#72 · Server state vs client state</h3>
+<pre>// Server state: React Query / RTK Query
+const { data: products } = useQuery({
+  queryKey: ['products'], queryFn: getProducts,
+});
+
+// Client state: Redux / useState
+const theme = useSelector(s =&gt; s.ui.theme);
+const [isOpen, setIsOpen] = useState(false);</pre>
+    </div>
+  </div>
+
+  <!-- ============ SECURITY ============ -->
+  <h2 class="sec" id="sec" style="margin-top:72px">🔐 React Security Scenarios</h2>
+  <p class="lead">Alag numbering: <b>S1–S30</b>. Pure security section ka ek hi mantra hai:</p>
+
+  <div class="mnemonic" style="background:var(--warn-tint)">
+    <h2>🧠 Security ke 4 mantra (poora section inhi se nikalta hai)</h2>
+    <ol>
+      <li><b>"Browser = dushman ka ilaaka"</b>. Jo browser mein gaya (JS, .env, Redux, URL) wo <b>public</b> hai. Secret wahan kabhi nahi.</li>
+      <li><b>"Frontend = parda, Backend = taala"</b>. Route guard, button hide, role check sirf UX hai. <b>Asli check backend</b> par.</li>
+      <li><b>"User input = zeher, jab tak saaf na ho"</b>. HTML, URL, file, search: sab validate/sanitize karo, backend par dobara.</li>
+      <li><b>"Kam dikhao, kam rakho, kam log karo"</b>. API sirf zaroori fields bheje, logout par sab saaf, console/URL/error mein koi secret nahi.</li>
+    </ol>
+  </div>
+
+  <!-- Security P1 -->
+  <h2 class="sec" style="font-size:19px">Security Priority 1: XSS, Tokens, Access Control</h2>
+  <div class="table-wrap">
+  <table>
+    <thead>
+      <tr><th>#</th><th>Scenario / Question</th><th>Main Risk</th><th>Fix / Approach</th><th>Easy Explain (yaad trick)</th><th>Quick Interview Answer</th></tr>
+    </thead>
+    <tbody>
+      <tr class="group"><td colspan="6">💉 XSS (Cross-Site Scripting)</td></tr>
+      <tr>
+        <td class="num">S1</td>
+        <td class="q">User input ko dangerouslySetInnerHTML se render kar rahe ho. Risk?</td>
+        <td class="cause">XSS</td>
+        <td>Avoid karo. HTML zaroori ho to <code>DOMPurify</code> se sanitize</td>
+        <td class="why">Naam hi "<b>dangerously</b>" hai, React khud warning de raha hai. Normal <code>{text}</code> React apne aap escape karta hai (safe). Ye escape <b>band</b> kar deta hai.</td>
+        <td class="ans">"I avoid dangerouslySetInnerHTML; if HTML is required, I sanitize it before rendering."</td>
+      </tr>
+      <tr>
+        <td class="num">S2</td>
+        <td class="q">User comment mein &lt;script&gt; inject kar de?</td>
+        <td class="cause">Stored / Reflected XSS</td>
+        <td>Output encoding + sanitization + CSP</td>
+        <td class="why">Stored = <b>zeher database mein</b>, har dekhne wale ko lagega. Reflected = <b>zeher URL mein</b>, link click karne wale ko. 3 layer: React escape → sanitize → CSP (last diwar).</td>
+        <td class="ans">"User input should never be treated as trusted HTML."</td>
+      </tr>
+      <tr>
+        <td class="num">S18</td>
+        <td class="q">React app user input wala URL display karta hai.</td>
+        <td class="cause">XSS / malicious URL</td>
+        <td>Sirf <code>http:</code> / <code>https:</code> allow karo</td>
+        <td class="why"><code>&lt;a href="javascript:stealCookies()"&gt;</code>. React text escape karta hai, <b>href ka protocol nahi rokta</b>. Allow-list lagao. (S1–S2 ka bhai, isliye yahan rakha.)</td>
+        <td class="ans">"I restrict dangerous protocols such as javascript: when handling user-controlled URLs."</td>
+      </tr>
+
+      <tr class="group"><td colspan="6">🔑 Token Storage</td></tr>
+      <tr>
+        <td class="num">S3</td>
+        <td class="q">Login ke baad token kahan store karoge?</td>
+        <td class="cause">JS ko dikhne wala token XSS se chori ho sakta hai</td>
+        <td><code>HttpOnly</code> + <code>Secure</code> + <code>SameSite</code> cookie</td>
+        <td class="why">Teen taale: <b>HttpOnly</b> = JS nahi padh sakta · <b>Secure</b> = sirf HTTPS par · <b>SameSite</b> = doosri site se nahi jayegi (CSRF). Access token memory mein, refresh token HttpOnly cookie mein: common pattern.</td>
+        <td class="ans">"For browser auth, HttpOnly cookies reduce JavaScript access to the session token."</td>
+      </tr>
+      <tr>
+        <td class="num">S4</td>
+        <td class="q">JWT localStorage mein hai. XSS ho gaya.</td>
+        <td class="cause">Attacker ki JS token padh sakti hai</td>
+        <td>XSS kam karo + HttpOnly cookie architecture socho</td>
+        <td class="why">localStorage = <b>khuli almari</b>, koi bhi script <code>localStorage.getItem('token')</code> kar lega. Ek XSS = poora account gaya. Cookie approach mein XSS ab bhi nuksan kar sakta hai, par <b>token le ke bhaag nahi sakta</b>.</td>
+        <td class="ans">"LocalStorage tokens are accessible to JavaScript, so XSS can expose them."</td>
+      </tr>
+
+      <tr class="group"><td colspan="6">🚪 Access Control (Parda vs Taala)</td></tr>
+      <tr>
+        <td class="num">S5</td>
+        <td class="q">API call mein Bearer token hai. Kya frontend security enough hai?</td>
+        <td class="cause">Client ko manipulate kiya ja sakta hai</td>
+        <td>Backend har request par authentication + authorization check kare</td>
+        <td class="why">Token = <b>ID card</b>. Card dikhana kaafi nahi, guard (backend) ko check karna hai ki card asli hai aur <b>is kamre ki permission</b> hai.</td>
+        <td class="ans">"Frontend route protection is only UX; real authorization must happen on the backend."</td>
+      </tr>
+      <tr>
+        <td class="num">S6</td>
+        <td class="q">User /admin URL manually type karta hai.</td>
+        <td class="cause">Unauthorized page / API access</td>
+        <td>Route guard + backend authorization</td>
+        <td class="why"><b>= P7 #62.</b> Route guard page rokta hai (parda), backend API rokta hai (taala).</td>
+        <td class="ans">"Route guards protect the UI, but backend authorization protects the resource."</td>
+      </tr>
+      <tr>
+        <td class="num">S7</td>
+        <td class="q">Normal user API request modify karke admin/doosre ka resource access kare?</td>
+        <td class="cause">Broken Access Control / IDOR</td>
+        <td>Backend ownership + RBAC check</td>
+        <td class="why">IDOR = <code>/orders/101</code> ko <code>/orders/102</code> kar diya aur <b>doosre ka order</b> dikh gaya. Backend poochhe: "ye order <b>isi user ka</b> hai?" Postman se koi bhi request badal sakta hai.</td>
+        <td class="ans">"Never trust role or ID coming from the frontend; authorization must be verified server-side."</td>
+      </tr>
+      <tr>
+        <td class="num">S8</td>
+        <td class="q">User DevTools se role: admin kar de.</td>
+        <td class="cause">Client-side role tampering</td>
+        <td>Backend role ko token/session se nikale, request body se nahi</td>
+        <td class="why">Apne ID card par pen se "Manager" likh diya. <b>Guard apne register mein dekhta hai</b>, card par likha nahi. Frontend role sirf menu dikhane ke liye.</td>
+        <td class="ans">"Frontend role checks cannot be considered security boundaries."</td>
+      </tr>
+      <tr>
+        <td class="num">S9</td>
+        <td class="q">API sensitive fields bhej rahi hai jo UI dikhata nahi.</td>
+        <td class="cause">Data exposure</td>
+        <td>Backend sirf zaroori fields bheje (DTO / select)</td>
+        <td class="why">React mein <code>password</code> field chhupa diya, par <b>Network tab</b> mein poora JSON dikh raha hai. Chhupana ≠ na bhejna. <b>Jo bheja, wo leak.</b></td>
+        <td class="ans">"Security should be enforced at the API response level, not only by hiding fields in React."</td>
+      </tr>
+      <tr>
+        <td class="num">S10</td>
+        <td class="q">Search/filter input directly backend jaata hai. Risk?</td>
+        <td class="cause">Injection (SQL/NoSQL), backend handling par depend</td>
+        <td>Backend validation + parameterized queries</td>
+        <td class="why">Search box mein <code>' OR 1=1 --</code>. React validation = gate par board, backend = asli guard. <b>Parameterized query</b> = input ko hamesha "data" maano, "command" nahi.</td>
+        <td class="ans">"React validation improves UX, but backend validation and parameterized queries are mandatory."</td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+
+  <!-- Security P2 -->
+  <h2 class="sec" style="font-size:19px">Security Priority 2: Production Security</h2>
+  <div class="table-wrap">
+  <table>
+    <thead>
+      <tr><th>#</th><th>Scenario / Question</th><th>Risk</th><th>Fix / Approach</th><th>Easy Explain (yaad trick)</th><th>Quick Interview Answer</th></tr>
+    </thead>
+    <tbody>
+      <tr class="group"><td colspan="6">🤫 Secrets</td></tr>
+      <tr>
+        <td class="num">S11</td>
+        <td class="q">React app ki .env mein API key hai. Kya ye secret hai?</td>
+        <td class="cause">Frontend env values bundle mein chali jaati hain</td>
+        <td>Real secrets frontend mein kabhi nahi. Backend proxy se call karo</td>
+        <td class="why"><code>VITE_</code> / <code>REACT_APP_</code> wale variables build ke waqt <b>JS file mein copy</b> ho jaate hain. .env yahan <b>tijori nahi, notice board</b> hai. Sirf public keys (Maps key with domain restriction) theek hain.</td>
+        <td class="ans">"Anything shipped to the browser should be considered public."</td>
+      </tr>
+      <tr>
+        <td class="num">S12</td>
+        <td class="q">AWS/API secret galti se repo mein commit ho gaya.</td>
+        <td class="cause">Credential leak</td>
+        <td><b>Pehle revoke/rotate</b>, phir history saaf, aage se secret manager</td>
+        <td class="why">Chaabi kho gayi to <b>pehle taala badlo</b>, phir chaabi dhoondho. Commit delete karne se kuch nahi hota, bots minuton mein GitHub scan kar lete hain. Rokne ke liye: <code>.gitignore</code> + <code>gitleaks</code> pre-commit.</td>
+        <td class="ans">"Secrets must stay on the backend or secret-management system."</td>
+      </tr>
+
+      <tr class="group"><td colspan="6">🌐 CORS, CSRF, Rate Limit</td></tr>
+      <tr>
+        <td class="num">S13</td>
+        <td class="q">CORS <code>*</code> hai. Secure hai?</td>
+        <td class="cause">Koi bhi website API call kar sakti hai (design par depend)</td>
+        <td>Explicit trusted origins ki list</td>
+        <td class="why">CORS = <b>browser ka rule</b>, server ka taala nahi. Postman/curl par CORS lagta hi nahi. <code>*</code> ke saath credentials allow hi nahi hote. Production: <code>https://myapp.com</code> jaisi exact list.</td>
+        <td class="ans">"CORS is not authentication; production APIs should allow only required origins."</td>
+      </tr>
+      <tr>
+        <td class="num">S14</td>
+        <td class="q">Cookie-based auth par CSRF attack.</td>
+        <td class="cause">Browser cookies apne aap bhej deta hai</td>
+        <td><code>SameSite</code> cookie + CSRF token jahan zaroori</td>
+        <td class="why">Tum bank mein logged in ho, <b>evil.com</b> chupke se bank ko "transfer" form bhejta hai. Browser cookie saath bhej deta hai. <b>SameSite=Lax/Strict</b> = doosri site se cookie nahi jayegi. CSRF token = har form par secret code.</td>
+        <td class="ans">"Cookie-based authentication needs CSRF protection appropriate to the architecture."</td>
+      </tr>
+      <tr>
+        <td class="num">S15</td>
+        <td class="q">Login API baar-baar call ho rahi hai.</td>
+        <td class="cause">Brute force / abuse</td>
+        <td>Backend rate limiting + CAPTCHA + monitoring</td>
+        <td class="why">ATM 3 galat PIN par <b>card block</b> kar deta hai. Button disable karne se bot nahi rukta (wo seedha API maarta hai). <b>Rok sirf server laga sakta hai.</b></td>
+        <td class="ans">"Rate limiting must be implemented server-side; React cannot stop automated requests."</td>
+      </tr>
+
+      <tr class="group"><td colspan="6">📁 File Upload</td></tr>
+      <tr>
+        <td class="num">S16</td>
+        <td class="q">User React se malicious file upload karta hai.</td>
+        <td class="cause">Malicious file / content</td>
+        <td>Backend validation, type/size limit, safe storage (S3, alag domain), virus scan</td>
+        <td class="why">Airport par <b>bag scan</b> hota hai, passenger ki baat nahi maani jaati. File ko random naam do, execute na ho sake aisi jagah rakho.</td>
+        <td class="ans">"Client validation is not sufficient for file security."</td>
+      </tr>
+      <tr>
+        <td class="num">S17</td>
+        <td class="q"><code>.exe</code> ka naam badal ke <code>.jpg</code> kar diya.</td>
+        <td class="cause">MIME / extension spoofing</td>
+        <td>Server file ke <b>magic bytes</b> (content) check kare</td>
+        <td class="why">Dabbe par "mithai" likha hai, <b>andar khol ke dekho</b>. Extension aur browser ka MIME type dono user badal sakta hai. Asli file ke pehle bytes batate hain (JPG = <code>FF D8 FF</code>).</td>
+        <td class="ans">"I don't trust filename or client MIME type; backend validates the upload."</td>
+      </tr>
+
+      <tr class="group"><td colspan="6">🗄️ Client State</td></tr>
+      <tr>
+        <td class="num">S19</td>
+        <td class="q">Sensitive data Redux mein store hai.</td>
+        <td class="cause">DevTools / persistence se exposure</td>
+        <td>Secrets client state mein nahi, sensitive data minimum</td>
+        <td class="why">Redux = <b>kaanch ka fridge</b>, DevTools se sab dikhta hai, redux-persist ho to localStorage mein bhi. Password, full card number, secret keys: <b>kabhi nahi</b>.</td>
+        <td class="ans">"Redux is client-side state, so I never treat it as a secure storage boundary."</td>
+      </tr>
+      <tr>
+        <td class="num">S20</td>
+        <td class="q">Logout ke baad bhi sensitive data Redux mein hai.</td>
+        <td class="cause">Data browser mein pada hai</td>
+        <td>Logout par store reset + cache clear + server session invalidate</td>
+        <td class="why"><b>= P7 #63.</b> Hotel checkout = <b>kamra khaali karo aur chaabi wapas</b>. Store reset + React Query clear + persisted storage clear + backend logout API.</td>
+        <td class="ans">"Logout should clear sensitive client state and invalidate the session appropriately."</td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+
+  <!-- Security P3 -->
+  <h2 class="sec" style="font-size:19px">Security Priority 3: Advanced (5+ Years)</h2>
+  <div class="table-wrap">
+  <table>
+    <thead>
+      <tr><th>#</th><th>Scenario / Question</th><th>Risk</th><th>Fix / Approach</th><th>Easy Explain (yaad trick)</th><th>Quick Interview Answer</th></tr>
+    </thead>
+    <tbody>
+      <tr class="group"><td colspan="6">🔄 Session Lifecycle</td></tr>
+      <tr>
+        <td class="num">S21</td>
+        <td class="q">Multiple APIs chal rahi hain aur access token expire ho gaya.</td>
+        <td class="cause">Kai refresh calls / race condition</td>
+        <td>Centralized refresh + queue / retry</td>
+        <td class="why"><b>= P7 #64.</b> 10 log locked darwaze par, <b>chaabi lene ek hi jaata hai</b>. Code P7 snippets mein hai.</td>
+        <td class="ans">"I centralize token refresh so concurrent 401s don't trigger multiple refresh requests."</td>
+      </tr>
+      <tr>
+        <td class="num">S22</td>
+        <td class="q">Refresh token bhi expire ho gaya.</td>
+        <td class="cause">Session refresh nahi ho sakta</td>
+        <td>Auth state clear → login par redirect</td>
+        <td class="why">Metro card <b>hi expire</b>. Recharge nahi hoga, naya banwao (login). Retry loop mat banao. Seedha clear + redirect (+ "session expired" message).</td>
+        <td class="ans">"If refresh fails, I clear the session and require re-authentication."</td>
+      </tr>
+      <tr>
+        <td class="num">S23</td>
+        <td class="q">User ne doosre device par password change kiya.</td>
+        <td class="cause">Purana session abhi bhi active</td>
+        <td>Backend session / token revocation (token version, refresh token rotation)</td>
+        <td class="why">Ghar ka taala badla to <b>purani saari chaabiyan bekaar</b> honi chahiye. JWT khud expire nahi hota, backend ko <code>tokenVersion</code> badha ke purane reject karne honge. React kuch nahi kar sakta.</td>
+        <td class="ans">"Session invalidation is a backend responsibility."</td>
+      </tr>
+      <tr>
+        <td class="num">S24</td>
+        <td class="q">React admin button chhupata hai, par user API manually call karta hai.</td>
+        <td class="cause">UI chhupana authorization nahi</td>
+        <td>Backend RBAC / ABAC</td>
+        <td class="why"><b>= S5–S8 ka summary.</b> RBAC = role se (admin). ABAC = attribute se (sirf apne department ka, office hours mein). <b>Parda ≠ taala.</b></td>
+        <td class="ans">"Hiding UI controls is not security; the API must enforce authorization."</td>
+      </tr>
+
+      <tr class="group"><td colspan="6">🕵️ Information Leakage</td></tr>
+      <tr>
+        <td class="num">S25</td>
+        <td class="q">Sensitive info URL query params mein dikh rahi hai.</td>
+        <td class="cause">URL history, server logs, Referer header mein chala jaata hai</td>
+        <td>Token / PII URL mein nahi. POST body ya header use karo</td>
+        <td class="why">URL = <b>postcard</b>, raaste mein sab padh sakte hain (browser history, proxy logs, analytics, screenshot). Body = <b>band lifafa</b>. <code>?token=abc</code> kabhi nahi.</td>
+        <td class="ans">"I avoid putting tokens or sensitive data in URLs."</td>
+      </tr>
+      <tr>
+        <td class="num">S26</td>
+        <td class="q">Error response mein stack trace / DB details aa rahe hain.</td>
+        <td class="cause">Information leakage</td>
+        <td>Production mein generic message + server-side logging (Sentry)</td>
+        <td class="why">Chor ko <b>ghar ka naksha</b> mat do. "Table users column pwd not found" = attacker ko DB structure mil gaya. User ko: "Something went wrong (ID: 8f3a)". Detail sirf logs mein.</td>
+        <td class="ans">"Client receives safe error messages; detailed diagnostics stay in server logs."</td>
+      </tr>
+      <tr>
+        <td class="num">S30</td>
+        <td class="q">Sensitive data browser console mein log ho raha hai.</td>
+        <td class="cause">Information exposure</td>
+        <td>Sensitive logging hatao, production mein console strip karo</td>
+        <td class="why"><code>console.log(user)</code> = token + phone sab <b>screen share mein dikh gaya</b>. Build mein <code>drop_console</code>, ESLint <code>no-console</code> rule.</td>
+        <td class="ans">"I never log tokens, passwords, or sensitive personal data, and I strip or control console logging in production builds."</td>
+      </tr>
+
+      <tr class="group"><td colspan="6">📦 Supply Chain + Browser Defense</td></tr>
+      <tr>
+        <td class="num">S27</td>
+        <td class="q">Third-party React package mein vulnerability hai.</td>
+        <td class="cause">Supply-chain risk</td>
+        <td><code>npm audit</code>, Dependabot/Snyk (SCA), lockfile commit, update</td>
+        <td class="why">Bahar se aaya <b>khana bhi check</b> karo. Tumhara code safe ho sakta hai, par <code>node_modules</code> mein 1000 packages hain. Lockfile = har baar <b>exact wahi version</b>.</td>
+        <td class="ans">"I regularly audit dependencies and patch vulnerable packages."</td>
+      </tr>
+      <tr>
+        <td class="num">S28</td>
+        <td class="q">Purana vulnerable package kisi doosri dependency ke andar required hai.</td>
+        <td class="cause">Transitive dependency risk</td>
+        <td><code>npm ls pkg</code> → parent upgrade / replace / <code>overrides</code></td>
+        <td class="why">Tumhare dost ka dost bimaar hai. <code>npm ls</code> se <b>khandaan ka tree</b> dekho, kaun laa raha hai. Parent upgrade karo, na ho to <code>package.json</code> mein <code>overrides</code> (test karke!).</td>
+        <td class="ans">"I check both direct and transitive dependencies."</td>
+      </tr>
+      <tr>
+        <td class="num">S29</td>
+        <td class="q">Production app mein CSP nahi hai.</td>
+        <td class="cause">XSS hua to nuksan zyada</td>
+        <td>Server / CDN par <code>Content-Security-Policy</code> header</td>
+        <td class="why">CSP = <b>guest list</b>: sirf in jagahon se script chalegi. XSS ne script daal bhi di to browser bolega "list mein naam nahi, nahi chalega". Last line of defense.</td>
+        <td class="ans">"CSP provides an additional browser-side defense against XSS."</td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h2 class="sec">Code Snippets (Security)</h2>
+  <div class="cards">
+    <div class="card">
+      <h3>S1–S2 · XSS: escape vs sanitize</h3>
+<pre>// ✅ React apne aap escape karta hai: safe
+&lt;p&gt;{comment}&lt;/p&gt;   // "&lt;script&gt;" text ban ke dikhega
+
+// ❌ danger
+&lt;div dangerouslySetInnerHTML={{ __html: comment }} /&gt;
+
+// ✅ HTML zaroori ho to sanitize
+import DOMPurify from 'dompurify';
+&lt;div dangerouslySetInnerHTML={{
+  __html: DOMPurify.sanitize(comment)
+}} /&gt;</pre>
+    </div>
+    <div class="card">
+      <h3>S18 · Safe URL (javascript: block)</h3>
+<pre>const isSafeUrl = (url) =&gt; {
+  try {
+    const { protocol } = new URL(url, window.location.origin);
+    return ['http:', 'https:'].includes(protocol);
+  } catch {
+    return false;
+  }
+};
+
+&lt;a href={isSafeUrl(link) ? link : '#'}
+   target="_blank" rel="noopener noreferrer"&gt;
+  Visit
+&lt;/a&gt;</pre>
+    </div>
+    <div class="card">
+      <h3>S3 + S14 · Secure cookie (backend, Express)</h3>
+<pre>res.cookie('refreshToken', token, {
+  httpOnly: true,     // JS nahi padh sakta (XSS)
+  secure: true,       // sirf HTTPS
+  sameSite: 'strict', // doosri site se nahi (CSRF)
+  maxAge: 7 * 24 * 60 * 60 * 1000,
+});
+
+// Frontend: cookie bhejne ke liye
+axios.defaults.withCredentials = true;</pre>
+    </div>
+    <div class="card">
+      <h3>S13 · CORS: exact origins</h3>
+<pre>// ❌
+app.use(cors({ origin: '*' }));
+
+// ✅
+app.use(cors({
+  origin: ['https://myapp.com', 'https://admin.myapp.com'],
+  credentials: true,
+}));</pre>
+    </div>
+    <div class="card">
+      <h3>S29 · CSP header (Nginx)</h3>
+<pre>add_header Content-Security-Policy
+  "default-src 'self';
+   script-src 'self';
+   img-src 'self' data: https:;
+   connect-src 'self' https://api.myapp.com;
+   frame-ancestors 'none';" always;</pre>
+    </div>
+    <div class="card">
+      <h3>S27–S28 + S30 · Dependencies + console</h3>
+<pre># Vulnerabilities dhoondho
+npm audit
+npm audit fix
+
+# Kaun laa raha hai purana package?
+npm ls lodash
+
+// package.json: transitive force update
+"overrides": { "lodash": "^4.17.21" }
+
+// vite.config.js: prod mein console hatao
+esbuild: { drop: ['console', 'debugger'] }</pre>
+    </div>
+  </div>
+
+    </div>
+
+    <!-- VIEW 2: SLIDE-WISE & GFG DEEP DIVE (From React_Setup.html) -->
+    <div id="viewSlides" style="display:none;">
+      <section class="chapter" id="mod1">
+      <div class="chapter-head">
+        <span class="chapter-num">MODULE 01 · SLIDES 1–14 & GFG</span>
+        <h2>Core Architecture, Virtual DOM & React Fiber</h2>
+      </div>
+
+      <!-- Slide 1 -->
+      <article class="slide-card" id="slide-1">
+        <div class="slide-card-header">
+          <div class="slide-card-title">
+            <span class="slide-badge">Slide 01</span>
+            <h3>What is React? Role of React in Client-Server Architecture & ReactDOM vs React</h3>
+          </div>
+          <span class="tag-pill vimp">V. IMP</span>
+          <span class="tag-pill gfg">GFG #1, #9</span>
+        </div>
+        <div class="slide-card-body">
+          <div class="slide-media-wrap">
+            <img src="./react_slides/slide_1.jpg" alt="Slide 1: What is React" loading="lazy">
+          </div>
+
+          <div class="concept-content">
+            <p><strong>1. React vs Angular (Library vs Framework):</strong></p>
+            <ul>
+              <li><strong>Angular is a full Framework:</strong> Opinionated structure, provides built-in HTTP client, Form validation, Dependency Injection, and Routing out of the box.</li>
+              <li><strong>React is a View-Layer Library:</strong> Developed by Meta to solve UI rendering. You choose your ecosystem packages (React Router, Zustand/Redux, TanStack Query).</li>
+            </ul>
+
+            <p><strong>2. React vs ReactDOM (GFG Question #9):</strong></p>
+            <ul>
+              <li><strong>`react`:</strong> Contains the core component logic, Hooks (<code>useState</code>, <code>useEffect</code>), and Virtual DOM element generation (<code>React.createElement</code>). It is completely platform-agnostic (can be used on web, mobile with React Native, or VR).</li>
+              <li><strong>`react-dom`:</strong> The platform-specific renderer for web browsers. It provides <code>ReactDOM.createRoot()</code> to mount the Virtual DOM onto the real browser DOM.</li>
+            </ul>
+
+            <div class="callout diagram">
+              <span class="callout-label">Client-Server Communication Pipeline</span>
+              Client Browser (React SPA) ➔ HTTP Request ➔ API Server (Node/Express, Spring, .NET) ➔ Database (PostgreSQL, Mongo) ➔ JSON Data ➔ React State update ➔ Fiber Virtual DOM diffing ➔ Browser DOM Repaint.
+            </div>
+
+            <div class="callout mnemonic">
+              <b>🧠 Yaad Rakhne Ki Trick:</b> React = "Painter" (Drawing plans/Virtual DOM). ReactDOM = "Mason" (Actually cementing bricks into the Browser wall).
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- VDOM & Fiber -->
+      <article class="slide-card" id="slide-vdom-fiber">
+        <div class="slide-card-header">
+          <div class="slide-card-title">
+            <span class="slide-badge">Core Engine</span>
+            <h3>Virtual DOM, Reconciliation Diffing (GFG #16, #128) & React Fiber</h3>
+          </div>
+          <span class="tag-pill vimp">Senior Round</span>
+          <span class="tag-pill gfg">GFG #16, #128</span>
+        </div>
+        <div class="slide-card-body">
+          <div class="concept-content">
+            <p><strong>1. How the Virtual DOM Works:</strong></p>
+            <ol>
+              <li>Direct Real DOM manipulation causes expensive <strong>Layout Reflow</strong> and <strong>Repaint</strong>.</li>
+              <li>React keeps an in-memory Virtual DOM tree. When state changes, a new VDOM tree is created.</li>
+              <li><strong>Reconciliation:</strong> React compares the previous VDOM with the new VDOM using a heuristic <code>O(n)</code> diffing algorithm.</li>
+              <li>Only the exact changed DOM nodes are batched and updated in the real DOM.</li>
+            </ol>
+
+            <p><strong>2. React Fiber Architecture:</strong></p>
+            <ul>
+              <li>Stack Reconciler (pre-React 16) used synchronous recursive tree traversal, which blocked the main thread on large trees.</li>
+              <li><strong>Fiber Reconciler</strong> splits rendering into units of work. It enables <strong>Time-Slicing</strong> and <strong>Cooperative Scheduling</strong>: high-priority tasks (typing, clicks) interrupt low-priority tasks (background data render).</li>
+            </ul>
+          </div>
+        </div>
+      </article>
+
+    </section>
+
+    <!-- MODULE 02 -->
+    <section class="chapter" id="mod2">
+      <div class="chapter-head">
+        <span class="chapter-num">MODULE 02 · SLIDES 15–25 & GFG</span>
+        <h2>Declarative Syntax, JSX & React Fragments</h2>
+      </div>
+
+      <!-- Slide 15 -->
+      <article class="slide-card" id="slide-15">
+        <div class="slide-card-header">
+          <div class="slide-card-title">
+            <span class="slide-badge">Slide 15</span>
+            <h3>Declarative vs Imperative Syntax (Vanilla JS vs React JSX) (GFG #2, #41)</h3>
+          </div>
+          <span class="tag-pill vimp">Slide 15</span>
+          <span class="tag-pill gfg">GFG #2, #41</span>
+        </div>
+        <div class="slide-card-body">
+          <div class="slide-media-wrap">
+            <img src="./react_slides/slide_15.jpg" alt="Slide 15: Declarative vs Imperative" loading="lazy">
+          </div>
+
+          <div class="concept-content">
+            <p><strong>Imperative (Vanilla JS):</strong> Step-by-step procedure batana padta hai ki DOM kaise manipulate ho.</p>
+            <p><strong>Declarative (React JSX):</strong> Hum target UI state describe karte hain ("What it should look like"), aur React engine internally updates manage karta hai.</p>
+
+            <div class="code-wrap">
+              <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+              <pre><code class="lang-javascript">// Imperative:
+const h1 = document.createElement("h1");
+h1.textContent = "Interview Happy";
+document.getElementById("root").appendChild(h1);
+
+// Declarative JSX (Transpiled into React.createElement):
+function App() {
+  return &lt;h1&gt;Interview Happy&lt;/h1&gt;;
+}</code></pre>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- Fragments & Conditional Rendering -->
+      <article class="slide-card" id="slide-fragments">
+        <div class="slide-card-header">
+          <div class="slide-card-title">
+            <span class="slide-badge">GFG Core</span>
+            <h3>React Fragments (GFG #8) & Conditional Rendering Techniques (GFG #10, #47, #48)</h3>
+          </div>
+          <span class="tag-pill gfg">GFG #8, #10, #47</span>
+        </div>
+        <div class="slide-card-body">
+          <div class="concept-content">
+            <p><strong>1. Why React Fragments (`&lt;&gt;...&lt;/&gt;`):</strong></p>
+            <p>JSX must return a single root element. Wrapping in an extra <code>&lt;div&gt;</code> creates unnecessary DOM nodes, breaking CSS Flexbox/Grid layouts or HTML table structure (e.g. <code>&lt;td&gt;</code> inside a <code>&lt;div&gt;</code> inside a <code>&lt;tr&gt;</code> is invalid HTML). Fragments group elements with zero extra DOM nodes.</p>
+
+            <div class="code-wrap">
+              <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+              <pre><code class="lang-javascript">// Shorthand Fragment:
+return (
+  &lt;&gt;
+    &lt;Header /&gt;
+    &lt;Main /&gt;
+  &lt;/&gt;
+);
+
+// Explicit Fragment (Required when passing a key in lists!):
+{items.map(item => (
+  &lt;React.Fragment key={item.id}&gt;
+    &lt;dt&gt;{item.term}&lt;/dt&gt;
+    &lt;dd&gt;{item.description}&lt;/dd&gt;
+  &lt;/React.Fragment&gt;
+))}</code></pre>
+            </div>
+
+            <p><strong>2. Conditional Rendering Pitfalls with `&amp;&amp;`:</strong></p>
+            <p>If <code>count</code> is <code>0</code>, <code>count &amp;&amp; &lt;Component /&gt;</code> will render the number <code>0</code> on screen because JavaScript evaluates falsy 0 as output! Always use boolean coercion or ternary:</p>
+
+            <div class="code-wrap">
+              <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+              <pre><code class="lang-javascript">// ❌ Bug: Renders "0" on screen when count is 0
+{count && &lt;Badge count={count} /&gt;}
+
+// ✅ Safe Fix 1: Boolean check
+{count > 0 && &lt;Badge count={count} /&gt;}
+
+// ✅ Safe Fix 2: Ternary Operator
+{isLoggedIn ? &lt;Dashboard /&gt; : &lt;Login /&gt;}</code></pre>
+            </div>
+          </div>
+        </div>
+      </article>
+
+    </section>
+
+    <!-- MODULE 03 -->
+    <section class="chapter" id="mod3">
+      <div class="chapter-head">
+        <span class="chapter-num">MODULE 03 · GFG CORE</span>
+        <h2>Components: Functional vs Class & PureComponent</h2>
+      </div>
+
+      <article class="slide-card" id="slide-comp-types">
+        <div class="slide-card-header">
+          <div class="slide-card-title">
+            <span class="slide-badge">GFG Core</span>
+            <h3>Functional vs Class Components (GFG #4) & React.PureComponent (GFG #131)</h3>
+          </div>
+          <span class="tag-pill gfg">GFG #4, #131</span>
+        </div>
+        <div class="slide-card-body">
+          <div class="concept-content">
+            <p><strong>1. Functional vs Class Component:</strong></p>
+            <ul>
+              <li><strong>Functional:</strong> Plain JavaScript function returning JSX. Uses Hooks for state and lifecycles. No <code>this</code> keyword confusion, smaller bundle size.</li>
+              <li><strong>Class:</strong> Extends <code>React.Component</code>, requires a <code>render()</code> method, manages state in <code>this.state</code>, uses lifecycle methods.</li>
+            </ul>
+
+            <p><strong>2. React.Component vs React.PureComponent:</strong></p>
+            <ul>
+              <li><code>React.Component</code>: Whenever parent renders, child always re-renders unless <code>shouldComponentUpdate()</code> is manually implemented.</li>
+              <li><code>React.PureComponent</code>: Implements a <strong>shallow comparison</strong> of props and state inside <code>shouldComponentUpdate()</code>. If props/state haven't changed, render is skipped!</li>
+              <li><strong>Functional equivalent:</strong> <code>React.memo(Component)</code>.</li>
+            </ul>
+          </div>
+        </div>
+      </article>
+
+    </section>
+
+    <!-- MODULE 04 -->
+    <section class="chapter" id="mod4">
+      <div class="chapter-head">
+        <span class="chapter-num">MODULE 04 · SLIDES 26–40 & GFG</span>
+        <h2>Props, State, Batching & Key Prop Rules</h2>
+      </div>
+
+      <article class="slide-card" id="slide-props-state-rules">
+        <div class="slide-card-header">
+          <div class="slide-card-title">
+            <span class="slide-badge">Core Concept</span>
+            <h3>Props vs State (GFG #5, #6, #7) & Why Array Index as Key Fails (GFG #18, #19)</h3>
+          </div>
+          <span class="tag-pill vimp">V. IMP</span>
+          <span class="tag-pill gfg">GFG #5, #7, #18, #19</span>
+        </div>
+        <div class="slide-card-body">
+          <div class="concept-content">
+            <p><strong>1. Props vs State Comparison:</strong></p>
+            <ul>
+              <li><strong>Props:</strong> Read-only data passed from parent to child (Unidirectional data flow). Cannot be modified by child.</li>
+              <li><strong>State:</strong> Mutable data managed privately inside the component. State changes trigger re-rendering.</li>
+              <li><strong>Default Props:</strong> Can be set via default parameters in functional components: <code>function Button({ label = "Submit" })</code>.</li>
+            </ul>
+
+            <p><strong>2. Why using Array Index as Key causes UI Bugs:</strong></p>
+            <p>When items in a list are deleted, filtered, or prepended, array indexes shift. Uncontrolled child inputs (like form textfields) retain their old DOM identity and become attached to the wrong item!</p>
+
+            <div class="code-wrap">
+              <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+              <pre><code class="lang-javascript">// ❌ Anti-pattern: Index as key
+{users.map((u, i) => &lt;UserRow key={i} user={u} /&gt;)}
+
+// ✅ Production: Stable database ID
+{users.map(u => &lt;UserRow key={u.id} user={u} /&gt;)}</code></pre>
+            </div>
+          </div>
+        </div>
+      </article>
+
+    </section>
+
+    <!-- MODULE 05 -->
+    <section class="chapter" id="mod5">
+      <div class="chapter-head">
+        <span class="chapter-num">MODULE 05 · GFG CORE</span>
+        <h2>Event Handling, SyntheticEvents & Bubbling</h2>
+      </div>
+
+      <article class="slide-card" id="slide-events">
+        <div class="slide-card-header">
+          <div class="slide-card-title">
+            <span class="slide-badge">GFG Core</span>
+            <h3>Synthetic Events & Stopping Event Bubbling (GFG #45, #135)</h3>
+          </div>
+          <span class="tag-pill gfg">GFG #45, #135</span>
+        </div>
+        <div class="slide-card-body">
+          <div class="concept-content">
+            <p><strong>1. What is a SyntheticEvent?</strong></p>
+            <p>React wraps native browser events in a cross-browser wrapper called <code>SyntheticEvent</code>. It has the exact same interface as native events (<code>e.stopPropagation()</code>, <code>e.preventDefault()</code>), ensuring consistent behavior across Chrome, Safari, Firefox, and Edge.</p>
+
+            <p><strong>2. Event Delegation in React 17+:</strong></p>
+            <p>React does not attach event listeners to every individual DOM element. In React 17+, all events are delegated and listened to at the <strong>Root DOM container (`#root`)</strong>!</p>
+
+            <div class="code-wrap">
+              <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+              <pre><code class="lang-javascript">function Card({ onCardClick, onButtonClick }) {
+  return (
+    &lt;div onClick={onCardClick}&gt;
+      &lt;h3&gt;Card Title&lt;/h3&gt;
+      &lt;button onClick={(e) => {
+        e.stopPropagation(); // Prevents click from bubbling up to parent card div!
+        onButtonClick();
+      }}&gt;
+        Delete
+      &lt;/button&gt;
+    &lt;/div&gt;
+  );
+}</code></pre>
+            </div>
+          </div>
+        </div>
+      </article>
+
+    </section>
+
+    <!-- MODULE 06 -->
+    <section class="chapter" id="mod6">
+      <div class="chapter-head">
+        <span class="chapter-num">MODULE 06 · SLIDES 41–55 & GFG</span>
+        <h2>useState & useEffect Traps, Lazy Init & Cleanup</h2>
+      </div>
+
+      <article class="slide-card" id="slide-usestate-useeffect">
+        <div class="slide-card-header">
+          <div class="slide-card-title">
+            <span class="slide-badge">Hooks Deep Dive</span>
+            <h3>Lazy Initialization (GFG #88) & useEffect Omitted Dependencies Bug (GFG #86, #111)</h3>
+          </div>
+          <span class="tag-pill vimp">V. IMP</span>
+          <span class="tag-pill gfg">GFG #86, #88, #111</span>
+        </div>
+        <div class="slide-card-body">
+          <div class="concept-content">
+            <p><strong>1. Lazy State Initialization in `useState`:</strong></p>
+            <p>If initial state requires an expensive computation (e.g. reading <code>localStorage</code> or parsing large JSON), passing it directly executes the computation on <strong>every single re-render</strong>! Pass a function instead so it executes <em>only once on mount</em>:</p>
+
+            <div class="code-wrap">
+              <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+              <pre><code class="lang-javascript">// ❌ Slow: localStorage read on EVERY re-render
+const [theme, setTheme] = useState(localStorage.getItem('theme'));
+
+// ✅ Fast: Evaluated strictly ONCE on mount (Lazy initialization)
+const [theme, setTheme] = useState(() => {
+  return localStorage.getItem('theme') || 'dark';
+});</code></pre>
+            </div>
+
+            <p><strong>2. What happens if you omit dependencies in useEffect? (GFG #86):</strong></p>
+            <ul>
+              <li>The effect creates a <strong>Stale Closure</strong>, referencing outdated state or prop values from the initial render.</li>
+              <li>Network calls won't refetch when parameters change.</li>
+              <li>If you omit the array completely <code>useEffect(fn)</code>, the effect runs after <strong>every render</strong>, risking infinite loops if state is updated inside!</li>
+            </ul>
+          </div>
+        </div>
+      </article>
+
+    </section>
+
+    <!-- MODULE 07 -->
+    <section class="chapter" id="mod7">
+      <div class="chapter-head">
+        <span class="chapter-num">MODULE 07 · SLIDES 71–85 & GFG</span>
+        <h2>useRef vs createRef & Memoization (useMemo vs useCallback)</h2>
+      </div>
+
+      <article class="slide-card" id="slide-refs-memo">
+        <div class="slide-card-header">
+          <div class="slide-card-title">
+            <span class="slide-badge">GFG #110, #115</span>
+            <h3>useRef vs createRef (GFG #110) & useMemo vs useCallback (GFG #81, #115)</h3>
+          </div>
+          <span class="tag-pill gfg">GFG #110, #115</span>
+        </div>
+        <div class="slide-card-body">
+          <div class="concept-content">
+            <p><strong>1. useRef vs createRef:</strong></p>
+            <ul>
+              <li><code>createRef()</code>: Always creates a brand new ref object <code>{ current: null }</code> on <strong>every render</strong>. Used in Class components.</li>
+              <li><code>useRef()</code>: Persists the <strong>exact same ref object</strong> across all renders in functional components. Updating <code>ref.current</code> does not trigger a re-render.</li>
+            </ul>
+
+            <p><strong>2. useMemo vs useCallback:</strong></p>
+            <ul>
+              <li><code>useMemo</code>: Caches the <strong>calculated value/result</strong> of an expensive function.</li>
+              <li><code>useCallback</code>: Caches the <strong>function definition/reference</strong> itself to avoid breaking child <code>React.memo</code> shallow comparison.</li>
+            </ul>
+
+            <div class="code-wrap">
+              <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+              <pre><code class="lang-javascript">// useMemo: Caches the result of sorting 10k items
+const sortedList = useMemo(() => {
+  return items.slice().sort((a, b) => b.score - a.score);
+}, [items]);
+
+// useCallback: Caches function reference
+const handleClick = useCallback((id) => {
+  dispatch({ type: 'SELECT', payload: id });
+}, [dispatch]);</code></pre>
+            </div>
+          </div>
+        </div>
+      </article>
+
+    </section>
+
+    <!-- MODULE 08 -->
+    <section class="chapter" id="mod8">
+      <div class="chapter-head">
+        <span class="chapter-num">MODULE 08 · SLIDES 56–70 & GFG</span>
+        <h2>React Router v6: Link vs NavLink, Params & useNavigate</h2>
+      </div>
+
+      <!-- Slide 60 -->
+      <article class="slide-card" id="slide-60">
+        <div class="slide-card-header">
+          <div class="slide-card-title">
+            <span class="slide-badge">Slide 60</span>
+            <h3>React Router v6 Setup & Link vs NavLink vs a tag (GFG #25, #57, #102, #137)</h3>
+          </div>
+          <span class="tag-pill vimp">Slide 60</span>
+          <span class="tag-pill gfg">GFG #25, #57, #102</span>
+        </div>
+        <div class="slide-card-body">
+          <div class="slide-media-wrap">
+            <img src="./react_slides/slide_60.jpg" alt="Slide 60: React Router Setup" loading="lazy">
+          </div>
+
+          <div class="concept-content">
+            <p><strong>1. `Link` vs `NavLink` vs `<a>`:</strong></p>
+            <ul>
+              <li><code>&lt;a&gt;</code>: Triggers a full browser reload, breaking SPA in-memory state.</li>
+              <li><code>&lt;Link&gt;</code>: Client-side navigation via <code>history.pushState()</code>.</li>
+              <li><code>&lt;NavLink&gt;</code>: Special <code>&lt;Link&gt;</code> that automatically knows if its URL matches the current active route, injecting an <code>active</code> CSS class or function!</li>
+            </ul>
+
+            <p><strong>2. Route Params (`useParams`) & Query Params (`useSearchParams`):</strong></p>
+
+            <div class="code-wrap">
+              <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+              <pre><code class="lang-javascript">import { useParams, useSearchParams, useNavigate } from 'react-router-dom';
+
+function ProductPage() {
+  const { productId } = useParams(); // /product/:productId -> 123
+  const [searchParams] = useSearchParams(); // ?filter=electronics
+  const filter = searchParams.get('filter');
+  const navigate = useNavigate(); // Replaced useHistory in React Router v6
+
+  return (
+    &lt;div&gt;
+      &lt;h2&gt;Product: {productId} ({filter})&lt;/h2&gt;
+      &lt;button onClick={() => navigate('/cart')}&gt;Go to Cart&lt;/button&gt;
+    &lt;/div&gt;
+  );
+}</code></pre>
+            </div>
+          </div>
+        </div>
+      </article>
+
+    </section>
+
+    <!-- MODULE 09 -->
+    <section class="chapter" id="mod9">
+      <div class="chapter-head">
+        <span class="chapter-num">MODULE 09 · SLIDES 86–100 & GFG</span>
+        <h2>Class Lifecycle Phases & Error Boundaries</h2>
+      </div>
+
+      <!-- Slide 90 -->
+      <article class="slide-card" id="slide-90">
+        <div class="slide-card-header">
+          <div class="slide-card-title">
+            <span class="slide-badge">Slide 90</span>
+            <h3>Class Component Lifecycle (GFG #70, #71, #72, #73) & Error Boundaries (GFG #76)</h3>
+          </div>
+          <span class="tag-pill vimp">Slide 90</span>
+          <span class="tag-pill gfg">GFG #71, #76</span>
+        </div>
+        <div class="slide-card-body">
+          <div class="slide-media-wrap">
+            <img src="./react_slides/slide_90.jpg" alt="Slide 90: State in Class Component" loading="lazy">
+          </div>
+
+          <div class="concept-content">
+            <p><strong>1. The 3 Phases of Component Lifecycle:</strong></p>
+            <ul>
+              <li><strong>Mounting:</strong> <code>constructor</code> ➔ <code>static getDerivedStateFromProps</code> ➔ <code>render</code> ➔ <code>componentDidMount</code>.</li>
+              <li><strong>Updating:</strong> <code>shouldComponentUpdate</code> ➔ <code>render</code> ➔ <code>getSnapshotBeforeUpdate</code> ➔ <code>componentDidUpdate</code>.</li>
+              <li><strong>Unmounting:</strong> <code>componentWillUnmount</code> (Cleanup timers, listeners).</li>
+            </ul>
+
+            <p><strong>2. Error Boundaries (GFG #76):</strong></p>
+            <p>Must be a Class Component. Catch JavaScript errors anywhere in their child tree and render fallback UI instead of a crashed white screen.</p>
+          </div>
+        </div>
+      </article>
+
+    </section>
+
+    <!-- MODULE 10 -->
+    <section class="chapter" id="mod10">
+      <div class="chapter-head">
+        <span class="chapter-num">MODULE 10 · SLIDES 101–110 & GFG</span>
+        <h2>Forms: Controlled vs Uncontrolled & Multi-Field Handling</h2>
+      </div>
+
+      <article class="slide-card" id="slide-forms-multi">
+        <div class="slide-card-header">
+          <div class="slide-card-title">
+            <span class="slide-badge">Forms Architecture</span>
+            <h3>Controlled vs Uncontrolled (GFG #104) & Single Handler for Multiple Inputs (GFG #136)</h3>
+          </div>
+          <span class="tag-pill gfg">GFG #104, #136</span>
+        </div>
+        <div class="slide-card-body">
+          <div class="concept-content">
+            <p><strong>Handling Multiple Form Inputs with a Single State Handler:</strong></p>
+            <p>Use the HTML <code>name</code> attribute with ES6 computed property names <code>[e.target.name]: e.target.value</code>:</p>
+
+            <div class="code-wrap">
+              <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+              <pre><code class="lang-javascript">function RegistrationForm() {
+  const [formData, setFormData] = useState({ username: '', email: '', role: 'developer' });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  return (
+    &lt;form onSubmit={e => { e.preventDefault(); console.log(formData); }}&gt;
+      &lt;input name="username" value={formData.username} onChange={handleChange} /&gt;
+      &lt;input name="email" value={formData.email} onChange={handleChange} /&gt;
+      &lt;button type="submit"&gt;Register&lt;/button&gt;
+    &lt;/form&gt;
+  );
+}</code></pre>
+            </div>
+          </div>
+        </div>
+      </article>
+
+    </section>
+
+    <!-- MODULE 11 -->
+    <section class="chapter" id="mod11">
+      <div class="chapter-head">
+        <span class="chapter-num">MODULE 11 · SLIDES 111–119 & GFG</span>
+        <h2>Performance Optimization, Code Splitting & Virtualization</h2>
+      </div>
+
+      <article class="slide-card" id="slide-perf-opt">
+        <div class="slide-card-header">
+          <div class="slide-card-title">
+            <span class="slide-badge">Performance</span>
+            <h3>Code Splitting with React.lazy (GFG #79, #130) & React.memo (GFG #129)</h3>
+          </div>
+          <span class="tag-pill vimp">V. IMP</span>
+          <span class="tag-pill gfg">GFG #79, #129</span>
+        </div>
+        <div class="slide-card-body">
+          <div class="concept-content">
+            <p><strong>1. Code Splitting via Dynamic Imports (`React.lazy`):</strong></p>
+            <p>Instead of bundling the entire application into one massive JavaScript bundle, <code>React.lazy</code> downloads route chunks on-demand:</p>
+
+            <div class="code-wrap">
+              <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+              <pre><code class="lang-javascript">import { lazy, Suspense } from 'react';
+const Analytics = lazy(() => import('./pages/Analytics'));
+
+function App() {
+  return (
+    &lt;Suspense fallback={&lt;p&gt;Loading page chunk...&lt;/p&gt;}&gt;
+      &lt;Analytics /&gt;
+    &lt;/Suspense&gt;
+  );
+}</code></pre>
+            </div>
+          </div>
+        </div>
+      </article>
+
+    </section>
+
+    <!-- MODULE 12 -->
+    
+    </div>
+
+    <!-- VIEW 3: 128 SLIDES PLAYER -->
+    <div id="viewDeck" style="display:none;">
+      <h2 style="font-family:'Source Serif 4', Georgia, serif; font-size:22px; margin-bottom:12px;">🎬 128 Visual Slides Presentation Deck (Slide-by-Slide Player)</h2>
+      <div class="deck-viewer">
+        <div class="deck-screen">
+          <img id="deckImg" src="./react_slides/slide_1.jpg" alt="React Deck Slide">
+        </div>
+        <div class="deck-controls">
+          <button class="btn" onclick="prevDeckSlide()">◀ Previous</button>
+          <span class="mono" id="deckIndicator" style="font-size:13px; font-weight:700;">Slide 1 / 128</span>
+          <input type="number" id="deckJumpInput" min="1" max="128" value="1" style="width:60px; padding:5px; text-align:center; border:1px solid var(--border); border-radius:4px; background:var(--surface-alt); color:var(--text);" onchange="jumpDeck(parseInt(this.value))">
+          <button class="btn" onclick="nextDeckSlide()">Next ▶</button>
+          <button class="btn" onclick="jumpDeck(1)">First</button>
+          <button class="btn" onclick="jumpDeck(15)">Slide 15</button>
+          <button class="btn" onclick="jumpDeck(60)">Slide 60</button>
+          <button class="btn" onclick="jumpDeck(90)">Slide 90</button>
+          <button class="btn" onclick="jumpDeck(120)">Slide 120</button>
+          <button class="btn" onclick="jumpDeck(128)">Last</button>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+hljs.highlightAll();
+
+const TOTAL_SLIDES = 128;
+let currentDeckSlide = 1;
+
+function switchTab(tab) {
+  document.getElementById('viewScenarios').style.display = tab === 'scenarios' ? 'block' : 'none';
+  document.getElementById('viewSlides').style.display = tab === 'slides' ? 'block' : 'none';
+  document.getElementById('viewDeck').style.display = tab === 'deck' ? 'block' : 'none';
+
+  document.getElementById('tabBtnScenarios').classList.toggle('active', tab === 'scenarios');
+  document.getElementById('tabBtnSlides').classList.toggle('active', tab === 'slides');
+  document.getElementById('tabBtnDeck').classList.toggle('active', tab === 'deck');
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function copyCode(btn) {
+  const code = btn.nextElementSibling ? btn.nextElementSibling.innerText : btn.parentElement.innerText;
+  navigator.clipboard.writeText(code);
+  const orig = btn.innerText;
+  btn.innerText = 'Copied!';
+  setTimeout(() => btn.innerText = orig, 1500);
+}
+
+function handleSearch() {
+  const q = document.getElementById('searchInput').value.toLowerCase().trim();
+  
+  // Search in scenario rows
+  const rows = document.querySelectorAll('tbody tr:not(.group)');
+  rows.forEach(row => {
+    const text = row.innerText.toLowerCase();
+    row.style.display = (!q || text.includes(q)) ? '' : 'none';
+  });
+
+  // Search in slide cards
+  const cards = document.querySelectorAll('.slide-card');
+  cards.forEach(card => {
+    const text = card.innerText.toLowerCase();
+    card.style.display = (!q || text.includes(q)) ? 'block' : 'none';
+  });
+}
+
+// Deck controls
+function updateDeck() {
+  document.getElementById('deckImg').src = `./react_slides/slide_${currentDeckSlide}.jpg`;
+  document.getElementById('deckIndicator').innerText = `Slide ${currentDeckSlide} / ${TOTAL_SLIDES}`;
+  document.getElementById('deckJumpInput').value = currentDeckSlide;
+}
+function nextDeckSlide() {
+  if (currentDeckSlide < TOTAL_SLIDES) { currentDeckSlide++; updateDeck(); }
+}
+function prevDeckSlide() {
+  if (currentDeckSlide > 1) { currentDeckSlide--; updateDeck(); }
+}
+function jumpDeck(n) {
+  if (n >= 1 && n <= TOTAL_SLIDES) { currentDeckSlide = n; updateDeck(); }
+}
+
+// Theme
+function toggleTheme() {
+  const root = document.documentElement;
+  const current = root.getAttribute('data-theme') || 'dark';
+  const next = current === 'dark' ? 'light' : 'dark';
+  root.setAttribute('data-theme', next);
+  localStorage.setItem('react_setup_theme', next);
+}
+function loadSavedTheme() {
+  const saved = localStorage.getItem('react_setup_theme') || 'dark';
+  document.documentElement.setAttribute('data-theme', saved);
+}
+
+window.addEventListener('keydown', (e) => {
+  if (['input', 'textarea'].includes(document.activeElement.tagName.toLowerCase())) return;
+  if (e.key === 'ArrowRight') nextDeckSlide();
+  else if (e.key === 'ArrowLeft') prevDeckSlide();
+  else if (e.key === '1') switchTab('scenarios');
+  else if (e.key === '2') switchTab('slides');
+  else if (e.key === '3') switchTab('deck');
+});
+
+window.addEventListener('DOMContentLoaded', () => {
+  loadSavedTheme();
+});
+</script>
+
+</body>
+</html>

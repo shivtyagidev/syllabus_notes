@@ -1,0 +1,1239 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Node.js Full Interview Mastery - Scenario Sheet & Visual Guide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,600;8..60,700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0e1412;
+  --surface: #151d1a;
+  --surface-alt: #1c2723;
+  --surface-hover: #22302b;
+  --text: #e6ede9;
+  --text-secondary: #94a59f;
+  --text-muted: #6b7c76;
+  --accent: #5cc19d;
+  --accent-strong: #8ae0bd;
+  --accent-tint: #173429;
+  --accent-border: #235442;
+  --warn: #e5a742;
+  --warn-tint: #362912;
+  --warn-text: #ffd38a;
+  --danger: #ef6461;
+  --danger-tint: #381a1a;
+  --border: #25332e;
+  --border-light: #32433d;
+  --code-bg: #111715;
+  --code-text: #d6e2dd;
+  --shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.6);
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+:root[data-theme="light"] {
+  --bg: #f4f6f5;
+  --surface: #ffffff;
+  --surface-alt: #eaf0ed;
+  --surface-hover: #dfe8e4;
+  --text: #192421;
+  --text-secondary: #546660;
+  --text-muted: #80928b;
+  --accent: #237b60;
+  --accent-strong: #175e48;
+  --accent-tint: #e1efe8;
+  --accent-border: #99cfbe;
+  --warn: #ad6d15;
+  --warn-tint: #faebd7;
+  --warn-text: #704200;
+  --danger: #cf3a37;
+  --danger-tint: #fde8e8;
+  --border: #dbe4df;
+  --border-light: #c8d5cf;
+  --code-bg: #eef3f0;
+  --code-text: #202b27;
+  --shadow: 0 4px 20px rgba(18, 30, 25, 0.08);
+  --shadow-lg: 0 10px 30px rgba(18, 30, 25, 0.12);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'IBM Plex Sans', system-ui, -apple-system, sans-serif;
+  font-size: 14.5px;
+  line-height: 1.55;
+  min-height: 100vh;
+}
+
+/* Header */
+header.app-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(12px);
+}
+
+.header-inner {
+  max-width: 1560px;
+  margin: 0 auto;
+  padding: 10px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.brand-icon {
+  width: 40px;
+  height: 40px;
+  background: var(--accent-tint);
+  border: 1px solid var(--accent-border);
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent);
+  font-size: 22px;
+}
+.brand-text h1 {
+  font-family: 'Source Serif 4', Georgia, serif;
+  font-size: 19px;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.2;
+}
+.brand-text .eyebrow {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Nav Tabs */
+.view-tabs {
+  display: flex;
+  background: var(--surface-alt);
+  border-radius: var(--radius-sm);
+  padding: 3px;
+  gap: 3px;
+  border: 1px solid var(--border);
+}
+.view-btn {
+  padding: 7px 15px;
+  border-radius: 4px;
+  border: none;
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  transition: var(--transition);
+}
+.view-btn:hover { color: var(--text); }
+.view-btn.active {
+  background: var(--surface);
+  color: var(--accent);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn {
+  background: var(--surface-alt);
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: var(--transition);
+  user-select: none;
+  text-decoration: none;
+}
+.btn:hover { background: var(--surface-hover); border-color: var(--border-light); }
+.btn-accent {
+  background: var(--accent-tint);
+  border-color: var(--accent-border);
+  color: var(--accent-strong);
+}
+.btn-accent:hover { background: var(--accent); color: #fff; }
+
+/* Subnav Navigation Bar */
+.sub-nav {
+  background: var(--surface-alt);
+  border-bottom: 1px solid var(--border);
+  padding: 8px 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+.sub-nav a, .sub-nav button {
+  padding: 4px 10px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  font-size: 12px;
+  color: var(--text-secondary);
+  text-decoration: none;
+  cursor: pointer;
+  transition: var(--transition);
+}
+.sub-nav a:hover, .sub-nav button:hover {
+  color: var(--accent);
+  border-color: var(--accent-border);
+  background: var(--accent-tint);
+}
+
+/* Page Wrapper */
+.wrap {
+  max-width: 1560px;
+  margin: 0 auto;
+  padding: 24px 20px 80px;
+}
+
+/* Section Headings */
+h2.sec {
+  font-family: 'Source Serif 4', Georgia, serif;
+  font-size: 22px;
+  margin: 36px 0 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.lead {
+  color: var(--text-secondary);
+  margin-bottom: 18px;
+}
+
+/* Mnemonic Box */
+.mnemonic {
+  background: var(--accent-tint);
+  border: 1px solid var(--accent-border);
+  border-radius: var(--radius-md);
+  padding: 14px 18px;
+  margin-bottom: 18px;
+}
+.mnemonic h3 {
+  font-size: 15px;
+  margin-bottom: 6px;
+  color: var(--accent-strong);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.mnemonic ol { margin: 0; padding-left: 20px; }
+.mnemonic li { margin-bottom: 4px; font-size: 13.5px; }
+.mnemonic b { color: var(--accent-strong); }
+
+/* Table System */
+.table-wrap {
+  overflow-x: auto;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow);
+  margin-bottom: 32px;
+}
+table {
+  border-collapse: collapse;
+  width: 100%;
+  min-width: 1180px;
+}
+th, td {
+  padding: 12px 14px;
+  text-align: left;
+  vertical-align: top;
+  border-bottom: 1px solid var(--border);
+}
+th {
+  background: var(--surface-alt);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-secondary);
+  position: sticky;
+  top: 60px;
+  z-index: 10;
+}
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: var(--surface-hover); }
+
+td.num {
+  font-family: 'IBM Plex Mono', monospace;
+  color: var(--accent);
+  font-weight: 700;
+  width: 44px;
+}
+td.q {
+  font-weight: 600;
+  min-width: 230px;
+  max-width: 280px;
+  color: var(--text);
+}
+td.cause {
+  color: var(--text-secondary);
+  min-width: 180px;
+  max-width: 240px;
+  font-size: 13.5px;
+}
+td.fix {
+  min-width: 250px;
+  max-width: 320px;
+  font-size: 13.5px;
+}
+td.why {
+  background: var(--warn-tint);
+  color: var(--warn-text);
+  font-size: 13.5px;
+  min-width: 240px;
+  max-width: 320px;
+}
+td.ans {
+  font-style: italic;
+  font-size: 13.5px;
+  color: var(--text);
+  min-width: 230px;
+  border-left: 2px solid var(--accent);
+}
+tr.group td {
+  background: var(--surface-alt);
+  font-weight: 700;
+  font-family: 'Source Serif 4', Georgia, serif;
+  font-size: 15px;
+  color: var(--accent);
+  letter-spacing: 0.02em;
+}
+
+code {
+  background: var(--code-bg);
+  color: var(--code-text);
+  padding: 1px 5px;
+  border-radius: 4px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12.5px;
+  border: 1px solid var(--border);
+}
+pre {
+  background: var(--code-bg);
+  color: var(--code-text);
+  padding: 12px 14px;
+  border-radius: var(--radius-sm);
+  overflow-x: auto;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12.5px;
+  border: 1px solid var(--border);
+  margin-top: 6px;
+}
+
+/* Code Snippets Section */
+.code-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(460px, 1fr));
+  gap: 18px;
+  margin-bottom: 36px;
+}
+.code-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  box-shadow: var(--shadow);
+}
+.code-card h3 {
+  font-size: 15px;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--accent);
+}
+.code-card p {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+}
+
+/* Visual Slide Viewer Section */
+.slide-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+.slide-stage {
+  position: relative;
+  background: #000;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  max-width: 1100px;
+  width: 100%;
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+  min-height: 400px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.slide-stage img {
+  max-width: 100%;
+  max-height: 75vh;
+  object-fit: contain;
+  display: block;
+  user-select: none;
+}
+.stage-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(18, 24, 22, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #fff;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  cursor: pointer;
+  transition: var(--transition);
+  backdrop-filter: blur(8px);
+}
+.stage-btn:hover { background: var(--accent); color: #000; }
+.stage-btn.prev { left: 16px; }
+.stage-btn.next { right: 16px; }
+
+.slide-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1100px;
+  width: 100%;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 12px 18px;
+  border-radius: var(--radius-md);
+}
+
+/* Search bar */
+.search-box {
+  position: relative;
+  max-width: 400px;
+  width: 100%;
+}
+.search-box input {
+  width: 100%;
+  background: var(--surface-alt);
+  border: 1px solid var(--border);
+  padding: 8px 14px 8px 34px;
+  border-radius: 20px;
+  color: var(--text);
+  font-size: 13px;
+}
+.search-box input:focus {
+  outline: 2px solid var(--accent);
+  border-color: transparent;
+}
+.search-box span {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+/* Quick stats pills */
+.stat-badges {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin: 12px 0 20px;
+}
+.stat-badge {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  color: var(--text-secondary);
+  font-family: 'IBM Plex Mono', monospace;
+}
+.stat-badge b { color: var(--accent); }
+
+/* Print styling */
+@media print {
+  header.app-header, .sub-nav, .view-tabs, .header-actions, .stage-btn, .slide-controls, .btn {
+    display: none !important;
+  }
+  body, .wrap, .table-wrap {
+    background: #fff !important;
+    color: #000 !important;
+    padding: 0 !important;
+  }
+  table { border: 1px solid #ccc !important; }
+  th, td { border-bottom: 1px solid #ddd !important; color: #000 !important; }
+  td.why { background: #fffbe6 !important; color: #704200 !important; }
+}
+
+@media (max-width: 768px) {
+  .header-inner { flex-direction: column; align-items: stretch; }
+  .code-grid { grid-template-columns: 1fr; }
+  .slide-stage { min-height: 220px; }
+}
+</style>
+</head>
+<body>
+
+<header class="app-header">
+  <div class="header-inner">
+    <div class="brand">
+      <div class="brand-icon">⚡</div>
+      <div class="brand-text">
+        <div class="eyebrow">Zero to Hero Interview Revision</div>
+        <h1>Node.js Master Interview Sheet</h1>
+      </div>
+    </div>
+
+    <!-- View Mode Switcher -->
+    <div class="view-tabs">
+      <button class="view-btn active" id="tabScenarios" onclick="showTab('scenarios')">
+        <span>📋</span> Interview Scenarios
+      </button>
+      <button class="view-btn" id="tabCode" onclick="showTab('code')">
+        <span>💻</span> Tricky Code & Architecture
+      </button>
+      <button class="view-btn" id="tabSlides" onclick="showTab('slides')">
+        <span>🎬</span> 128 Visual Slides
+      </button>
+    </div>
+
+    <div class="header-actions">
+      <div class="search-box">
+        <span>🔍</span>
+        <input type="text" id="globalSearch" placeholder="Search scenarios, cause, fix, keywords..." oninput="handleSearch()">
+      </div>
+      <button class="btn" onclick="toggleTheme()" id="themeBtn" title="Toggle Dark/Light">🌓 Theme</button>
+      <button class="btn btn-accent" onclick="window.print()" title="Print Cheat Sheet">🖨 Print</button>
+    </div>
+  </div>
+</header>
+
+<!-- Sub Navigation for Fast Jumping -->
+<nav class="sub-nav" id="subNavBar">
+  <span style="font-size:11px; font-family:'IBM Plex Mono',monospace; color:var(--text-muted); text-transform:uppercase;">Priority Jump:</span>
+  <a href="#p1">Priority 1: Event Loop & Libuv</a>
+  <a href="#p2">Priority 2: Memory & GC Leaks</a>
+  <a href="#p3">Priority 3: Streams, Buffers & Backpressure</a>
+  <a href="#p4">Priority 4: Express & Graceful Shutdown</a>
+  <a href="#p5">Priority 5: REST, PUT vs PATCH & Status Codes</a>
+  <a href="#p6">Priority 6: Auth, JWT & Redis Blacklist</a>
+  <a href="#p7">Priority 7: Database & Transactions</a>
+  <a href="#p8">Priority 8: Caching, Queues & Scaling</a>
+  <a href="#p9">Priority 9: Security, CORS & ReDoS</a>
+  <a href="#p10">Priority 10: Production 100% CPU Debugging</a>
+</nav>
+
+<div class="wrap">
+
+  <!-- ================= TAB 1: INTERVIEW SCENARIOS ================= -->
+  <div id="sectionScenarios">
+    <div class="stat-badges">
+      <div class="stat-badge">Total Questions: <b>50+ Scenario Filters</b></div>
+      <div class="stat-badge">Visual Slides: <b>128 HD Deck Linked</b></div>
+      <div class="stat-badge">Format: <b>Problem → Root Cause → Fix → Yaad Trick → Interview Answer</b></div>
+    </div>
+
+    <!-- PRIORITY 1 -->
+    <h2 class="sec" id="p1">⚡ Priority 1: Event Loop, Libuv & Concurrency Internals</h2>
+    <p class="lead">Node.js ka #1 interview filter. Yahan interviewer check karta hai ki aap sirf syntax jante hain ya core internals bhi.</p>
+
+    <div class="mnemonic">
+      <h3>🧠 Ek Line Mein Yaad Rakhne Ki Trick:</h3>
+      <ol>
+        <li><b>Event Loop 6 Phases:</b> "<b>T</b>imers → <b>P</b>ending → <b>I</b>dle → <b>P</b>oll (I/O) → <b>C</b>heck (setImmediate) → <b>C</b>lose". Short trick: <i>"The Pilot Is Pretty Cool Captain"</i>.</li>
+        <li><b>Microtasks Priority:</b> <code>process.nextTick</code> &gt; <code>Promise.then</code> / <code>queueMicrotask</code> &gt; Macrotasks (Timers / I/O / setImmediate).</li>
+        <li><b>Golden Rule:</b> "JavaScript single-threaded hai, lekin Node.js multi-threaded hai via Libuv Thread Pool (default 4 threads)."</li>
+      </ol>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Scenario Question</th>
+            <th>Main Cause</th>
+            <th>Fix / Approach</th>
+            <th>Easy Explain (yaad trick)</th>
+            <th>Quick Interview Answer</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="group"><td colspan="6">🔄 Event Loop & Queues</td></tr>
+          <tr>
+            <td class="num">1</td>
+            <td class="q">Node.js single-threaded hai to 10,000 concurrent requests kaise handle karta hai?</td>
+            <td class="cause">Non-blocking I/O + OS Kernel multiplexing (epoll/kqueue) + Libuv thread pool</td>
+            <td>I/O operations OS kernel ko delegate hoti hain. JS thread wait nahi karta, request aate hi agle kaam par lag jaata hai.</td>
+            <td class="why"><b>Restaurant Waiter Trick:</b> Ek hi waiter (single thread) order lekar kitchen ko deta hai aur doosre table par chala jata hai. Har table ke liye naya waiter nahi khada hota.</td>
+            <td class="ans">"Node.js uses non-blocking I/O with an event-driven architecture via Libuv. I/O tasks are delegated to the OS kernel or thread pool, freeing the main thread to serve subsequent requests immediately."</td>
+          </tr>
+          <tr>
+            <td class="num">2</td>
+            <td class="q"><code>process.nextTick()</code> aur <code>setImmediate()</code> mein kya difference hai? Kaun pehle chalega?</td>
+            <td class="cause">nextTick Event Loop phase ka part nahi hai; yeh current phase ke turant baad run hota hai. setImmediate Check phase mein chalta hai.</td>
+            <td><code>process.nextTick</code> always runs BEFORE <code>setImmediate</code> and even before Promise microtasks in the current tick.</td>
+            <td class="why"><b>Name Paradox Trick:</b> Dono ke naam ultay hain! <i>nextTick</i> abhi (immediately) chalta hai, aur <i>setImmediate</i> agle tick ke Check phase mein chalta hai.</td>
+            <td class="ans">"process.nextTick executes immediately after the current operation before the event loop continues, having higher priority than microtasks. setImmediate executes in the Check phase of the event loop."</td>
+          </tr>
+          <tr>
+            <td class="num">3</td>
+            <td class="q">Heavy CPU calculation (jaise 50MB JSON stringify ya crypto) se server hang ho gaya. Kyun aur kaise fix karoge?</td>
+            <td class="cause">Main thread block ho gaya, jisse Event Loop ruk gaya aur baaki users ki requests queue mein stuck ho gayi.</td>
+            <td>1) <code>worker_threads</code> use karo CPU tasks ke liye.<br>2) Heavy loop ko <code>setImmediate()</code> se chunk karo.<br>3) Separate microservice banao.</td>
+            <td class="why"><b>Counter Jam Trick:</b> Ek customer counter par 1 ghante tak calculation karega to peeche sab ruk jayenge. Calculation ko doosre room (Worker Thread) mein bhej do!</td>
+            <td class="ans">"CPU-bound tasks block the V8 event loop. I offload CPU-intensive operations to Worker Threads or break long iterations using setImmediate() so the event loop keeps processing I/O."</td>
+          </tr>
+          <tr>
+            <td class="num">4</td>
+            <td class="q">Libuv Thread Pool mein kaun kaun se operations jaate hain? Kya saare I/O thread pool mein jaate hain?</td>
+            <td class="cause">Interview trap: Saare I/O nahi jaate! Network I/O (HTTP, TCP, UDP) OS epoll/kqueue par chalta hai, thread pool par nahi!</td>
+            <td>Thread pool sirf 4 cheezon ke liye use hota hai: 1) File system (<code>fs</code>), 2) DNS lookup (<code>dns.lookup</code>), 3) Crypto (<code>crypto.pbkdf2</code>), 4) Zlib compression.</td>
+            <td class="why"><b>F-D-C-Z Formula:</b> <b>F</b>ile, <b>D</b>ns, <b>C</b>rypto, <b>Z</b>lib. Network requests OS sambhalta hai, Libuv threads nahi. Default threads = 4 (<code>UV_THREADPOOL_SIZE</code>).</td>
+            <td class="ans">"Only File I/O, DNS lookup, Crypto, and Zlib use the Libuv thread pool. Network I/O is handled directly by non-blocking OS system calls like epoll/kqueue without thread pool overhead."</td>
+          </tr>
+          <tr>
+            <td class="num">5</td>
+            <td class="q">Worker Threads vs Child Process vs Cluster Module: Kab kaun sa use karoge?</td>
+            <td class="cause">Resource sharing vs process isolation ke alag requirements</td>
+            <td>1) <b>Cluster:</b> Multiple CPU cores utilize karke HTTP throughput badhane ke liye.<br>2) <b>Worker Threads:</b> Same memory share karke heavy computation (image processing/encryption) ke liye.<br>3) <b>Child Process:</b> External shell commands ya Python script run karne ke liye.</td>
+            <td class="why"><b>Cluster = 4 Branches</b> (har core par independent app).<br><b>Worker = 1 Room mein 4 Helpers</b> (shared memory).<br><b>Child = Bahar ke contractor ko bulana</b> (separate OS process).</td>
+            <td class="ans">"I use Cluster/PM2 to scale web traffic across multiple CPU cores. I use Worker Threads for CPU-heavy tasks requiring shared memory. I use Child Process to execute external CLI commands or scripts."</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- PRIORITY 2 -->
+    <h2 class="sec" id="p2">🧠 Priority 2: Memory Leaks, V8 Heap & Garbage Collection</h2>
+    <p class="lead">Production mein Node.js app crash hone ka sabse bada reason: <code>FATAL ERROR: Ineffective mark-compacts near heap limit Allocation failed - JavaScript heap out of memory</code>.</p>
+
+    <div class="mnemonic">
+      <h3>🧠 Memory Leaks Ki 4 Common Bimariyan:</h3>
+      <ol>
+        <li><b>Global Variables / In-Memory Objects:</b> Bina eviction ke <code>cache[userId] = data</code> store karna.</li>
+        <li><b>Forgotten Timers:</b> <code>setInterval</code> chalte rehna jisme closure data pakad kar rakhta hai.</li>
+        <li><b>EventEmitter Listener Leak:</b> <code>eventEmitter.on()</code> loop mein call hona bina <code>removeListener()</code> ke.</li>
+        <li><b>Closures:</b> Outer function ke bade buffers ya objects ko reference karke unkillable bana dena.</li>
+      </ol>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Scenario Question</th>
+            <th>Main Cause</th>
+            <th>Fix / Approach</th>
+            <th>Easy Explain (yaad trick)</th>
+            <th>Quick Interview Answer</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="group"><td colspan="6">💾 Memory & Garbage Collection</td></tr>
+          <tr>
+            <td class="num">6</td>
+            <td class="q">Node.js server 2 din chalne ke baad `heap out of memory` dekar crash ho jaata hai. Root cause kaise dhundoge?</td>
+            <td class="cause">Memory leak (objects heap se GC nahi ho rahe hain)</td>
+            <td>1) <code>node --inspect</code> flag se Chrome DevTools connect karo.<br>2) 2 Heap Snapshots lo (ek load se pehle, ek load ke baad).<br>3) "Comparison" view mein dekho kaun se objects <code># Alloc</code> mein grow ho rahe hain.</td>
+            <td class="why"><b>Weight Scale Trick:</b> Pehle weight lo, 1 ghanta chalao, fir weight lo. Jo cheez lagatar badh rahi hai aur kabhi ghati nahi, wahi leak hai.</td>
+            <td class="ans">"I inspect heap snapshots using Chrome DevTools or Clinic.js Heap Profiler under simulated traffic, compare snapshot deltas, and locate retained objects that aren't being garbage collected."</td>
+          </tr>
+          <tr>
+            <td class="num">7</td>
+            <td class="q">Terminal mein warning aati hai: <code>MaxListenersExceededWarning: Possible EventEmitter memory leak detected</code>. Iska kya matlab hai?</td>
+            <td class="cause">Ek hi event par 10 se zyada listeners attach ho gaye (Node default limit 10 hoti hai). Often happens jab request handler ke andar <code>stream.on('data')</code> baar baar register hota hai.</td>
+            <td>1) <code>.once()</code> use karo agar ek baar chalana hai.<br>2) Ya <code>stream.removeListener()</code> / cleanup function call karo request complete hone par.<br>3) <code>emitter.setMaxListeners()</code> tabhi badhao jab valid reason ho.</td>
+            <td class="why"><b>Meeting Invitation Trick:</b> Har nayi request par purana listener hataye bina naya listener jodte jaoge to crowd badhta jayega aur memory bhar jayegi.</td>
+            <td class="ans">"This warning fires when more than 10 listeners are attached to an EventEmitter, usually caused by adding event handlers inside request loops without removing them on completion."</td>
+          </tr>
+          <tr>
+            <td class="num">8</td>
+            <td class="q">V8 Garbage Collector kaise kaam karta hai? Scavenge aur Mark-Sweep mein kya antar hai?</td>
+            <td class="cause">Generational Hypothesis: "Most objects die young."</td>
+            <td>V8 memory ko do parts mein baant-ta hai:<br>1) <b>Young Generation (New Space):</b> Chote objects ke liye fast <i>Scavenge algorithm</i> (Semi-space copy).<br>2) <b>Old Generation:</b> Jo objects bach jaate hain wo Old space mein promote hote hain, jahan <i>Mark-Sweep-Compact</i> chalta hai.</td>
+            <td class="why"><b>College Hostel Trick:</b> Freshers room (New Space) mein fast clean up hota hai. Jo survive kar jate hain wo Senior room (Old Space) mein jate hain jahan deep cleaning (Mark-Sweep) hoti hai.</td>
+            <td class="ans">"V8 uses generational garbage collection. New short-lived objects are rapidly collected in Young Space via Cheney's scavenge algorithm. Surviving objects migrate to Old Space, managed by Mark-Sweep-Compact."</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- PRIORITY 3 -->
+    <h2 class="sec" id="p3">🌊 Priority 3: Streams, Buffers & Backpressure</h2>
+    <p class="lead">Badi files aur streaming data pipelines ka interview question. Agar stream ka concept clear hai to interviewer impress ho jaata hai.</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Scenario Question</th>
+            <th>Main Cause</th>
+            <th>Fix / Approach</th>
+            <th>Easy Explain (yaad trick)</th>
+            <th>Quick Interview Answer</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="group"><td colspan="6">📦 Data Pipelines</td></tr>
+          <tr>
+            <td class="num">9</td>
+            <td class="q">1GB file user ko download karwani hai. <code>fs.readFile()</code> crash ho gaya, sahi solution kya hai?</td>
+            <td class="cause"><code>fs.readFile()</code> poori file ek sath RAM buffer mein load karta hai. Agar server par 500MB free RAM hai to 1GB padhte hi process crash ho jayega.</td>
+            <td><code>fs.createReadStream()</code> + <code>pipeline()</code> use karo. Yeh data ko chote chunks (default 64KB) mein read karke stream karega.</td>
+            <td class="why"><b>Gulping vs Sipping:</b> Puri balti ek sath peene ki koshish karoge to dum ghutega (RAM crash). Straw se sip-sip karke peeyo (Streams, only 64KB at a time).</td>
+            <td class="ans">"fs.readFile buffers the entire file into memory causing memory exhaustion. I use fs.createReadStream piped to the HTTP response using stream.pipeline, keeping memory consumption minimal (around 64KB)."</td>
+          </tr>
+          <tr>
+            <td class="num">10</td>
+            <td class="q">Stream mein <b>Backpressure</b> kya hota hai? Agar handle na karein to kya hoga?</td>
+            <td class="cause">Fast Producer (Read stream) aur Slow Consumer (Slow network socket/write stream) ka speed mismatch. Data RAM buffer mein accumulate hone lagta hai.</td>
+            <td>Jab write stream ka internal buffer bhar jata hai to <code>write()</code> return <code>false</code> karta hai. Producer ko <code>readStream.pause()</code> karna hota hai aur <code>drain</code> event aane par <code>readStream.resume()</code> karna hota hai. Or simply use <code>pipeline()</code>.</td>
+            <td class="why"><b>Funnel Overflow Trick:</b> Pipe mein upar se motor se paani daal rahe ho aur niche se chota sa ched hai. Paani bahar girne lagega. Paani roko jab tak funnel khali na ho (drain)!</td>
+            <td class="ans">"Backpressure occurs when data is read faster than the consumer can write, filling up the internal buffer. Node automatically handles this via stream.pipeline by pausing the reader until the writer emits the 'drain' event."</td>
+          </tr>
+          <tr>
+            <td class="num">11</td>
+            <td class="q"><code>pipe()</code> ke bajaye <code>stream.pipeline()</code> use karna kyun recommended hai?</td>
+            <td class="cause"><code>.pipe()</code> stream error hone par dest streams ko properly destroy nahi karta, jisse file descriptor aur memory leak ho jaati hai.</td>
+            <td><code>stream.pipeline(readStream, transformStream, writeStream, (err) =&gt; {})</code> sabhi streams ko automatically destroy aur clean up karta hai agar koi bhi error aaye.</td>
+            <td class="why"><b>Automatic Switch Off:</b> Purani pipe toot-ti thi to paani behta rehta tha. <code>pipeline()</code> pipeline toot-te hi main supply band kar deta hai.</td>
+            <td class="ans">"stream.pipeline automatically closes and destroys all streams in the chain if any stream fails or errors out, preventing file descriptor leaks that occur with standard .pipe()."</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- PRIORITY 4 -->
+    <h2 class="sec" id="p4">🛡 Priority 4: Express.js Architecture & Production Reliability</h2>
+    <p class="lead">Middleware mechanics, Error handling, aur Graceful shutdown: Real-world production code standard.</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Scenario Question</th>
+            <th>Main Cause</th>
+            <th>Fix / Approach</th>
+            <th>Easy Explain (yaad trick)</th>
+            <th>Quick Interview Answer</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="group"><td colspan="6">⚙ Production Best Practices</td></tr>
+          <tr>
+            <td class="num">12</td>
+            <td class="q">Global Error Handling Middleware mein 4 arguments <code>(err, req, res, next)</code> hona zaroori kyun hai? Agar 3 args likhe to kya hoga?</td>
+            <td class="cause">Express.js internal routing middleware function ke <code>fn.length</code> (parameters count) se pehchanta hai ki yeh standard middleware hai ya error handler.</td>
+            <td>Agar aap 3 arguments likhenge <code>(err, req, res)</code> to Express use standard middleware maan lega aur <code>next(err)</code> aane par use skip kar dega! Isliye 4 arguments mandatory hain.</td>
+            <td class="why"><b>Uniform Rule:</b> Security guard 4 star badge dekh kar hi alert room mein enter karne deta hai. 3 star hue to standard employee manega.</td>
+            <td class="ans">"Express inspects the function's arity (fn.length). Exactly 4 arguments (err, req, res, next) signify an error handler; otherwise Express treats it as a standard request middleware."</td>
+          </tr>
+          <tr>
+            <td class="num">13</td>
+            <td class="q">Production server par <b>Graceful Shutdown</b> kaise implement karte ho?</td>
+            <td class="cause">Naya deployment ya container restart hote hi chal rahi active requests beech mein terminate ho jati hain aur database connections abruptly cut jate hain.</td>
+            <td>1) <code>process.on('SIGTERM')</code> aur <code>SIGINT</code> listen karo.<br>2) <code>server.close()</code> call karo (taaki nayi requests aana band ho aur active requests complete ho sakein).<br>3) DB connection pool close karo.<br>4) Timeout fail-safe (10s) lagao, phir <code>process.exit(0)</code>.</td>
+            <td class="why"><b>Restaurant Closing Trick:</b> Dukan badhte waqt naye customers ko mana karte hain, jo log kha rahe hain unhe khila kar bill lekar hi shutter girate hain.</td>
+            <td class="ans">"I listen for SIGTERM/SIGINT, call server.close() to finish ongoing requests while rejecting new ones, drain DB pools, and enforce a 10s fallback timeout before process.exit(0)."</td>
+          </tr>
+          <tr>
+            <td class="num">14</td>
+            <td class="q"><code>uncaughtException</code> aur <code>unhandledRejection</code> aane par process ko restart karna zaroori kyun hai? Kya sirf log karke continue kar sakte hain?</td>
+            <td class="cause">Ek unhandled exception ke baad Node process unpredictable corrupt state mein chala jaata hai (leaked sockets, inconsistent memory).</td>
+            <td>Error log karo, monitoring alert bhejo, aur process ko <code>process.exit(1)</code> karke PM2/Kubernetes ko clean restart karne do. Never keep running after uncaughtException!</td>
+            <td class="why"><b>Airplane Engine Failure Trick:</b> Engine mein aag lage to bas logbook mein likh kar udte nahi reh sakte, land karke naya engine start karna hi padega.</td>
+            <td class="ans">"An uncaughtException leaves application state corrupted and unpredictable. Best practice is to log the stack trace, initiate graceful cleanup, exit with code 1, and let PM2 or Kubernetes restart a clean instance."</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- PRIORITY 5 -->
+    <h2 class="sec" id="p5">🌐 Priority 5: REST APIs, PUT vs PATCH & Status Codes</h2>
+    <p class="lead">Slide 100 aur interviewer ka favourite topic: Idempotency, HTTP Methods aur Status code standard design.</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Scenario Question</th>
+            <th>Main Cause</th>
+            <th>Fix / Approach</th>
+            <th>Easy Explain (yaad trick)</th>
+            <th>Quick Interview Answer</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="group"><td colspan="6">📡 HTTP & REST Design</td></tr>
+          <tr>
+            <td class="num">15</td>
+            <td class="q"><b>PUT vs PATCH</b> mein kya core difference hai? Dono mein Idempotency ka kya role hai?</td>
+            <td class="cause">Full Replacement (PUT) vs Partial Modification (PATCH)</td>
+            <td><b>PUT:</b> Pure resource ko new payload se replace karta hai (jo field nahi bhejenge wo null/delete ho jayegi). <b>Idempotent</b> hai.<br><b>PATCH:</b> Sirf diye gaye fields ko update karta hai. Technically <b>Non-idempotent</b> ho sakta hai (e.g. <code>{ $inc: { age: 1 } }</code>).</td>
+            <td class="why"><b>Form Trick:</b> PUT = Pura naya form submit karna.<br>PATCH = Form ke sirf mobile number par whitener laga kar naya number likhna.</td>
+            <td class="ans">"PUT replaces the entire entity with the provided payload and is idempotent. PATCH applies partial modifications to specific fields and is not inherently guaranteed to be idempotent."</td>
+          </tr>
+          <tr>
+            <td class="num">16</td>
+            <td class="q">HTTP Status Code 401 Unauthorized vs 403 Forbidden mein kya antar hai?</td>
+            <td class="cause">Authentication (Pehchan) vs Authorization (Haqq/Permissions)</td>
+            <td><b>401 Unauthorized:</b> User logged in nahi hai ya token missing/invalid hai ("Tum kaun ho?").<br><b>403 Forbidden:</b> User pehchaana gaya hai, lekin uske paas is route ka permission nahi hai ("Tumhe andar aane ki ijazat nahi hai").</td>
+            <td class="why"><b>Entry Gate Trick:</b> ID card nahi hai = 401.<br>Student ID card hai par Principal room mein ghusna chahta hai = 403.</td>
+            <td class="ans">"401 means unauthenticated (missing or invalid credentials), prompting for login. 403 means authenticated but unauthorized (user lacks necessary roles/permissions to access the resource)."</td>
+          </tr>
+          <tr>
+            <td class="num">17</td>
+            <td class="q">204 No Content kab use karte hain? Kya 204 mein response body bhej sakte hain?</td>
+            <td class="cause">HTTP Spec rule: 204 response must not have a message body.</td>
+            <td>DELETE request successful hone par ya PATCH update ke baad jab client ko naya data return karne ki zaroorat na ho. Browser 204 aane par UI view change nahi karta.</td>
+            <td class="why"><b>Thumbs Up Trick:</b> "Kaam ho gaya, kehne ko kuch nahi hai" 👍. Body empty honi chahiye.</td>
+            <td class="ans">"204 No Content indicates successful execution where no response body needs to be returned, commonly used for DELETE or update operations."</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- PRIORITY 6 -->
+    <h2 class="sec" id="p6">🔐 Priority 6: Authentication, JWT & Redis Blacklisting</h2>
+    <p class="lead">Stateless JWT ki sabse badi weakness: Token revoke kaise karein? Dual token architecture.</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Scenario Question</th>
+            <th>Main Cause</th>
+            <th>Fix / Approach</th>
+            <th>Easy Explain (yaad trick)</th>
+            <th>Quick Interview Answer</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="group"><td colspan="6">🔑 Security & Auth Architecture</td></tr>
+          <tr>
+            <td class="num">18</td>
+            <td class="q">User ne "Logout" click kiya. JWT to stateless hai, client ne token save kar rakha ho to use kaise invalidate karoge?</td>
+            <td class="cause">JWT self-contained cryptographically signed string hoti hai, server par iska state nahi hota. Expiry se pehle wo valid rehti hai.</td>
+            <td>1) <b>Redis Blacklist:</b> Logout par token ki remaining validity ke TTL ke sath token hash Redis mein save karo. Middleware mein Redis check karo.<br>2) <b>Token Version / Refresh Token Rotation:</b> User document mein <code>tokenVersion</code> maintain karo.</td>
+            <td class="why"><b>Security Bouncer Blacklist:</b> VIP pass par time likha hai, par chor ne chura liya to gatekeeper ki diary (Redis) mein likh do "Pass #123 reject karo".</td>
+            <td class="ans">"Since JWT is stateless, I invalidate it on logout by adding its JTI (unique ID) to a Redis blacklist with a TTL equal to the token's remaining lifespan, or by incrementing a user tokenVersion in the database."</td>
+          </tr>
+          <tr>
+            <td class="num">19</td>
+            <td class="q">Access Token + Refresh Token flow kyun zaroori hai? Dono ko kahan store karna chahiye?</td>
+            <td class="cause">Security vs User experience tradeoff. Agar Access token 30 din ka hoga to chori hone par 30 din tak hacker use kar sakta hai.</td>
+            <td>1) <b>Access Token:</b> Short-lived (10–15 mins), memory ya secure state mein.<br>2) <b>Refresh Token:</b> Long-lived (7 days), strictly in <b>HttpOnly, Secure, SameSite Cookie</b> (XSS immune) + DB/Redis rotation.</td>
+            <td class="why"><b>Cash vs ATM Card:</b> Jeb mein 500 rupaye (Access Token - chori ho to chota nuksan). ATM card (Refresh Token) safe locker mein pin ke sath.</td>
+            <td class="ans">"Access tokens are short-lived (15m) to limit vulnerability windows. Refresh tokens are long-lived and stored in HttpOnly, Secure, SameSite cookies to mitigate XSS attacks while maintaining seamless re-authentication."</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- PRIORITY 7 -->
+    <h2 class="sec" id="p7">🗄 Priority 7: Database Connection Pools & Transactions</h2>
+    <p class="lead">Connection pool exhaustion aur N+1 query: High traffic backend ka sabse bada choke point.</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Scenario Question</th>
+            <th>Main Cause</th>
+            <th>Fix / Approach</th>
+            <th>Easy Explain (yaad trick)</th>
+            <th>Quick Interview Answer</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="group"><td colspan="6">💾 DB Optimization</td></tr>
+          <tr>
+            <td class="num">20</td>
+            <td class="q">Node.js server peak load par <code>Connection timeout / pool exhausted</code> error deta hai. Kyun?</td>
+            <td class="cause">Har incoming HTTP request par naya DB connection banaya ja raha hai, ya pool connection leak ho raha hai (query ke baad connection release nahi hua).</td>
+            <td>1) Connection Pool banao (e.g. <code>pg.Pool</code>, <code>mysql2.createPool</code>) with optimal size.<br>2) Hamesha <code>try...finally { client.release(); }</code> use karo.<br>3) Slow queries ko index karo taaki connection jaldi free ho.</td>
+            <td class="why"><b>Cab Sharing Trick:</b> Har passenger ke liye nayi gaadi kharidne ke bajaye 10 gaadiyon ka fleet (Pool) rakho. Kaam khatam hote hi gaadi doosre ko do (release).</td>
+            <td class="ans">"Pool exhaustion happens when connections aren't released back to the pool in a finally block, or queries are too slow. I use connection pooling with explicit client.release() and optimize queries with proper indexing."</td>
+          </tr>
+          <tr>
+            <td class="num">21</td>
+            <td class="q"><b>N+1 Query Problem</b> kya hai aur Node.js mein ise kaise resolve karte hain?</td>
+            <td class="cause">1 query se parent records laye (e.g. 50 users), fir loop chala kar har user ke liye 1 naya query fire kiya (e.g. 50 queries for orders). Total = 1 + 50 = 51 queries!</td>
+            <td>1) SQL <code>JOIN</code> use karo.<br>2) <code>IN (...)</code> query use karo (<code>WHERE userId IN (1,2,3...50)</code>).<br>3) GraphQL mein <b>DataLoader</b> use karo jo automatic batching & caching karta hai.</td>
+            <td class="why"><b>Grocery Store Trip Trick:</b> 50 items lene ke liye 50 baar dukaan jaana vs ek hi list banakar ek hi trip mein saara samaan lana.</td>
+            <td class="ans">"The N+1 problem occurs when fetching children inside a loop of N parents. I resolve it using SQL JOINs, batch queries with IN clauses, or DataLoader for automated request batching and caching."</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- PRIORITY 8 -->
+    <h2 class="sec" id="p8">⚡ Priority 8: Caching, Message Queues & Distributed Scale</h2>
+    <p class="lead">Redis Cache-Aside pattern, Cache Stampede, aur Asynchronous Background Jobs (BullMQ/RabbitMQ).</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Scenario Question</th>
+            <th>Main Cause</th>
+            <th>Fix / Approach</th>
+            <th>Easy Explain (yaad trick)</th>
+            <th>Quick Interview Answer</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="group"><td colspan="6">🚀 Distributed Architecture</td></tr>
+          <tr>
+            <td class="num">22</td>
+            <td class="q">Redis mein <b>Cache Stampede (Thundering Herd)</b> kya hai? Ise kaise prevent karein?</td>
+            <td class="cause">Bada popular cache key expire ho gaya. Same second 10,000 concurrent requests aayi aur sabne ek sath DB par query fire kar di. Database crash!</td>
+            <td>1) <b>Mutex Lock (Redis lock):</b> Sirf ek request DB se data fetch karke cache bharegi, baaki wait karengi.<br>2) <b>Probabilistic Early Expiration (XFetch):</b> Expiry se thoda pehle hi background mein refresh kar do.<br>3) Jitter/Random TTL (e.g. <code>300s + Math.random() * 30</code>).</td>
+            <td class="why"><b>Buffet Counter Rush:</b> Khana khatam hote hi 500 log ek sath kitchen mein ghus gaye. Gate par ek aadmi ko bhejo (Lock) jo naya bowl laakar rakh de.</td>
+            <td class="ans">"Cache stampede occurs when high-concurrency requests hit the DB simultaneously after a popular key expires. I mitigate it using distributed mutex locks or adding random jitter to TTLs to stagger expirations."</td>
+          </tr>
+          <tr>
+            <td class="num">23</td>
+            <td class="q">User registration ke baad Welcome Email bhejna hai. API 3 seconds slow ho rahi hai. Sahi pattern kya hai?</td>
+            <td class="cause">SMTP email call synchronous request-response flow ke andar await ho rahi hai.</td>
+            <td>Message Queue (e.g. <b>BullMQ + Redis</b> ya RabbitMQ) use karo. Request handler sirf ek job push karega (takes ~2ms) aur turant 201 response dega. Background worker process email send karega.</td>
+            <td class="why"><b>Token Counter Trick:</b> Doctor khud medicine banane nahi baithta; prescription (Job token) dekar agle patient ko bulata hai. Chemist (Worker) medicine pack karta hai.</td>
+            <td class="ans">"I decouple long-running operations like email dispatch by pushing a message to an asynchronous job queue (like BullMQ on Redis), allowing the API to respond immediately with 201 Created."</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- PRIORITY 9 -->
+    <h2 class="sec" id="p9">🛡 Priority 9: API Security, CORS, Helmet & ReDoS</h2>
+    <p class="lead">OWASP Top 10 vulnerabilities jo Node.js apps ko target karti hain aur unka bulletproof defense.</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Scenario Question</th>
+            <th>Main Cause</th>
+            <th>Fix / Approach</th>
+            <th>Easy Explain (yaad trick)</th>
+            <th>Quick Interview Answer</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="group"><td colspan="6">🔒 OWASP Defense</td></tr>
+          <tr>
+            <td class="num">24</td>
+            <td class="q"><b>ReDoS (Regular Expression Denial of Service)</b> kya hota hai? Node.js iska aasan shikaar kyun banta hai?</td>
+            <td class="cause">Catastrophic Backtracking: Evil regex pattern (e.g. <code>(a+)+$</code>) par malformed input match karte waqt V8 regex engine exponential steps <code>O(2^n)</code> leta hai, jisse single-thread 100% CPU par lock ho jata hai.</td>
+            <td>1) Catastrophic backtracking patterns avoid karo.<br>2) Regex validation libraries ya <code>safe-regex</code> / <code>re2</code> use karo jo linear time <code>O(n)</code> guarantee karti hain.<br>3) User input length validate karo pehle.</td>
+            <td class="why"><b>Maze Trick:</b> Bhool-bhulaiya mein har raste par 10 naye raste khul rahe hain. Ek galat input thread ko saalon tak ghumata rahega.</td>
+            <td class="ans">"ReDoS exploits catastrophic backtracking in nested regex quantifiers, causing exponential evaluation time that completely blocks Node's single thread. I mitigate it using linear-time regex engines like re2 or linting rules."</td>
+          </tr>
+          <tr>
+            <td class="num">25</td>
+            <td class="q"><code>helmet</code> middleware Node.js Express app mein lagana mandatory kyun mana jata hai?</td>
+            <td class="cause">Default Express headers sensitive server info leak karte hain (e.g. <code>X-Powered-By: Express</code>) aur essential browser security headers missing hote hain.</td>
+            <td>Helmet 15 alag HTTP security headers automatically inject karta hai: <code>Content-Security-Policy</code>, <code>Strict-Transport-Security</code> (HSTS), <code>X-Frame-Options</code> (Clickjacking protection), <code>X-Content-Type-Options: nosniff</code>.</td>
+            <td class="why"><b>Body Armor Trick:</b> Soldier bina helmet/armor ke war zone mein nahi jata. 1 line code <code>app.use(helmet())</code> 15 attack vectors block karta hai.</td>
+            <td class="ans">"Helmet secures Express apps by setting appropriate HTTP headers, hiding X-Powered-By, enforcing HTTPS via HSTS, and defending against Clickjacking, MIME sniffing, and cross-site scripting."</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- PRIORITY 10 -->
+    <h2 class="sec" id="p10">🔥 Priority 10: Live Production Debugging (100% CPU Spike)</h2>
+    <p class="lead">Senior backend engineer interview round ka favourite scenario: "Production server CPU 100% par chala gaya, kaise diagnose karoge?"</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Scenario Question</th>
+            <th>Main Cause</th>
+            <th>Fix / Approach</th>
+            <th>Easy Explain (yaad trick)</th>
+            <th>Quick Interview Answer</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="group"><td colspan="6">🚨 Incident Response</td></tr>
+          <tr>
+            <td class="num">26</td>
+            <td class="q">Production server ka CPU achanak 100% ho gaya aur health check fail ho gaya. Exact function aur line of code kaise dhundoge?</td>
+            <td class="cause">Infinite while loop, heavy synchronous JSON parse, ReDoS regex, ya intensive cryptographic hashing on the main thread.</td>
+            <td>1) <b>Quick Recovery:</b> Container restart / traffic route through other pods.<br>2) <b>Diagnosis:</b> <code>node --prof</code> ya <b>Clinic.js Flame</b> / <code>0x</code> use karke Flamegraph generate karo.<br>3) Flamegraph mein sabse wide bar (red bar) wahi function hoga jo CPU time consume kar raha hai.</td>
+            <td class="why"><b>Thermal Camera Trick:</b> Building mein aag kahan lagi hai yeh dekhne ke liye thermal camera (Flamegraph) use karte hain. Jo bar sabse chaudi hai, wahi aag ka source hai.</td>
+            <td class="ans">"I generate a CPU profile or flamegraph using Clinic.js Flame or 0x under traffic. The widest blocks on the flamegraph pinpoint the exact synchronous function blocking the V8 call stack."</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ================= TAB 2: PRODUCTION CODE SNIPPETS ================= -->
+  <div id="sectionCode" style="display: none;">
+    <h2 class="sec">💻 Production-Ready Architectural Snippets</h2>
+    <p class="lead">Yeh snippets interview mein whiteboarding ya machine coding rounds ke liye directly memorize karein.</p>
+
+    <div class="code-grid">
+      <!-- Snippet 1: Graceful Shutdown -->
+      <div class="code-card">
+        <h3>🛡 1. Production Graceful Shutdown</h3>
+        <p>Zero downtime deployments aur clean cleanup (HTTP server + DB connection pool).</p>
+        <pre><code class="lang-js">const server = app.listen(PORT, () => console.log(`Server on ${PORT}`));
+
+function shutdown(signal) {
+  console.log(`Received ${signal}. Shutting down gracefully...`);
+  
+  // 1. Stop taking new requests
+  server.close(async () => {
+    console.log('HTTP server closed.');
+    try {
+      // 2. Close database pools
+      await dbPool.end();
+      console.log('Database pool drained.');
+      process.exit(0);
+    } catch (err) {
+      console.error('Error during shutdown:', err);
+      process.exit(1);
+    }
+  });
+
+  // 3. Force exit after 10s if stuck
+  setTimeout(() => {
+    console.error('Forced shutdown due to timeout.');
+    process.exit(1);
+  }, 10000).unref();
+}
+
+process.on('SIGTERM', () => shutdown('SIGTERM'));
+process.on('SIGINT', () => shutdown('SIGINT'));</code></pre>
+      </div>
+
+      <!-- Snippet 2: Safe Stream Pipeline -->
+      <div class="code-card">
+        <h3>🌊 2. Safe Stream Pipeline with Backpressure</h3>
+        <p>Memory leak free file streaming with <code>stream.pipeline</code>.</p>
+        <pre><code class="lang-js">const fs = require('fs');
+const { pipeline } = require('stream');
+const zlib = require('zlib');
+
+app.get('/download-log', (req, res) => {
+  const readStream = fs.createReadStream('/var/log/large.log');
+  const gzipStream = zlib.createGzip();
+
+  res.setHeader('Content-Encoding', 'gzip');
+  res.setHeader('Content-Type', 'text/plain');
+
+  // Automatically manages backpressure & destroys streams on error
+  pipeline(readStream, gzipStream, res, (err) => {
+    if (err) {
+      console.error('Pipeline failed:', err);
+      if (!res.headersSent) res.status(500).send('Streaming error');
+    } else {
+      console.log('Stream completed successfully!');
+    }
+  });
+});</code></pre>
+      </div>
+
+      <!-- Snippet 3: Redis Cache-Aside Pattern -->
+      <div class="code-card">
+        <h3>⚡ 3. Redis Cache-Aside Pattern with Jitter</h3>
+        <p>Thundering herd prevent karne ke liye randomized TTL caching.</p>
+        <pre><code class="lang-js">async function getProductById(productId) {
+  const cacheKey = `product:${productId}`;
+
+  // 1. Try cache first
+  const cached = await redis.get(cacheKey);
+  if (cached) return JSON.parse(cached);
+
+  // 2. Cache miss -> Query DB
+  const product = await db.query('SELECT * FROM products WHERE id = $1', [productId]);
+  if (!product) return null;
+
+  // 3. Add Jitter: 300s + (0 to 30s) to prevent simultaneous stampede
+  const jitterSeconds = Math.floor(Math.random() * 30);
+  const ttl = 300 + jitterSeconds;
+
+  await redis.set(cacheKey, JSON.stringify(product), 'EX', ttl);
+  return product;
+}</code></pre>
+      </div>
+
+      <!-- Snippet 4: JWT Verification with Redis Blacklist -->
+      <div class="code-card">
+        <h3>🔑 4. JWT Middleware with Token Blacklisting</h3>
+        <p>Immediate logout revocation via Redis check.</p>
+        <pre><code class="lang-js">async function authenticateToken(req, res, next) {
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1];
+
+  if (!token) return res.status(401).json({ message: 'Token missing' });
+
+  // 1. Check if token is in Redis blacklist (logged out)
+  const isBlacklisted = await redis.get(`bl_${token}`);
+  if (isBlacklisted) {
+    return res.status(401).json({ message: 'Token has been revoked. Please log in again.' });
+  }
+
+  // 2. Verify JWT signature & expiration
+  jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
+    if (err) return res.status(403).json({ message: 'Token invalid or expired' });
+    req.user = user;
+    next();
+  });
+}</code></pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= TAB 3: 128 VISUAL SLIDES ================= -->
+  <div id="sectionSlides" style="display: none;">
+    <h2 class="sec">🎬 128 Visual Slides (Extracted Deck)</h2>
+    <p class="lead">Original presentation deck ke diagrams, flowcharts aur handwritten notes.</p>
+
+    <div class="slide-section">
+      <div class="slide-stage">
+        <button class="stage-btn prev" onclick="prevSlide()">◀</button>
+        <button class="stage-btn next" onclick="nextSlide()">▶</button>
+        <img id="mainSlideImg" src="./nodejs_slides/slide_1.jpg" alt="Node.js Slide">
+      </div>
+
+      <div class="slide-controls">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <span style="font-family:'IBM Plex Mono',monospace; font-size:13px;" id="slideIndicator">Slide 1 of 128</span>
+          <input type="number" id="slideInput" min="1" max="128" value="1" style="width:50px; padding:3px; text-align:center; background:var(--surface-alt); color:var(--text); border:1px solid var(--border); border-radius:4px;" onchange="jumpToSlide(parseInt(this.value))">
+        </div>
+        <div style="display:flex; gap:8px;">
+          <button class="btn" onclick="prevSlide()">◀ Prev</button>
+          <button class="btn" onclick="nextSlide()">Next ▶</button>
+          <button class="btn" onclick="jumpToSlide(1)">First</button>
+          <button class="btn" onclick="jumpToSlide(128)">Last</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+let currentSlide = 1;
+const TOTAL_SLIDES = 128;
+
+function showTab(tab) {
+  document.getElementById('sectionScenarios').style.display = tab === 'scenarios' ? 'block' : 'none';
+  document.getElementById('sectionCode').style.display = tab === 'code' ? 'block' : 'none';
+  document.getElementById('sectionSlides').style.display = tab === 'slides' ? 'block' : 'none';
+
+  document.getElementById('tabScenarios').classList.toggle('active', tab === 'scenarios');
+  document.getElementById('tabCode').classList.toggle('active', tab === 'code');
+  document.getElementById('tabSlides').classList.toggle('active', tab === 'slides');
+
+  document.getElementById('subNavBar').style.display = tab === 'scenarios' ? 'flex' : 'none';
+}
+
+function updateSlide() {
+  document.getElementById('mainSlideImg').src = `./nodejs_slides/slide_${currentSlide}.jpg`;
+  document.getElementById('slideIndicator').innerText = `Slide ${currentSlide} of ${TOTAL_SLIDES}`;
+  document.getElementById('slideInput').value = currentSlide;
+}
+
+function nextSlide() {
+  if (currentSlide < TOTAL_SLIDES) { currentSlide++; updateSlide(); }
+}
+function prevSlide() {
+  if (currentSlide > 1) { currentSlide--; updateSlide(); }
+}
+function jumpToSlide(num) {
+  if (num >= 1 && num <= TOTAL_SLIDES) {
+    currentSlide = num;
+    updateSlide();
+  }
+}
+
+// Global Search
+function handleSearch() {
+  const query = document.getElementById('globalSearch').value.toLowerCase().trim();
+  const rows = document.querySelectorAll('tbody tr:not(.group)');
+
+  rows.forEach(row => {
+    const text = row.innerText.toLowerCase();
+    row.style.display = (!query || text.includes(query)) ? '' : 'none';
+  });
+}
+
+// Theme
+function toggleTheme() {
+  const root = document.documentElement;
+  const next = root.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+  root.setAttribute('data-theme', next);
+  localStorage.setItem('node_theme', next);
+}
+
+// Keybindings
+window.addEventListener('keydown', (e) => {
+  if (['input', 'textarea'].includes(document.activeElement.tagName.toLowerCase())) return;
+  if (e.key === 'ArrowRight') nextSlide();
+  else if (e.key === 'ArrowLeft') prevSlide();
+  else if (e.key === '1') showTab('scenarios');
+  else if (e.key === '2') showTab('code');
+  else if (e.key === '3') showTab('slides');
+});
+</script>
+
+</body>
+</html>
